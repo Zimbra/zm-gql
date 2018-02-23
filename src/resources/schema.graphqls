@@ -1,0 +1,11 @@
+type AccountInfo {
+  name: String
+}
+
+type Query {
+  accountInfo: AccountInfo
+}
+
+schema {
+  query: Query
+}
