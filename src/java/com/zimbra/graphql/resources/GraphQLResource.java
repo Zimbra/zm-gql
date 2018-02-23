@@ -15,22 +15,23 @@ import graphql.servlet.SimpleGraphQLServlet;
 @WebServlet(urlPatterns = "/graphql")
 public class GraphQLResource extends SimpleGraphQLServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public GraphQLResource() {
-		super(buildSchema());
-	}
+    public GraphQLResource() {
+        super(buildSchema());
+    }
 
-	protected static GraphQLSchema buildSchema() {
-		return SchemaParser.newParser()
+    protected static GraphQLSchema buildSchema() {
+        return SchemaParser
+            .newParser()
             .file("schema.graphqls")
             .resolvers(new GraphQLQueryResolver() {
-            		public AccountInfo accountInfo() {
-            			return new AccountInfo("user@zimbra");
-            		}
-            })
-            .build()
-            .makeExecutableSchema();
-	}
+                public AccountInfo accountInfo() {
+                    return new AccountInfo("user@zimbra");
+                }
+        })
+        .build()
+        .makeExecutableSchema();
+    }
 
 }
