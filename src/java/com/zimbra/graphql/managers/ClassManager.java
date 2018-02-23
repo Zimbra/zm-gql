@@ -9,7 +9,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.Configuration;
 import com.zimbra.graphql.utilities.GQLConstants;
-import com.zimbra.oauth.exceptions.ConfigurationException;
 
 public class ClassManager {
 

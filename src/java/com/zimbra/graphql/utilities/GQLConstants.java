@@ -22,5 +22,8 @@ public class GQLConstants {
 
 	// LC Related
 	public static final String LC_REPOSITORY_CLASS_PREFIX = "";
+	public static final String LC_GQL_SERVER_CONTEXT_PATH = "gql_server_context_path";
+	public static final String LC_GQL_SERVER_PORT = "gql_server_port";
+	public static final String LC_GQL_LOG_LEVEL = "gql_log_level";
 
 }
