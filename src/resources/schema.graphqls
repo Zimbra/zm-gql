@@ -1,11 +1,140 @@
+enum PrefCalendarInitialView {
+    day
+    list
+    month
+    week
+    workWeek
+    year
+}
+
+enum PrefMailSelectAfterDelete {
+    next
+    previous
+    adaptive
+}
+
+enum ReadingPaneLocation {
+    off
+    right
+    bottom
+}
+
 type AccountInfo {
-  name: String
+    id: ID!
+    name: String
+    publicURL: String
+    rest: String
+    soapURL: String
+    version: String
+    identities: Identities
+    dataSources: DataSources!
+    signatures: Signatures
+    attrs: AccountInfoAttrs
+    prefs: Preferences
+}
+
+type AccountInfoAttrs {
+    displayName: String
+    zimbraFeatureCalendarEnabled: Boolean
+    zimbraFeatureRelatedContactsEnabled: Boolean
+}
+
+type Identities {
+    identity: [Identity]
+}
+
+type Identity {
+    id: ID!
+    name: String
+    _attrs: IdentityAttrs
+    defaultSignature: ID
+}
+
+type IdentityAttrs {
+    zimbraPrefIdentityId: ID!
+    zimbraPrefDefaultSignatureId: ID
+    zimbraPrefForwardReplySignatureId: ID
+    zimbraPrefForwardReplyFormat: String
+    zimbraPrefFromAddress: String
+    zimbraPrefFromAddressType: String
+    zimbraPrefFromDisplay: String
+    zimbraPrefIdentityName: String
+    zimbraPrefMailSignatureStyle: String
+    zimbraPrefReplyToAddress: String
+    zimbraPrefReplyToDisplay: String
+    zimbraPrefReplyToEnabled: Boolean
+    zimbraPrefSaveToSent: Boolean
+    zimbraPrefSentMailFolder: String
+}
+
+type DataSources {
+    imap: [DataSource]
+    pop3: [DataSource]
+    cal: [DataSource]
+}
+
+type DataSource {
+    id: ID!
+    connectionType: String
+    defaultSignature: ID
+    emailAddress: String
+    l: ID
+    forwardReplySignature: ID
+    fromDisplay: String
+    host: String
+    importOnly: Boolean
+    isEnabled: Boolean
+    name: String
+    pollingInterval: Float
+    port: String
+    replyToAddress: String
+    replyToDisplay: String
+    smtpPort: String
+    useAddressForForwardReply: Boolean
+    username: String
+    failingSince: String
+    lastError: [String]
+}
+
+type Signatures {
+    signature: [Signature]
+}
+
+type Signature {
+    id: ID
+    name: String
+    content: [SignatureContent]
+}
+
+type SignatureContent {
+    type: String
+    _content: String
+}
+
+type Preferences {
+    zimbraPrefAutoAddAppointmentsToCalendar: Boolean
+    zimbraPrefCalendarFirstDayOfWeek: String
+    zimbraPrefCalendarInitialView: PrefCalendarInitialView
+    zimbraPrefCalendarReminderEmail: String
+    zimbraPrefCalendarWorkingHours: String
+    zimbraPrefGroupMailBy: String
+    zimbraPrefMailSelectAfterDelete: PrefMailSelectAfterDelete
+    zimbraPrefMarkMsgRead: Int
+    zimbraPrefOutOfOfficeFromDate: String
+    zimbraPrefOutOfOfficeReply: String
+    zimbraPrefOutOfOfficeReplyEnabled: Boolean
+    zimbraPrefOutOfOfficeStatusAlertOnLogin: Boolean
+    zimbraPrefOutOfOfficeUntilDate: String
+    zimbraPrefReadingPaneEnabled: Boolean
+    zimbraPrefReadingPaneLocation: ReadingPaneLocation
+    zimbraPrefReadingPaneSashHorizontal: Int
+    zimbraPrefShowFragments: Boolean
 }
 
 type Query {
-  accountInfo: AccountInfo
+    accountInfo: AccountInfo
 }
 
 schema {
-  query: Query
+    query: Query
 }
