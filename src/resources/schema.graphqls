@@ -1,3 +1,67 @@
+type Folder {
+    absFolderPath: String
+    acl: ACL
+    color: Int
+    flags: String
+    id: ID
+    uuid: ID
+    name: String
+    nonFolderItemCount: Int # Number of non-subfolder items in folder
+    nonFolderItemCountTotal: Float # Total size of all of non-subfolder items in folder
+    linkedFolders: [Folder] # Folders this user has linked from other users nested in this Folder
+    folders: [Folder] # Folders nested in this Folder
+    owner: String
+    revision: Int
+    view: FolderView
+    parentFolderId: ID
+    unread: Int
+    query: String
+}
+
+enum FolderView {
+    search
+    folder
+    tag
+    conversation
+    message
+    contact
+    document
+    appointment
+    virtual
+    remote
+    wiki
+    task
+    chat
+    note
+    comment
+}
+
+type ACL {
+    grant: [ACLGrant]
+}
+
+type ACLGrant {
+    address: String
+    permissions: String
+    granteeType: GranteeType
+    zimbraId: ID
+    password: String
+    key: String
+}
+
+# https://github.com/Zimbra/zm-mailbox/blob/develop/store/docs/acl.md
+enum GranteeType {
+    usr # Zimbra user
+    grp # Zimbra Group (distribution list)
+    egp # an external AD group
+    dom # Zimbra Domain
+    all # All authenticated users
+    pub # public access
+    guest # Non-zimbra email address and password
+    key # Non-zimbra email address and access key
+    cos # Grantee ID must match zimbraCOSId (Class of Service)
+}
+
 enum PrefCalendarInitialView {
     day
     list
