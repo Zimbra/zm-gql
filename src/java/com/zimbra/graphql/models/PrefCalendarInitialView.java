@@ -1,90 +1,40 @@
 package com.zimbra.graphql.models;
 
 /**
- * Define the PrefCalendarInitialView ENUM object
- * 
+ * The PrefCalendarInitialView enum.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
  */
 public enum PrefCalendarInitialView {
-    day("day"),
-    list("list"),
-    month("month"),
-    week("week"),
-    workWeek("workWeek"),
-    year("year");
+    /**
+     * Calendar view day.
+     */
+    day,
 
     /**
-     *  The mailSelectValue.
+     * Calendar view list.
      */
-    private String mailSelectValue;
+    list,
 
     /**
-     * Constructor for PrefCalendarInitialView class.
-     * This is a JAVA ENUM that gets and sets the values "day", "list", and "month", "week", "workWeek", "year".
-     * Preference for what the initial Calendar view is.
-     * This class can also return if any of the six values are enabled or not.
-     * 
-     * @param mailSelectValue The selected value for this ENUM class
+     * Calendar view month.
      */
-    private PrefCalendarInitialView(String mailSelectValue) {
-        this.mailSelectValue = mailSelectValue;
-    }
+    month,
 
     /**
-     * @return Returns the mailSelectValue
+     * Calendar view week.
      */
-    public String getMailSelectValue() {
-        return mailSelectValue;
-    }
+    week,
 
     /**
-     * @param Sets the mailSelectValue
+     * Calendar view workWeek.
      */
-    public void setMailSelectValue(String mailSelectValue) {
-        this.mailSelectValue = mailSelectValue;
-    }
+    workWeek,
 
     /**
-     * @return Returns the boolean value of day
+     * Calendar view year.
      */
-    public boolean isDay() {
-        return this == day;
-    }
-
-    /**
-     * @return Returns the boolean value of list
-     */
-    public boolean isList() {
-        return this == list;
-    }
-
-    /**
-     * @return Returns the boolean value of month
-     */
-    public boolean isMonth() {
-        return this == month;
-    }
-
-    /**
-     * @return Returns the boolean value of week
-     */
-    public boolean isWeek() {
-        return this == week;
-    }
-
-    /**
-     * @return Returns the boolean value of workweek
-     */
-    public boolean isWorkweek() {
-        return this == workWeek;
-    }
-
-    /**
-     * @return Returns the boolean value of year
-     */
-    public boolean isYear() {
-        return this == year;
-    }
+    year
 }

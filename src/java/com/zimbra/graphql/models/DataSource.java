@@ -3,8 +3,8 @@ package com.zimbra.graphql.models;
 import java.util.List;
 
 /**
- * Define the DataSource object
- * 
+ * The DataSource class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -12,433 +12,383 @@ import java.util.List;
 public class DataSource {
 
     /**
-     *  The id.
+     * DataSource id.
      */
     private String id;
 
     /**
-     *  The connectionType.
+     * Connection type.
      */
     private String connectionType;
 
     /**
-     *  The defaultSignature.
+     * Default signature.
      */
     private String defaultSignature;
 
     /**
-     *  The emailAddress.
+     * Email address.
      */
     private String emailAddress;
 
     /**
-     *  The value for l.
+     * The value for l.
      */
     private String l;
 
     /**
-     *  The forwardReplySignature.
+     * The forward reply signature.
      */
     private String forwardReplySignature;
 
     /**
-     *  The fromDisplay.
+     * The fromDisplay.
      */
     private String fromDisplay;
 
     /**
-     *  The host.
+     * DataSource host.
      */
     private String host;
 
     /**
-     *  The importOnly.
+     * Boolean value if DataSource is only to be imported.
      */
     private Boolean importOnly;
 
     /**
-     *  The .
+     * Boolean value if DataSource is Enabled.
      */
     private Boolean isEnabled;
 
     /**
-     *  The isEnabled.
+     * DataSource name.
      */
     private String name;
 
     /**
-     *  The pollingInterval.
+     * Polling interval.
      */
     private Float pollingInterval;
 
     /**
-     *  The port.
+     * DataSource port.
      */
     private String port;
 
     /**
-     *  The replyToAddress.
+     * Reply-to address.
      */
     private String replyToAddress;
 
     /**
-     *  The replyToDisplay.
+     * Reply-to display.
      */
     private String replyToDisplay;
 
     /**
-     *  The smtpPort.
+     * DataSource smtp port.
      */
     private String smtpPort;
 
     /**
-     *  The useAddressForForwardReply.
+     * Boolean value if DataSource is to use the address for a forward reply.
      */
     private Boolean useAddressForForwardReply;
 
     /**
-     *  The username.
+     * DataSource username.
      */
     private String username;
 
     /**
-     *  The failingSince.
+     * DataSource 'failing since' record.
      */
     private String failingSince;
 
     /**
-     *  The lastError.
+     * DataSource value of the last error.
      */
     private List<String> lastError;
 
     /**
-     * Constructor for DataSource class.
-     *
-     * @param id The datasource id to set
-     * @param connectionType The datasource connectionType to set
-     * @param defaultSignature The datasource defaultSignature to set
-     * @param emailAddress The datasource emailAddress to set
-     * @param l The datasource l to set
-     * @param forwardReplySignature The datasource forwardReplySignature to set
-     * @param fromDisplay The datasource fromDisplay to set
-     * @param host The datasource host to set
-     * @param importOnly The datasource importOnly to set
-     * @param isEnabled The datasource isEnabled to set
-     * @param name The datasource name to set
-     * @param pollingInterval The datasource pollingInterval to set
-     * @param port The datasource port to set
-     * @param replyToAddress The datasource replyToAddress to set
-     * @param replyToDisplay The datasource replyToDisplay to set
-     * @param smtpPort The datasource smtpPort to set
-     * @param useAddressForForwardRepl The datasource useAddressForForwardRepl to sety
-     * @param username The datasource username to set
-     * @param failingSince The datasource failingSince to set
-     * @param lastError The datasource lastError to set
-     */
-    public DataSource(String id, String connectionType, String defaultSignature, String emailAddress, String l,
-            String forwardReplySignature, String fromDisplay, String host, Boolean importOnly, Boolean isEnabled,
-            String name, Float pollingInterval, String port, String replyToAddress, String replyToDisplay,
-            String smtpPort, Boolean useAddressForForwardReply, String username, String failingSince,
-            List<String> lastError) {
-        this.id = id;
-        this.connectionType = connectionType;
-        this.defaultSignature = defaultSignature;
-        this.emailAddress = emailAddress;
-        this.l = l;
-        this.forwardReplySignature = forwardReplySignature;
-        this.fromDisplay = fromDisplay;
-        this.host = host;
-        this.importOnly = importOnly;
-        this.isEnabled = isEnabled;
-        this.name = name;
-        this.pollingInterval = pollingInterval;
-        this.port = port;
-        this.replyToAddress = replyToAddress;
-        this.replyToDisplay = replyToDisplay;
-        this.smtpPort = smtpPort;
-        this.useAddressForForwardReply = useAddressForForwardReply;
-        this.username = username;
-        this.failingSince = failingSince;
-        this.lastError = lastError;
-    }
-
-    /**
-     * @return Returns the id
+     * @return The id
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param Sets the id
+     * @param id The id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * @return Returns the connectionType
+     * @return The connection type
      */
     public String getConnectionType() {
         return connectionType;
     }
 
     /**
-     * @param Sets the connectionType
+     * @param connectionType The connection type to set
      */
     public void setConnectionType(String connectionType) {
         this.connectionType = connectionType;
     }
 
     /**
-     * @return Returns the defaultSignature
+     * @return The default signature
      */
     public String getDefaultSignature() {
         return defaultSignature;
     }
 
     /**
-     * @param Sets the defaultSignature
+     * @param defaultSignature The default signature to set
      */
     public void setDefaultSignature(String defaultSignature) {
         this.defaultSignature = defaultSignature;
     }
 
     /**
-     * @return Returns the emailAddress
+     * @return The email address
      */
     public String getEmailAddress() {
         return emailAddress;
     }
 
     /**
-     * @param Sets the emailAddress
+     * @param emailAddress The email address to set
      */
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
     /**
-     * @return Returns the l
+     * @return The l
      */
     public String getL() {
         return l;
     }
 
     /**
-     * @param Sets the l
+     * @param l The l to set
      */
     public void setL(String l) {
         this.l = l;
     }
 
     /**
-     * @return Returns the forwardReplySignature
+     * @return The forward reply signature
      */
     public String getForwardReplySignature() {
         return forwardReplySignature;
     }
 
     /**
-     * @param Sets the forwardReplySignature
+     * @param forwardReplySignature The forward reply signature to set
      */
     public void setForwardReplySignature(String forwardReplySignature) {
         this.forwardReplySignature = forwardReplySignature;
     }
 
     /**
-     * @return Returns the fromDisplay
+     * @return The from display
      */
     public String getFromDisplay() {
         return fromDisplay;
     }
 
     /**
-     * @param Sets the fromDisplay
+     * @param fromDisplay The 'from display' to set
      */
     public void setFromDisplay(String fromDisplay) {
         this.fromDisplay = fromDisplay;
     }
 
     /**
-     * @return Returns the host
+     * @return The host
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * @param Sets the host
+     * @param host The host to set
      */
     public void setHost(String host) {
         this.host = host;
     }
 
     /**
-     * @return Returns the importOnly
+     * @return The boolean 'import only' value of this DataSource
      */
     public Boolean getImportOnly() {
         return importOnly;
     }
 
     /**
-     * @param Sets the importOnly
+     * @param importOnly The boolean 'import only' value of this DataSource to set
      */
     public void setImportOnly(Boolean importOnly) {
         this.importOnly = importOnly;
     }
 
     /**
-     * @return Returns the isEnabled
+     * @return The boolean 'enabled' value of this DataSource
      */
     public Boolean getIsEnabled() {
         return isEnabled;
     }
 
     /**
-     * @param Sets the isEnabled
+     * @param isEnabled The boolean 'enabled' value of this DataSource to set
      */
     public void setIsEnabled(Boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
     /**
-     * @return Returns the name
+     * @return The DataSource name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param Sets the name
+     * @param name The DataSource name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return Returns the pollingInterval
+     * @return The polling interval
      */
     public Float getPollingInterval() {
         return pollingInterval;
     }
 
     /**
-     * @param Sets the pollingInterval
+     * @param pollingInterval The polling interval to set
      */
     public void setPollingInterval(Float pollingInterval) {
         this.pollingInterval = pollingInterval;
     }
 
     /**
-     * @return Returns the port
+     * @return The port
      */
     public String getPort() {
         return port;
     }
 
     /**
-     * @param Sets the port
+     * @param port The port to set
      */
     public void setPort(String port) {
         this.port = port;
     }
 
     /**
-     * @return Returns the replyToAddress
+     * @return The reply-to address
      */
     public String getReplyToAddress() {
         return replyToAddress;
     }
 
     /**
-     * @param Sets the replyToAddress
+     * @param replyToAddress The reply-to address to set
      */
     public void setReplyToAddress(String replyToAddress) {
         this.replyToAddress = replyToAddress;
     }
 
     /**
-     * @return Returns the replyToDisplay
+     * @return The reply-to display
      */
     public String getReplyToDisplay() {
         return replyToDisplay;
     }
 
     /**
-     * @param Sets the replyToDisplay
+     * @param replyToDisplay The reply-to display to set
      */
     public void setReplyToDisplay(String replyToDisplay) {
         this.replyToDisplay = replyToDisplay;
     }
 
     /**
-     * @return Returns the smtpPort
+     * @return The smtp port
      */
     public String getSmtpPort() {
         return smtpPort;
     }
 
     /**
-     * @param Sets the smtpPort
+     * @param smtpPort The smtp port to set
      */
     public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
     }
 
     /**
-     * @return Returns the useAddressForForwardReply
+     * @return The boolean value of whether to use the address for a forward reply
      */
     public Boolean getUseAddressForForwardReply() {
         return useAddressForForwardReply;
     }
 
     /**
-     * @param Sets the useAddressForForwardReply
+     * @param useAddressForForwardReply The boolean value of 'using the address for a forward reply' to set
      */
     public void setUseAddressForForwardReply(Boolean useAddressForForwardReply) {
         this.useAddressForForwardReply = useAddressForForwardReply;
     }
 
     /**
-     * @return Returns the username
+     * @return The username
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * @param Sets the username
+     * @param username The username to set
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
-     * @return Returns the failingSince
+     * @return The 'failing since' value
      */
     public String getFailingSince() {
         return failingSince;
     }
 
     /**
-     * @param Sets the failingSince
+     * @param failingSince The 'failing since' value to set
      */
     public void setFailingSince(String failingSince) {
         this.failingSince = failingSince;
     }
 
     /**
-     * @return Returns the lastError
+     * @return The last error
      */
     public List<String> getLastError() {
         return lastError;
     }
 
     /**
-     * @param Sets the lastError
+     * @param lastError The last error to set
      */
     public void setLastError(List<String> lastError) {
         this.lastError = lastError;
     }
+
 }
