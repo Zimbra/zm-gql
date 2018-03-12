@@ -1,7 +1,7 @@
 package com.zimbra.graphql.models;
 
 /**
- * The  class.
+ * The EmailAddress class.
  * 
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
