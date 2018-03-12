@@ -1,3 +1,82 @@
+interface MailItem {
+    id: ID
+    size: Float # s
+    date: Float # d
+    folderId: ID # l
+    subject: String # su
+    emailAddresses: [EmailAddress]
+    excerpt: String # fr
+    conversationId: String # cid
+    flags: String # f
+    tags: String # t
+    tagNames: String # tn
+    revision: Int # rev
+    changeDate: Float # md
+    modifiedSequence: Int # ms
+    # invitations: [InviteInfo] # inv
+    sortField: String # sf
+}
+
+type MessageInfo implements MailItem {
+    id: ID
+    size: Float # s
+    date: Float # d
+    folderId: ID # l
+    subject: String # su
+    emailAddresses: [EmailAddress]
+    excerpt: String # fr
+    conversationId: String # cid
+    flags: String # f
+    tags: String # t
+    tagNames: String # tn
+    revision: Int # rev
+    changeDate: Float # md
+    modifiedSequence: Int # ms
+    # invitations: [InviteInfo] # inv
+    sortField: String # sf
+    mimeParts: [MimePart]
+    to: [EmailAddress]
+    from: [EmailAddress]
+    cc: [EmailAddress]
+    bcc: [EmailAddress]
+    sender: [EmailAddress]
+    html: String
+    text: String
+    attachments: [MimePart]
+    inlineAttachments: [MimePart]
+}
+
+type MimePart {
+    body: Boolean
+    filename: String
+    part: String
+    content: String
+    contentId: String
+    contentType: String
+    contentDisposition: String
+    size: Int
+    mimeParts: [MimePart]
+    url: String
+    messageId: ID
+}
+
+type EmailAddress {
+    address: String
+    name: String
+    type: String
+    displayName: String
+}
+
+input EmailAddressInput {
+    email: String!
+    name: String!
+    shortName: String!
+}
+
+input MailItemHeaderInput {
+    n: String!
+}
+
 type Folder {
     absFolderPath: String
     acl: ACL
@@ -197,6 +276,7 @@ type Preferences {
 
 type Query {
     accountInfo: AccountInfo
+    messageInfo: MessageInfo
 }
 
 schema {
