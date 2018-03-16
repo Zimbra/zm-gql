@@ -1,8 +1,8 @@
 package com.zimbra.graphql.models;
 
 /**
- * Define the Identity object
- * 
+ * The Identity class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -10,93 +10,79 @@ package com.zimbra.graphql.models;
 public class Identity {
 
     /**
-     *  The id.
+     * Identity id.
      */
     private String id;
 
     /**
-     *  The name.
+     * Identity name.
      */
     private String name;
 
     /**
-     *  The attributes for Identity.
+     * The attributes for Identity.
      */
     private IdentityAttrs _attrs;
 
     /**
-     *  The defaultSignature.
+     * Default signature.
      */
     private String defaultSignature;
 
     /**
-     * Constructor for Identity class.
-     *
-     * @param id The identity's id to set
-     * @param name The identity's name to set
-     * @param _attrs The identity's list of _attrs to set
-     * @param defaultSignature The identity's defaultSignature to set
-     */
-    public Identity(String id, String name, IdentityAttrs _attrs, String defaultSignature) {
-        this.id = id;
-        this.name = name;
-        this._attrs = _attrs;
-        this.defaultSignature = defaultSignature;
-    }
-
-    /**
-     * @return Returns the id
+     * @return The id of the identity
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param Sets the id
+     * @param id The id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * @return Returns the name
+     * @return The name of the identity
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param Sets the name
+     * @param name The name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return Returns the _attrs
+     * @return The identity's attributes
      */
     public IdentityAttrs get_attrs() {
         return _attrs;
     }
 
     /**
-     * @param Sets the _attrs
+     * @param _attrs The identity's attributes to set
      */
     public void set_attrs(IdentityAttrs _attrs) {
         this._attrs = _attrs;
     }
 
     /**
-     * @return Returns the defaultSignature
+     * @return The default signature
      */
     public String getDefaultSignature() {
         return defaultSignature;
     }
 
     /**
-     * @param Sets the defaultSignature
+     * @param defaultSignature The default signature to set
      */
     public void setDefaultSignature(String defaultSignature) {
         this.defaultSignature = defaultSignature;
     }
+
 }

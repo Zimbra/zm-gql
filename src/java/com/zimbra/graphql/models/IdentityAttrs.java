@@ -1,8 +1,8 @@
 package com.zimbra.graphql.models;
 
 /**
- * Define the IdentityAttrs object
- * 
+ * The IdentityAttrs class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -10,307 +10,269 @@ package com.zimbra.graphql.models;
 public class IdentityAttrs {
 
     /**
-     *  The zimbraPrefIdentityId.
+     * The Zimbra preference for the account's identity id.
      */
     private String zimbraPrefIdentityId;
 
     /**
-     *  The zimbraPrefDefaultSignatureId.
+     * The Zimbra preference for the account's default signature id.
      */
     private String zimbraPrefDefaultSignatureId;
 
     /**
-     *  The zimbraPrefForwardReplySignatureId.
+     * The Zimbra preference for the account's 'forward reply' signature id.
      */
     private String zimbraPrefForwardReplySignatureId;
 
     /**
-     *  The zimbraPrefForwardReplyFormat.
+     * The Zimbra preference for the account's format of 'forward reply'.
      */
     private String zimbraPrefForwardReplyFormat;
 
     /**
-     *  The zimbraPrefFromAddress.
+     * The Zimbra preference for the account's 'from address'.
      */
     private String zimbraPrefFromAddress;
 
     /**
-     *  The zimbraPrefFromAddressType.
+     * The Zimbra preference for the account's 'from address' type.
      */
     private String zimbraPrefFromAddressType;
 
     /**
-     *  The zimbraPrefFromDisplay.
+     * The Zimbra preference for the account's 'from' display.
      */
     private String zimbraPrefFromDisplay;
 
     /**
-     *  The zimbraPrefIdentityName.
+     * The Zimbra preference for the account's identity name.
      */
     private String zimbraPrefIdentityName;
 
     /**
-     *  The zimbraPrefMailSignatureStyle.
+     * The Zimbra preference for the account's mail signature style.
      */
     private String zimbraPrefMailSignatureStyle;
 
     /**
-     *  The zimbraPrefReplyToAddress.
+     * The Zimbra preference for the account's 'reply to' address.
      */
     private String zimbraPrefReplyToAddress;
 
     /**
-     *  The zimbraPrefReplyToDisplay.
+     * The Zimbra preference for the account's display for 'reply to'.
      */
     private String zimbraPrefReplyToDisplay;
 
     /**
-     *  The zimbraPrefReplyToEnabled.
+     * The Zimbra preference for the account's enabled value for 'reply to'.
      */
     private Boolean zimbraPrefReplyToEnabled;
 
     /**
-     *  The zimbraPrefSaveToSent.
+     * The Zimbra preference for the account's 'save to sent' value.
      */
     private Boolean zimbraPrefSaveToSent;
 
     /**
-     *  The zimbraPrefSentMailFolder.
+     * The Zimbra preference for the account's 'sent mail' folder.
      */
     private String zimbraPrefSentMailFolder;
 
     /**
-     * Constructor for IdentityAttrs class.
-     *
-     * @param zimbraPrefIdentityId The attribute's zimbraPrefIdentityId to set
-     * @param zimbraPrefDefaultSignatureId The attribute's zimbraPrefDefaultSignatureId to set
-     * @param zimbraPrefForwardReplySignatureId The attribute's zimbraPrefForwardReplySignatureId to set
-     * @param zimbraPrefForwardReplyFormat The attribute's zimbraPrefForwardReplyFormat to set
-     * @param zimbraPrefFromAddress The attribute's zimbraPrefFromAddress to set
-     * @param zimbraPrefFromAddressType The attribute's zimbraPrefFromAddressType to set
-     * @param zimbraPrefFromDisplay The attribute's zimbraPrefFromDisplay to set
-     * @param zimbraPrefIdentityName The attribute's zimbraPrefIdentityName to set
-     * @param zimbraPrefMailSignatureStyle The attribute's zimbraPrefMailSignatureStyle to set
-     * @param zimbraPrefReplyToAddress The attribute's zimbraPrefReplyToAddress to set
-     * @param zimbraPrefReplyToDisplay The attribute's zimbraPrefReplyToDisplay to set
-     * @param zimbraPrefReplyToEnabled The attribute's zimbraPrefReplyToEnabled to set
-     * @param zimbraPrefSaveToSent The attribute's zimbraPrefSaveToSent to set
-     * @param zimbraPrefSentMailFolder The attribute's zimbraPrefSentMailFolder to set
-     */
-    public IdentityAttrs(String zimbraPrefIdentityId, String zimbraPrefDefaultSignatureId,
-            String zimbraPrefForwardReplySignatureId, String zimbraPrefForwardReplyFormat, String zimbraPrefFromAddress,
-            String zimbraPrefFromAddressType, String zimbraPrefFromDisplay, String zimbraPrefIdentityName,
-            String zimbraPrefMailSignatureStyle, String zimbraPrefReplyToAddress, String zimbraPrefReplyToDisplay,
-            Boolean zimbraPrefReplyToEnabled, Boolean zimbraPrefSaveToSent, String zimbraPrefSentMailFolder) {
-        this.zimbraPrefIdentityId = zimbraPrefIdentityId;
-        this.zimbraPrefDefaultSignatureId = zimbraPrefDefaultSignatureId;
-        this.zimbraPrefForwardReplySignatureId = zimbraPrefForwardReplySignatureId;
-        this.zimbraPrefForwardReplyFormat = zimbraPrefForwardReplyFormat;
-        this.zimbraPrefFromAddress = zimbraPrefFromAddress;
-        this.zimbraPrefFromAddressType = zimbraPrefFromAddressType;
-        this.zimbraPrefFromDisplay = zimbraPrefFromDisplay;
-        this.zimbraPrefIdentityName = zimbraPrefIdentityName;
-        this.zimbraPrefMailSignatureStyle = zimbraPrefMailSignatureStyle;
-        this.zimbraPrefReplyToAddress = zimbraPrefReplyToAddress;
-        this.zimbraPrefReplyToDisplay = zimbraPrefReplyToDisplay;
-        this.zimbraPrefReplyToEnabled = zimbraPrefReplyToEnabled;
-        this.zimbraPrefSaveToSent = zimbraPrefSaveToSent;
-        this.zimbraPrefSentMailFolder = zimbraPrefSentMailFolder;
-    }
-
-    /**
-     * @return Returns the zimbraPrefIdentityId
+     * @return The account's Zimbra preference for identity id
      */
     public String getZimbraPrefIdentityId() {
         return zimbraPrefIdentityId;
     }
 
     /**
-     * @param Sets the zimbraPrefIdentityId
+     * @param zimbraPrefIdentityId The Zimbra preference's identity id to set
      */
     public void setZimbraPrefIdentityId(String zimbraPrefIdentityId) {
         this.zimbraPrefIdentityId = zimbraPrefIdentityId;
     }
 
     /**
-     * @return Returns the zimbraPrefDefaultSignatureId
+     * @return The account's Zimbra preference for the default signature id
      */
     public String getZimbraPrefDefaultSignatureId() {
         return zimbraPrefDefaultSignatureId;
     }
 
     /**
-     * @param Sets the zimbraPrefDefaultSignatureId
+     * @param zimbraPrefDefaultSignatureId The Zimbra preference's default signature id to set
      */
     public void setZimbraPrefDefaultSignatureId(String zimbraPrefDefaultSignatureId) {
         this.zimbraPrefDefaultSignatureId = zimbraPrefDefaultSignatureId;
     }
 
     /**
-     * @return Returns the zimbraPrefForwardReplySignatureId
+     * @return The account's Zimbra preference for the 'forward reply' signature id
      */
     public String getZimbraPrefForwardReplySignatureId() {
         return zimbraPrefForwardReplySignatureId;
     }
 
     /**
-     * @param Sets the zimbraPrefForwardReplySignatureId
+     * @param zimbraPrefForwardReplySignatureId The Zimbra preference's 'forward reply' signature id to set
      */
     public void setZimbraPrefForwardReplySignatureId(String zimbraPrefForwardReplySignatureId) {
         this.zimbraPrefForwardReplySignatureId = zimbraPrefForwardReplySignatureId;
     }
 
     /**
-     * @return Returns the zimbraPrefForwardReplyFormat
+     * @return The account's Zimbra preference for the 'forward reply' format
      */
     public String getZimbraPrefForwardReplyFormat() {
         return zimbraPrefForwardReplyFormat;
     }
 
     /**
-     * @param Sets the zimbraPrefForwardReplyFormat
+     * @param zimbraPrefForwardReplyFormat The Zimbra preference's 'forward reply' format to set
      */
     public void setZimbraPrefForwardReplyFormat(String zimbraPrefForwardReplyFormat) {
         this.zimbraPrefForwardReplyFormat = zimbraPrefForwardReplyFormat;
     }
 
     /**
-     * @return Returns the zimbraPrefFromAddress
+     * @return The account's Zimbra preference for the 'from' address
      */
     public String getZimbraPrefFromAddress() {
         return zimbraPrefFromAddress;
     }
 
     /**
-     * @param Sets the zimbraPrefFromAddress
+     * @param zimbraPrefFromAddress The Zimbra preference's 'from' address to set
      */
     public void setZimbraPrefFromAddress(String zimbraPrefFromAddress) {
         this.zimbraPrefFromAddress = zimbraPrefFromAddress;
     }
 
     /**
-     * @return Returns the zimbraPrefFromAddressType
+     * @return The account's Zimbra preference for 'from address' type
      */
     public String getZimbraPrefFromAddressType() {
         return zimbraPrefFromAddressType;
     }
 
     /**
-     * @param Sets the zimbraPrefFromAddressType
+     * @param zimbraPrefFromAddressType The Zimbra preference's 'from address' type to set
      */
     public void setZimbraPrefFromAddressType(String zimbraPrefFromAddressType) {
         this.zimbraPrefFromAddressType = zimbraPrefFromAddressType;
     }
 
     /**
-     * @return Returns the zimbraPrefFromDisplay
+     * @return The account's Zimbra preference for the 'from' display
      */
     public String getZimbraPrefFromDisplay() {
         return zimbraPrefFromDisplay;
     }
 
     /**
-     * @param Sets the zimbraPrefFromDisplay
+     * @param zimbraPrefFromDisplay The Zimbra preference's 'from' display to set
      */
     public void setZimbraPrefFromDisplay(String zimbraPrefFromDisplay) {
         this.zimbraPrefFromDisplay = zimbraPrefFromDisplay;
     }
 
     /**
-     * @return Returns the zimbraPrefIdentityName
+     * @return The account's Zimbra preference for the identity name
      */
     public String getZimbraPrefIdentityName() {
         return zimbraPrefIdentityName;
     }
 
     /**
-     * @param Sets the zimbraPrefIdentityName
+     * @param zimbraPrefIdentityName The Zimbra preference's identity name to set
      */
     public void setZimbraPrefIdentityName(String zimbraPrefIdentityName) {
         this.zimbraPrefIdentityName = zimbraPrefIdentityName;
     }
 
     /**
-     * @return Returns the zimbraPrefMailSignatureStyle
+     * @return The account's Zimbra preference for the mail's signature style
      */
     public String getZimbraPrefMailSignatureStyle() {
         return zimbraPrefMailSignatureStyle;
     }
 
     /**
-     * @param Sets the zimbraPrefMailSignatureStyle
+     * @param zimbraPrefMailSignatureStyle The Zimbra preference's mail's signature style to set
      */
     public void setZimbraPrefMailSignatureStyle(String zimbraPrefMailSignatureStyle) {
         this.zimbraPrefMailSignatureStyle = zimbraPrefMailSignatureStyle;
     }
 
     /**
-     * @return Returns the zimbraPrefReplyToAddress
+     * @return The account's Zimbra preference for the 'reply to' address
      */
     public String getZimbraPrefReplyToAddress() {
         return zimbraPrefReplyToAddress;
     }
 
     /**
-     * @param Sets the zimbraPrefReplyToAddress
+     * @param zimbraPrefReplyToAddress The Zimbra preference's 'reply to' address to set
      */
     public void setZimbraPrefReplyToAddress(String zimbraPrefReplyToAddress) {
         this.zimbraPrefReplyToAddress = zimbraPrefReplyToAddress;
     }
 
     /**
-     * @return Returns the zimbraPrefReplyToDisplay
+     * @return The account's Zimbra preference for the 'reply to' display
      */
     public String getZimbraPrefReplyToDisplay() {
         return zimbraPrefReplyToDisplay;
     }
 
     /**
-     * @param Sets the zimbraPrefReplyToDisplay
+     * @param zimbraPrefReplyToDisplay The Zimbra preference's 'reply to' display to set
      */
     public void setZimbraPrefReplyToDisplay(String zimbraPrefReplyToDisplay) {
         this.zimbraPrefReplyToDisplay = zimbraPrefReplyToDisplay;
     }
 
     /**
-     * @return Returns the zimbraPrefReplyToEnabled
+     * @return The account's Zimbra preference for the enabled value of 'reply to'
      */
     public Boolean getZimbraPrefReplyToEnabled() {
         return zimbraPrefReplyToEnabled;
     }
 
     /**
-     * @param Sets the zimbraPrefReplyToEnabled
+     * @param zimbraPrefReplyToEnabled The Zimbra preference's enabled value of 'reply to' to set
      */
     public void setZimbraPrefReplyToEnabled(Boolean zimbraPrefReplyToEnabled) {
         this.zimbraPrefReplyToEnabled = zimbraPrefReplyToEnabled;
     }
 
     /**
-     * @return Returns the zimbraPrefSaveToSent
+     * @return The account's Zimbra preference for the enabled value of 'save to sent'
      */
     public Boolean getZimbraPrefSaveToSent() {
         return zimbraPrefSaveToSent;
     }
 
     /**
-     * @param Sets the zimbraPrefSaveToSent
+     * @param zimbraPrefSaveToSent The Zimbra preference's enabled value of 'save to sent' to set
      */
     public void setZimbraPrefSaveToSent(Boolean zimbraPrefSaveToSent) {
         this.zimbraPrefSaveToSent = zimbraPrefSaveToSent;
     }
 
     /**
-     * @return Returns the zimbraPrefSentMailFolder
+     * @return The account's Zimbra preference for the 'sent mail' folder
      */
     public String getZimbraPrefSentMailFolder() {
         return zimbraPrefSentMailFolder;
     }
 
     /**
-     * @param Sets the zimbraPrefSentMailFolder
+     * @param zimbraPrefSentMailFolder The Zimbra preference for the 'sent mail' folder to set
      */
     public void setZimbraPrefSentMailFolder(String zimbraPrefSentMailFolder) {
         this.zimbraPrefSentMailFolder = zimbraPrefSentMailFolder;
     }
+
 }

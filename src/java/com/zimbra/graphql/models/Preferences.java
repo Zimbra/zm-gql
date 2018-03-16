@@ -1,8 +1,8 @@
 package com.zimbra.graphql.models;
 
 /**
- * Define the Preferences object
- * 
+ * The Preferences class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -10,374 +10,326 @@ package com.zimbra.graphql.models;
 public class Preferences {
 
     /**
-     *  The zimbraPrefAutoAddAppointmentsToCalendar.
+     * The Zimbra preference for the account's enabled value for 'auto add appointments to calendar'.
      */
     private Boolean zimbraPrefAutoAddAppointmentsToCalendar;
 
     /**
-     *  The zimbraPrefCalendarFirstDayOfWeek.
+     * The Zimbra preference for the account's 'calendar's first day of the week'.
      */
     private String zimbraPrefCalendarFirstDayOfWeek;
 
     /**
-     *  The zimbraPrefCalendarInitialView.
+     * The Zimbra preference for the account's initial calendar view.
      */
     private PrefCalendarInitialView zimbraPrefCalendarInitialView;
 
     /**
-     *  The zimbraPrefCalendarReminderEmail.
+     * The Zimbra preference for the account's 'calendar reminder email'.
      */
     private String zimbraPrefCalendarReminderEmail;
 
     /**
-     *  The zimbraPrefCalendarWorkingHours.
+     * The Zimbra preference for the account's 'calendar working hours'.
      */
     private String zimbraPrefCalendarWorkingHours;
 
     /**
-     *  The zimbraPrefGroupMailBy.
+     * The Zimbra preference for the account's 'group mail by'.
      */
     private String zimbraPrefGroupMailBy;
 
     /**
-     *  The zimbraPrefMailSelectAfterDelete.
+     * The Zimbra preference for the account's value of which mail to select after deleting the current the mail.
      */
     private PrefMailSelectAfterDelete zimbraPrefMailSelectAfterDelete;
 
     /**
-     *  The zimbraPrefMarkMsgRead.
+     * The Zimbra preferences for the account's for marking messages as read.
      */
     private Integer zimbraPrefMarkMsgRead;
 
     /**
-     *  The zimbraPrefOutOfOfficeFromDate.
+     * The Zimbra preference for the account's 'out off office from date'.
      */
     private String zimbraPrefOutOfOfficeFromDate;
 
     /**
-     *  The zimbraPrefOutOfOfficeReply.
+     * The Zimbra preference for the account's 'out of office reply'.
      */
     private String zimbraPrefOutOfOfficeReply;
 
     /**
-     *  The zimbraPrefOutOfOfficeReplyEnabled.
+     * The Zimbra preference for the account's enabled value for 'out of office reply'.
      */
     private Boolean zimbraPrefOutOfOfficeReplyEnabled;
 
     /**
-     *  The zimbraPrefOutOfOfficeStatusAlertOnLogin.
+     * The Zimbra preference for the account's enabled value for 'out of office status alert on login'.
      */
     private Boolean zimbraPrefOutOfOfficeStatusAlertOnLogin;
 
     /**
-     *  The zimbraPrefOutOfOfficeUntilDate.
+     * The Zimbra preference for the account's 'out of office until date'.
      */
     private String zimbraPrefOutOfOfficeUntilDate;
 
     /**
-     *  The zimbraPrefReadingPaneEnabled.
+     * The Zimbra preference for the account's enabled value for 'reading pane'.
      */
     private Boolean zimbraPrefReadingPaneEnabled;
 
     /**
-     *  The zimbraPrefReadingPaneLocation.
+     * The Zimbra preference for the account's 'reading pane location'.
      */
     private ReadingPaneLocation zimbraPrefReadingPaneLocation;
 
     /**
-     *  The zimbraPrefReadingPaneSashHorizontal.
+     * The Zimbra preference for the account's 'reading pane sash horizontal.
      */
     private Integer zimbraPrefReadingPaneSashHorizontal;
 
     /**
-     *  The zimbraPrefShowFragments.
+     * The Zimbra preference for the account's enabled value for 'show fragments'.
      */
     private Boolean zimbraPrefShowFragments;
 
     /**
-     * Constructor for Preferences class.
-     *
-     * @param zimbraPrefAutoAddAppointmentsToCalendar The preference's zimbraPrefAutoAddAppointmentsToCalendar to set
-     * @param zimbraPrefCalendarFirstDayOfWeek The preference's zimbraPrefCalendarFirstDayOfWeek to set
-     * @param zimbraPrefCalendarInitialView The preference's zimbraPrefCalendarInitialView to set
-     * @param zimbraPrefCalendarReminderEmail The preference's zimbraPrefCalendarReminderEmail to set
-     * @param zimbraPrefCalendarWorkingHours The preference's zimbraPrefCalendarWorkingHours to set
-     * @param zimbraPrefGroupMailBy The preference's zimbraPrefGroupMailBy to set
-     * @param zimbraPrefMailSelectAfterDelete The preference's zimbraPrefMailSelectAfterDelete to set
-     * @param zimbraPrefMarkMsgRead The preference's zimbraPrefMarkMsgRead to set
-     * @param zimbraPrefOutOfOfficeFromDate The preference's zimbraPrefOutOfOfficeFromDate to set
-     * @param zimbraPrefOutOfOfficeReply The preference's zimbraPrefOutOfOfficeReply to set
-     * @param zimbraPrefOutOfOfficeReplyEnabled The preference's zimbraPrefOutOfOfficeReplyEnabled to set
-     * @param zimbraPrefOutOfOfficeStatusAlertOnLogin The preference's zimbraPrefOutOfOfficeStatusAlertOnLogin to set
-     * @param zimbraPrefOutOfOfficeUntilDate The preference's zimbraPrefOutOfOfficeUntilDate to set
-     * @param zimbraPrefReadingPaneEnabled The preference's zimbraPrefReadingPaneEnabled to set
-     * @param zimbraPrefReadingPaneLocation The preference's zimbraPrefReadingPaneLocation to set
-     * @param zimbraPrefReadingPaneSashHorizontal The preference's zimbraPrefReadingPaneSashHorizontal to set
-     * @param zimbraPrefShowFragments The preference's zimbraPrefShowFragments to set
-     */
-    public Preferences(Boolean zimbraPrefAutoAddAppointmentsToCalendar, String zimbraPrefCalendarFirstDayOfWeek,
-            PrefCalendarInitialView zimbraPrefCalendarInitialView, String zimbraPrefCalendarReminderEmail,
-            String zimbraPrefCalendarWorkingHours, String zimbraPrefGroupMailBy,
-            PrefMailSelectAfterDelete zimbraPrefMailSelectAfterDelete, Integer zimbraPrefMarkMsgRead,
-            String zimbraPrefOutOfOfficeFromDate, String zimbraPrefOutOfOfficeReply,
-            Boolean zimbraPrefOutOfOfficeReplyEnabled, Boolean zimbraPrefOutOfOfficeStatusAlertOnLogin,
-            String zimbraPrefOutOfOfficeUntilDate, Boolean zimbraPrefReadingPaneEnabled,
-            ReadingPaneLocation zimbraPrefReadingPaneLocation, Integer zimbraPrefReadingPaneSashHorizontal,
-            Boolean zimbraPrefShowFragments) {
-        this.zimbraPrefAutoAddAppointmentsToCalendar = zimbraPrefAutoAddAppointmentsToCalendar;
-        this.zimbraPrefCalendarFirstDayOfWeek = zimbraPrefCalendarFirstDayOfWeek;
-        this.zimbraPrefCalendarInitialView = zimbraPrefCalendarInitialView;
-        this.zimbraPrefCalendarReminderEmail = zimbraPrefCalendarReminderEmail;
-        this.zimbraPrefCalendarWorkingHours = zimbraPrefCalendarWorkingHours;
-        this.zimbraPrefGroupMailBy = zimbraPrefGroupMailBy;
-        this.zimbraPrefMailSelectAfterDelete = zimbraPrefMailSelectAfterDelete;
-        this.zimbraPrefMarkMsgRead = zimbraPrefMarkMsgRead;
-        this.zimbraPrefOutOfOfficeFromDate = zimbraPrefOutOfOfficeFromDate;
-        this.zimbraPrefOutOfOfficeReply = zimbraPrefOutOfOfficeReply;
-        this.zimbraPrefOutOfOfficeReplyEnabled = zimbraPrefOutOfOfficeReplyEnabled;
-        this.zimbraPrefOutOfOfficeStatusAlertOnLogin = zimbraPrefOutOfOfficeStatusAlertOnLogin;
-        this.zimbraPrefOutOfOfficeUntilDate = zimbraPrefOutOfOfficeUntilDate;
-        this.zimbraPrefReadingPaneEnabled = zimbraPrefReadingPaneEnabled;
-        this.zimbraPrefReadingPaneLocation = zimbraPrefReadingPaneLocation;
-        this.zimbraPrefReadingPaneSashHorizontal = zimbraPrefReadingPaneSashHorizontal;
-        this.zimbraPrefShowFragments = zimbraPrefShowFragments;
-    }
-
-    /**
-     * @return Returns the zimbraPrefAutoAddAppointmentsToCalendar
+     * @return The account's Zimbra preference for the enabled value of 'auto add appointment to calendar'
      */
     public Boolean getZimbraPrefAutoAddAppointmentsToCalendar() {
         return zimbraPrefAutoAddAppointmentsToCalendar;
     }
 
     /**
-     * @param Sets the zimbraPrefAutoAddAppointmentsToCalendar
+     * @param zimbraPrefAutoAddAppointmentsToCalendar The Zimbra preference's enabled value of 'auto add appointment to calendar' to set
      */
     public void setZimbraPrefAutoAddAppointmentsToCalendar(Boolean zimbraPrefAutoAddAppointmentsToCalendar) {
         this.zimbraPrefAutoAddAppointmentsToCalendar = zimbraPrefAutoAddAppointmentsToCalendar;
     }
 
     /**
-     * @return Returns the zimbraPrefCalendarFirstDayOfWeek
+     * @return The account's Zimbra preference for the calendar's 'first day of the week'
      */
     public String getZimbraPrefCalendarFirstDayOfWeek() {
         return zimbraPrefCalendarFirstDayOfWeek;
     }
 
     /**
-     * @param Sets the zimbraPrefCalendarFirstDayOfWeek
+     * @param zimbraPrefCalendarFirstDayOfWeek The Zimbra preference of the calendar's 'first day of the week' to set
      */
     public void setZimbraPrefCalendarFirstDayOfWeek(String zimbraPrefCalendarFirstDayOfWeek) {
         this.zimbraPrefCalendarFirstDayOfWeek = zimbraPrefCalendarFirstDayOfWeek;
     }
 
     /**
-     * @return Returns the zimbraPrefCalendarInitialView
+     * @return The account's Zimbra preference for the calendar's 'initial view'
      */
     public PrefCalendarInitialView getZimbraPrefCalendarInitialView() {
         return zimbraPrefCalendarInitialView;
     }
 
     /**
-     * @param Sets the zimbraPrefCalendarInitialView
+     * @param zimbraPrefCalendarInitialView The Zimbra preference of the calendar's 'initial view' to set
      */
     public void setZimbraPrefCalendarInitialView(PrefCalendarInitialView zimbraPrefCalendarInitialView) {
         this.zimbraPrefCalendarInitialView = zimbraPrefCalendarInitialView;
     }
 
     /**
-     * @return Returns the zimbraPrefCalendarReminderEmail
+     * @return The account's Zimbra preference for the calendar's 'reminder email'
      */
     public String getZimbraPrefCalendarReminderEmail() {
         return zimbraPrefCalendarReminderEmail;
     }
 
     /**
-     * @param Sets the zimbraPrefCalendarReminderEmail
+     * @param zimbraPrefCalendarReminderEmail The Zimbra preference of the calendar's 'reminder email' to set
      */
     public void setZimbraPrefCalendarReminderEmail(String zimbraPrefCalendarReminderEmail) {
         this.zimbraPrefCalendarReminderEmail = zimbraPrefCalendarReminderEmail;
     }
 
     /**
-     * @return Returns the zimbraPrefCalendarWorkingHours
+     * @return The account's Zimbra preference for the calendar's 'working hours'
      */
     public String getZimbraPrefCalendarWorkingHours() {
         return zimbraPrefCalendarWorkingHours;
     }
 
     /**
-     * @param Sets the zimbraPrefCalendarWorkingHours
+     * @param zimbraPrefCalendarWorkingHours The Zimbra preference of the calendar's 'working hours' to set
      */
     public void setZimbraPrefCalendarWorkingHours(String zimbraPrefCalendarWorkingHours) {
         this.zimbraPrefCalendarWorkingHours = zimbraPrefCalendarWorkingHours;
     }
 
     /**
-     * @return Returns the zimbraPrefGroupMailBy
+     * @return The account's Zimbra preference for 'group mail by'
      */
     public String getZimbraPrefGroupMailBy() {
         return zimbraPrefGroupMailBy;
     }
 
     /**
-     * @param Sets the zimbraPrefGroupMailBy
+     * @param zimbraPrefGroupMailBy The Zimbra preference's 'group mail by' value to set
      */
     public void setZimbraPrefGroupMailBy(String zimbraPrefGroupMailBy) {
         this.zimbraPrefGroupMailBy = zimbraPrefGroupMailBy;
     }
 
     /**
-     * @return Returns the zimbraPrefMailSelectAfterDelete
+     * @return The account's Zimbra preference for what mail to select after deleting
      */
     public PrefMailSelectAfterDelete getZimbraPrefMailSelectAfterDelete() {
         return zimbraPrefMailSelectAfterDelete;
     }
 
     /**
-     * @param Sets the zimbraPrefMailSelectAfterDelete
+     * @param zimbraPrefMailSelectAfterDelete The mail to select after deleting Zimbra preference to set
      */
     public void setZimbraPrefMailSelectAfterDelete(PrefMailSelectAfterDelete zimbraPrefMailSelectAfterDelete) {
         this.zimbraPrefMailSelectAfterDelete = zimbraPrefMailSelectAfterDelete;
     }
 
     /**
-     * @return Returns the zimbraPrefMarkMsgRead
+     * @return The account's Zimbra preference for the 'marked messages read' value
      */
     public Integer getZimbraPrefMarkMsgRead() {
         return zimbraPrefMarkMsgRead;
     }
 
     /**
-     * @param Sets the zimbraPrefMarkMsgRead
+     * @param zimbraPrefMarkMsgRead The Zimbra preference's 'marked messages read' value to set
      */
     public void setZimbraPrefMarkMsgRead(Integer zimbraPrefMarkMsgRead) {
         this.zimbraPrefMarkMsgRead = zimbraPrefMarkMsgRead;
     }
 
     /**
-     * @return Returns the zimbraPrefOutOfOfficeFromDate
+     * @return The account's Zimbra preference for the 'out of office from date' value
      */
     public String getZimbraPrefOutOfOfficeFromDate() {
         return zimbraPrefOutOfOfficeFromDate;
     }
 
     /**
-     * @param Sets the zimbraPrefOutOfOfficeFromDate
+     * @param zimbraPrefOutOfOfficeFromDate The Zimbra preference's 'out of office from date' value to set
      */
     public void setZimbraPrefOutOfOfficeFromDate(String zimbraPrefOutOfOfficeFromDate) {
         this.zimbraPrefOutOfOfficeFromDate = zimbraPrefOutOfOfficeFromDate;
     }
 
     /**
-     * @return Returns the zimbraPrefOutOfOfficeReply
+     * @return The account's Zimbra preference for the 'out of office reply'
      */
     public String getZimbraPrefOutOfOfficeReply() {
         return zimbraPrefOutOfOfficeReply;
     }
 
     /**
-     * @param Sets the zimbraPrefOutOfOfficeReply
+     * @param zimbraPrefOutOfOfficeReply The Zimbra preference's 'out of office reply' value to set
      */
     public void setZimbraPrefOutOfOfficeReply(String zimbraPrefOutOfOfficeReply) {
         this.zimbraPrefOutOfOfficeReply = zimbraPrefOutOfOfficeReply;
     }
 
     /**
-     * @return Returns the zimbraPrefOutOfOfficeReplyEnabled
+     * @return The account's Zimbra preference for the enabled value of 'out of office reply'
      */
     public Boolean getZimbraPrefOutOfOfficeReplyEnabled() {
         return zimbraPrefOutOfOfficeReplyEnabled;
     }
 
     /**
-     * @param Sets the zimbraPrefOutOfOfficeReplyEnabled
+     * @param zimbraPrefOutOfOfficeReplyEnabled The Zimbra preference's enabled value of 'out of office reply'  to set
      */
     public void setZimbraPrefOutOfOfficeReplyEnabled(Boolean zimbraPrefOutOfOfficeReplyEnabled) {
         this.zimbraPrefOutOfOfficeReplyEnabled = zimbraPrefOutOfOfficeReplyEnabled;
     }
 
     /**
-     * @return Returns the zimbraPrefOutOfOfficeStatusAlertOnLogin
+     * @return The account's Zimbra preference for the enabled value of 'out of office status alert on login'
      */
     public Boolean getZimbraPrefOutOfOfficeStatusAlertOnLogin() {
         return zimbraPrefOutOfOfficeStatusAlertOnLogin;
     }
 
     /**
-     * @param Sets the zimbraPrefOutOfOfficeStatusAlertOnLogin
+     * @param zimbraPrefOutOfOfficeStatusAlertOnLogin The Zimbra preference's enabled value of 'out of office status alert on login' to set
      */
     public void setZimbraPrefOutOfOfficeStatusAlertOnLogin(Boolean zimbraPrefOutOfOfficeStatusAlertOnLogin) {
         this.zimbraPrefOutOfOfficeStatusAlertOnLogin = zimbraPrefOutOfOfficeStatusAlertOnLogin;
     }
 
     /**
-     * @return Returns the zimbraPrefOutOfOfficeUntilDate
+     * @return The account's Zimbra preference for the 'out of office until date' value
      */
     public String getZimbraPrefOutOfOfficeUntilDate() {
         return zimbraPrefOutOfOfficeUntilDate;
     }
 
     /**
-     * @param Sets the zimbraPrefOutOfOfficeUntilDate
+     * @param zimbraPrefOutOfOfficeUntilDate The Zimbra preference's 'out of office until date' value to set
      */
     public void setZimbraPrefOutOfOfficeUntilDate(String zimbraPrefOutOfOfficeUntilDate) {
         this.zimbraPrefOutOfOfficeUntilDate = zimbraPrefOutOfOfficeUntilDate;
     }
 
     /**
-     * @return Returns the zimbraPrefReadingPaneEnabled
+     * @return The account's Zimbra preference for the enabled value of 'reading pane enabled'
      */
     public Boolean getZimbraPrefReadingPaneEnabled() {
         return zimbraPrefReadingPaneEnabled;
     }
 
     /**
-     * @param Sets the zimbraPrefReadingPaneEnabled
+     * @param zimbraPrefReadingPaneEnabled The Zimbra preference's enabled value of 'reading pane' to set
      */
     public void setZimbraPrefReadingPaneEnabled(Boolean zimbraPrefReadingPaneEnabled) {
         this.zimbraPrefReadingPaneEnabled = zimbraPrefReadingPaneEnabled;
     }
 
     /**
-     * @return Returns the zimbraPrefReadingPaneLocation
+     * @return The account's Zimbra preference for the 'reading pane location' value
      */
     public ReadingPaneLocation getZimbraPrefReadingPaneLocation() {
         return zimbraPrefReadingPaneLocation;
     }
 
     /**
-     * @param Sets the zimbraPrefReadingPaneLocation
+     * @param zimbraPrefReadingPaneLocation The Zimbra preference's 'reading pane location' value to set
      */
     public void setZimbraPrefReadingPaneLocation(ReadingPaneLocation zimbraPrefReadingPaneLocation) {
         this.zimbraPrefReadingPaneLocation = zimbraPrefReadingPaneLocation;
     }
 
     /**
-     * @return Returns the zimbraPrefReadingPaneSashHorizontal
+     * @return The account's Zimbra preference for the 'reading pane sash horizontal' value
      */
     public Integer getZimbraPrefReadingPaneSashHorizontal() {
         return zimbraPrefReadingPaneSashHorizontal;
     }
 
     /**
-     * @param Sets the zimbraPrefReadingPaneSashHorizontal
+     * @param zimbraPrefReadingPaneSashHorizontal The Zimbra preference's 'reading pane saash horizontal' value to set
      */
     public void setZimbraPrefReadingPaneSashHorizontal(Integer zimbraPrefReadingPaneSashHorizontal) {
         this.zimbraPrefReadingPaneSashHorizontal = zimbraPrefReadingPaneSashHorizontal;
     }
 
     /**
-     * @return Returns the zimbraPrefShowFragments
+     * @return The account's Zimbra preference for the enabled value of 'show fragments'
      */
     public Boolean getZimbraPrefShowFragments() {
         return zimbraPrefShowFragments;
     }
 
     /**
-     * @param Sets the zimbraPrefShowFragments
+     * @param zimbraPrefShowFragments The Zimbra preference's enabled value of 'show fragments' to set
      */
     public void setZimbraPrefShowFragments(Boolean zimbraPrefShowFragments) {
         this.zimbraPrefShowFragments = zimbraPrefShowFragments;
     }
+
 }

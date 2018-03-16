@@ -3,8 +3,8 @@ package com.zimbra.graphql.models;
 import java.util.List;
 
 /**
- * Define the Signature object
- * 
+ * The Signature class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -12,72 +12,60 @@ import java.util.List;
 public class Signature {
 
     /**
-     *  The id.
+     * Signature id.
      */
     private String id;
 
     /**
-     *  The name.
+     * Signature name.
      */
     private String name;
 
     /**
-     *  The list of content from SignatureContent.
+     * The list of content from SignatureContent.
      */
     private List<SignatureContent> content;
 
     /**
-     * Constructor for Signature class.
-     *
-     * @param id The signature's id to set
-     * @param name The signature's name to set
-     * @param content The signature's content to set
-     */
-    public Signature(String id, String name, List<SignatureContent> content) {
-        this.id = id;
-        this.name = name;
-        this.content = content;
-    }
-
-    /**
-     * @return Returns the id
+     * @return The signature's id
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param Sets the id
+     * @param id The signature id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * @return Returns the name
+     * @return The signature's name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param Sets the name
+     * @param name The signature name to set
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return Returns the content list
+     * @return The signature list of contents
      */
     public List<SignatureContent> getContent() {
         return content;
     }
 
     /**
-     * @param Sets the content list
+     * @param content The signature's list of contents to set
      */
     public void setContent(List<SignatureContent> content) {
         this.content = content;
     }
+
 }

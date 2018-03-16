@@ -3,8 +3,8 @@ package com.zimbra.graphql.models;
 import java.util.List;
 
 /**
- * Define the Identities object
- * 
+ * The Identities class.
+ *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
@@ -12,30 +12,22 @@ import java.util.List;
 public class Identities {
 
     /**
-     *  The identity list.
+     * The identity list.
      */
     private List<Identity> identity;
 
     /**
-     * Constructor for Identities class.
-     *
-     * @param identity The identity list to set 
-     */
-    public Identities(List<Identity> identity) {
-        this.identity = identity;
-    }
-
-    /**
-     * @return Returns the identity
+     * @return The identity list
      */
     public List<Identity> getIdentity() {
         return identity;
     }
 
     /**
-     * @param Sets the identity
+     * @param identity The identity list to set
      */
     public void setIdentity(List<Identity> identity) {
         this.identity = identity;
     }
+
 }
