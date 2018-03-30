@@ -14,16 +14,14 @@
       <dependency org="com.graphql-java" name="graphql-java-servlet" rev="4.3.0" conf="compile->default" />
       <!-- Servlet Requirements -->
       <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="compile->default" />
-      <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.5.v20151012" conf="compile->default" />
-      <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.3.5.v20151012" conf="compile->default" />
       <!-- Commons Requirements -->
-      <dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="compile->default" />
+      <dependency org="commons-collections" name="commons-collections" rev="3.2.2" conf="compile->default" />
       <dependency org="commons-io" name="commons-io" rev="1.4" conf="compile->default" />
       <dependency org="commons-codec" name="commons-codec" rev="1.7" conf="compile->default" />
       <dependency org="commons-lang" name="commons-lang" rev="2.6" conf="compile->default" />
       <!-- Local Requirements -->
-      <dependency org="zimbra" name="zm-common" rev="latest.integration" conf="compile->*" />
-      <dependency org="zimbra" name="zm-client" rev="latest.integration" conf="compile->*" />
+      <dependency org="zimbra" name="zm-common" rev="latest.integration" conf="compile->default" />
+      <dependency org="zimbra" name="zm-store" rev="latest.integration" conf="compile->default" />
       <!-- Test Requirements -->
       <dependency org="junit" name="junit" rev="4.12" conf="test->default" />
       <dependency org="org.easymock" name="easymock" rev="3.4" conf="test->default" />
