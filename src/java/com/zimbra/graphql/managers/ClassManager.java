@@ -23,7 +23,7 @@ public class ClassManager {
      *
      * @param type The type of repository (account, folder, etc)
      * @return An IRepository instance
-     * @throws ConfigurationException
+     * @throws ResourceNotFoundException
      */
     protected static IRepository getRepository(String type) {
         // check the cache for a matching repository

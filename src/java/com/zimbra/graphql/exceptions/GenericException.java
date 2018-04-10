@@ -1,6 +1,5 @@
 package com.zimbra.graphql.exceptions;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import graphql.language.SourceLocation;
  * @copyright Copyright © 2018
  */
 public class GenericException extends RuntimeException implements GraphQLError {
+
     /**
      * Serialization.
      */
@@ -31,12 +31,12 @@ public class GenericException extends RuntimeException implements GraphQLError {
      *
      * http://facebook.github.io/graphql/draft/#sec-Errors
      */
-    protected Map<String, Object> extensions = new HashMap<>();
+    protected Map<String, Object> extensions;
 
     /**
      * Constructor.
      *
-     * @param message A message string that will be visible to the client
+     * @param message A message string
      * @param throwable Any instance of Throwable
      */
     public GenericException(String message, Throwable throwable) {
@@ -46,7 +46,7 @@ public class GenericException extends RuntimeException implements GraphQLError {
     /**
      * Constructor.
      *
-     * @param message A message string that will be visible to the client
+     * @param message A message string
      */
     public GenericException(String message) {
         super(message);
@@ -70,11 +70,9 @@ public class GenericException extends RuntimeException implements GraphQLError {
      * Sets the extensions attribute data.
      *
      * @param data A map of message data
-     * @return the class instance (used to chain method calls)
      */
-    public GenericException setExtensions(Map<String, Object> data) {
+    public void setExtensions(Map<String, Object> data) {
         this.extensions = data;
-        return this;
     }
 
     @Override
@@ -86,4 +84,5 @@ public class GenericException extends RuntimeException implements GraphQLError {
     public ErrorType getErrorType() {
         return ErrorType.DataFetchingException;
     }
+
 }

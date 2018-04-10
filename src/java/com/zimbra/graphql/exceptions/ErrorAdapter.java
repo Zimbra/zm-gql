@@ -64,4 +64,5 @@ public class ErrorAdapter implements GraphQLError {
         }
         return error.getMessage();
     }
+
 }

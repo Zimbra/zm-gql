@@ -37,10 +37,11 @@ public class ExceptionHandler implements GraphQLErrorHandler {
     /**
      * Returns true if client side.
      *
-     * @param error
+     * @param error A GraphQLError instance
      * @return boolean
      */
     protected boolean isClientError(GraphQLError error) {
         return !(error instanceof ExceptionWhileDataFetching || error instanceof Throwable);
     }
+
 }

@@ -4,13 +4,13 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.graphql.utilities.GQLConstants;
 
 /**
- * Configuration exception handler for GraphQL.
+ * Resource not found exception handler for GraphQL.
  *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.exceptions
  * @copyright Copyright © 2018
  */
-public class ConfigurationException extends GenericException {
+public class ResourceNotFoundException extends GenericException {
 
     /**
      * Serialization.
@@ -23,7 +23,7 @@ public class ConfigurationException extends GenericException {
      *
      * @param message A message string
      */
-    public ConfigurationException(String message) {
+    public ResourceNotFoundException(String message) {
         this(message, null);
     }
 
@@ -33,24 +33,20 @@ public class ConfigurationException extends GenericException {
      *
      * @param throwable an instance of Throwable
      */
-    public ConfigurationException(Throwable throwable) {
+    public ResourceNotFoundException(Throwable throwable) {
         this(null, throwable);
     }
 
     /**
      * Constructor.<br>
-     * Sets message which will be visible to the client
-     * as well as a generic reason message set in the extensions.
+     * Sets response which will be visible to the client and logs message and/or exception.
      *
      * @param message A message string
      * @param throwable an instance of Throwable
      */
-    public ConfigurationException(String message, Throwable throwable) {
-        super(GQLConstants.INVALID_CONFIG_ERROR_MSG, throwable);
-        if (message == null) {
-            message = "";
-        }
-        ZimbraLog.extensions.error("The configuration is invalid: " + message, throwable);
+    public ResourceNotFoundException(String message, Throwable throwable) {
+        super(GQLConstants.ERROR_RESOURCE_NOT_FOUND_MSG, throwable);
+        ZimbraLog.extensions.error(GQLConstants.ERROR_RESOURCE_NOT_FOUND_MSG, message, throwable);
     }
 
 }

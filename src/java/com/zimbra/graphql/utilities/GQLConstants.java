@@ -23,11 +23,7 @@ public class GQLConstants {
     public static final String ERROR_AUTHENTICATION_ERROR = "authentication_error";
 
     // data fetching error related
-    public static final String UNREACHABLE_HOST_ERROR_MSG = "Service Unavailable.";
-    public static final String CAUSED_BY_MSG = "Caused By";
-    public static final String PLEASE_TRY_AGAIN_LATER_MSG = "Please try again later.";
-    public static final String INVALID_CONFIG_ERROR_MSG = "There is an error in the configuration.";
-    public static final String INVALID_INPUT_ERROR_MSG = "Invalid input.";
+    public static final String ERROR_RESOURCE_NOT_FOUND_MSG = "The resource was no found.";
 
     // LC Related
     public static final String LC_REPOSITORY_CLASS_PREFIX = "";
