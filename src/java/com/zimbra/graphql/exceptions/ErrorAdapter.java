@@ -15,7 +15,7 @@ import graphql.language.SourceLocation;
  * @package com.zimbra.graphql.exceptions
  * @copyright Copyright © 2018
  */
-public class ZGraphQLErrorAdapter implements GraphQLError {
+public class ErrorAdapter implements GraphQLError {
 
     /**
      * GraphQL error.
@@ -27,7 +27,7 @@ public class ZGraphQLErrorAdapter implements GraphQLError {
      *
      * @param error
      */
-    public ZGraphQLErrorAdapter(GraphQLError error) {
+    public ErrorAdapter(GraphQLError error) {
         this.error = error;
     }
 
@@ -62,8 +62,6 @@ public class ZGraphQLErrorAdapter implements GraphQLError {
         if (error instanceof ExceptionWhileDataFetching) {
             return ((ExceptionWhileDataFetching) error).getException().getMessage();
         }
-        else {
-            return error.getMessage();
-        }
+        return error.getMessage();
     }
 }

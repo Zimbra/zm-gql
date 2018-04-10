@@ -15,7 +15,7 @@ import graphql.language.SourceLocation;
  * @package com.zimbra.graphql.exceptions
  * @copyright Copyright © 2018
  */
-public class ZGraphQLException extends RuntimeException implements GraphQLError {
+public class GenericException extends RuntimeException implements GraphQLError {
     /**
      * Serialization.
      */
@@ -23,6 +23,12 @@ public class ZGraphQLException extends RuntimeException implements GraphQLError 
 
     /**
      * Adds information about the error.<br>
+     *
+     * Note: GraphQL services may provide an additional entry to errors with key extensions.
+     * This entry, if set, must have a map as its value.
+     * This entry is reserved for implementors to add additional information to errors
+     * however they see fit, and there are no additional restrictions on its contents.
+     *
      * http://facebook.github.io/graphql/draft/#sec-Errors
      */
     protected Map<String, Object> extensions = new HashMap<>();
@@ -33,7 +39,7 @@ public class ZGraphQLException extends RuntimeException implements GraphQLError 
      * @param message A message string that will be visible to the client
      * @param throwable Any instance of Throwable
      */
-    public ZGraphQLException(String message, Throwable throwable) {
+    public GenericException(String message, Throwable throwable) {
         super(message);
     }
 
@@ -42,7 +48,7 @@ public class ZGraphQLException extends RuntimeException implements GraphQLError 
      *
      * @param message A message string that will be visible to the client
      */
-    public ZGraphQLException(String message) {
+    public GenericException(String message) {
         super(message);
     }
 
@@ -51,7 +57,7 @@ public class ZGraphQLException extends RuntimeException implements GraphQLError 
      *
      * @param throwable Any instance of Throwable
      */
-    public ZGraphQLException(Throwable throwable) {
+    public GenericException(Throwable throwable) {
         super(throwable.getMessage());
     }
 
@@ -66,7 +72,7 @@ public class ZGraphQLException extends RuntimeException implements GraphQLError 
      * @param data A map of message data
      * @return the class instance (used to chain method calls)
      */
-    public ZGraphQLException setExtensions(Map<String, Object> data) {
+    public GenericException setExtensions(Map<String, Object> data) {
         this.extensions = data;
         return this;
     }

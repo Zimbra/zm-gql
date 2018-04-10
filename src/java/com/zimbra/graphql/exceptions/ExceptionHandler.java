@@ -15,27 +15,27 @@ import graphql.servlet.GraphQLErrorHandler;
  * @package com.zimbra.graphql.exceptions
  * @copyright Copyright © 2018
  */
-public class ZGraphQLExceptionHandler implements GraphQLErrorHandler {
+public class ExceptionHandler implements GraphQLErrorHandler {
 
     @Override
     public List<GraphQLError> processErrors(List<GraphQLError> errors) {
         final List<GraphQLError> clientErrors = errors.stream()
             .filter(this::isClientError)
             .collect(Collectors.toList());
-
+        // Use custom ErrorAdapter to handle errors for non client errors
         final List<GraphQLError> serverErrors = errors.stream()
-            .filter(e -> !isClientError(e))
-            .map(ZGraphQLErrorAdapter::new)
+            .filter(error -> !isClientError(error))
+            .map(ErrorAdapter::new)
             .collect(Collectors.toList());
 
-        final List<GraphQLError> e = new ArrayList<>();
-        e.addAll(clientErrors);
-        e.addAll(serverErrors);
-        return e;
+        final List<GraphQLError> combinedErrors = new ArrayList<>();
+        combinedErrors.addAll(clientErrors);
+        combinedErrors.addAll(serverErrors);
+        return combinedErrors;
     }
 
     /**
-     * Determines types of errors, client side or not client side.
+     * Returns true if client side.
      *
      * @param error
      * @return boolean
