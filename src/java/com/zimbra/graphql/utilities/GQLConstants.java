@@ -23,7 +23,7 @@ public class GQLConstants {
     public static final String ERROR_AUTHENTICATION_ERROR = "authentication_error";
 
     // data fetching error related
-    public static final String ERROR_RESOURCE_NOT_FOUND_MSG = "The resource was no found.";
+    public static final String ERROR_RESOURCE_NOT_FOUND_MSG = "The resource was not found.";
 
     // LC Related
     public static final String LC_REPOSITORY_CLASS_PREFIX = "";

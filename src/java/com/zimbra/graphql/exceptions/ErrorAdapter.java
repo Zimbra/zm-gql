@@ -25,7 +25,7 @@ public class ErrorAdapter implements GraphQLError {
     /**
      * Constructor.
      *
-     * @param error
+     * @param error A GraphQLError instance
      */
     public ErrorAdapter(GraphQLError error) {
         this.error = error;
