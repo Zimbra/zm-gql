@@ -13,6 +13,8 @@ public class GQLConstants {
     public static final String HEADER_LOCATION = "Location";
     public static final String QUERY_ERROR = "error";
     public static final String QUERY_ERROR_MSG = "error_msg";
+    public static final int STATUS_OK = 200;
+    public static final int STATUS_BAD_REQUEST = 400;
 
     // http query error related
     public static final String ERROR_ACCESS_DENIED = "access_denied";
