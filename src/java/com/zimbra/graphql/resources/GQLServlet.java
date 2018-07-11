@@ -23,7 +23,7 @@ import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 
-public class ZGraphQLServlet extends ExtensionHttpHandler {
+public class GQLServlet extends ExtensionHttpHandler {
 
     /**
      * Object mapper.
@@ -38,7 +38,7 @@ public class ZGraphQLServlet extends ExtensionHttpHandler {
     /**
      * Constructs an instance and sets up gql object with schema.
      */
-    public ZGraphQLServlet() {
+    public GQLServlet() {
         graphql = GraphQL.newGraphQL(buildSchema())
             .build();
     }

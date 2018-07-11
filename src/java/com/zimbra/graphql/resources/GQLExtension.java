@@ -7,14 +7,14 @@ import com.zimbra.cs.extension.ExtensionException;
 import com.zimbra.cs.extension.ZimbraExtension;
 
 /**
- * GraphQLExtension class.<br>
+ * GQLExtension class.<br>
  * Extends the ZimbraExtension class.
  *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.resources
  * @copyright Copyright © 2018
  */
-public class GraphQLExtension implements ZimbraExtension {
+public class GQLExtension implements ZimbraExtension {
 
     @Override
     public void destroy() {
@@ -29,7 +29,7 @@ public class GraphQLExtension implements ZimbraExtension {
     @Override
     public void init() throws ExtensionException, ServiceException {
         ZimbraLog.extensions.info("Registering zm-gql");
-        ExtensionDispatcherServlet.register(this, new ZGraphQLServlet());
+        ExtensionDispatcherServlet.register(this, new GQLServlet());
     }
 
 }

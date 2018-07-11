@@ -3,7 +3,7 @@
   <import file="../zm-zcs/ant-global.xml" />
   <!-- Properties -->
   <property name="ext.name" value="${ant.project.name}" />
-  <property name="zimbra.extension.class" value="com.zimbra.graphql.resources.GraphQLExtension" />
+  <property name="zimbra.extension.class" value="com.zimbra.graphql.resources.GQLExtension" />
   <property name="implementation.title" value="Extension with Zimbra GraphQL resources"/>
   <property name="dist.lib.dir" location="${dist.dir}/lib"/>
   <property name="dist.lib.ext.dir" location="${dist.lib.dir}/ext"/>
