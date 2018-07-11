@@ -14,7 +14,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.repositories.impl.AccountInfoRepository;
+import com.zimbra.graphql.repositories.impl.FolderRepository;
 import com.zimbra.graphql.resolvers.AccountInfoResolver;
+import com.zimbra.graphql.resolvers.FolderResolver;
+import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLUtilities;
 
 import graphql.ExecutionInput;
@@ -117,7 +120,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         final ExecutionInput input = ExecutionInput.newExecutionInput()
             .query(query)
             .operationName(operationName)
-            .context(req)
+            .context(GQLAuthUtilities.buildContext(req))
             .variables(variables)
             .build();
         // execute
@@ -147,8 +150,9 @@ public class GQLServlet extends ExtensionHttpHandler {
      */
     protected GraphQLSchema buildSchema() {
         final AccountInfoResolver accountInfoResolver = new AccountInfoResolver(new AccountInfoRepository());
+        final FolderResolver folderResolver = new FolderResolver(new FolderRepository());
         return new GraphQLSchemaGenerator()
-            .withOperationsFromSingletons(accountInfoResolver)
+            .withOperationsFromSingletons(accountInfoResolver, folderResolver)
             .generate();
     }
 
