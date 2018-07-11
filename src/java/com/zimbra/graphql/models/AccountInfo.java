@@ -1,5 +1,7 @@
 package com.zimbra.graphql.models;
 
+import io.leangen.graphql.annotations.GraphQLQuery;
+
 /**
  * The AccountInfo class.
  *
@@ -67,6 +69,7 @@ public class AccountInfo {
     /**
      * @return The account's id
      */
+    @GraphQLQuery(name = "id", description = "The account's id")
     public String getId() {
         return id;
     }
@@ -81,6 +84,7 @@ public class AccountInfo {
     /**
      * @return The account's name
      */
+    @GraphQLQuery(name = "name", description = "The account's name")
     public String getName() {
         return name;
     }
@@ -95,6 +99,7 @@ public class AccountInfo {
     /**
      * @return The account's public URL
      */
+    @GraphQLQuery(name = "publicURL", description = "The account's public URL")
     public String getPublicURL() {
         return publicURL;
     }
@@ -109,6 +114,7 @@ public class AccountInfo {
     /**
      * @return The account's REST
      */
+    @GraphQLQuery(name = "rest", description = "The account's REST")
     public String getRest() {
         return rest;
     }
@@ -123,6 +129,7 @@ public class AccountInfo {
     /**
      * @return The account's soapURL
      */
+    @GraphQLQuery(name = "soapURL", description = "The account's soapURL")
     public String getSoapURL() {
         return soapURL;
     }
@@ -137,6 +144,7 @@ public class AccountInfo {
     /**
      * @return The account's version
      */
+    @GraphQLQuery(name = "version", description = "The class version")
     public String getVersion() {
         return version;
     }
@@ -151,6 +159,7 @@ public class AccountInfo {
     /**
      * @return The account's identities
      */
+    @GraphQLQuery(name = "identities", description = "The account's identities")
     public Identities getIdentities() {
         return identities;
     }
@@ -165,6 +174,7 @@ public class AccountInfo {
     /**
      * @return The account's data sources
      */
+    @GraphQLQuery(name = "dataSources", description = "The account's data sources")
     public DataSources getDataSources() {
         return dataSources;
     }
@@ -179,6 +189,7 @@ public class AccountInfo {
     /**
      * @return The account's signatures
      */
+    @GraphQLQuery(name = "signatures", description = "The account's signatures")
     public Signatures getSignatures() {
         return signatures;
     }
@@ -193,6 +204,7 @@ public class AccountInfo {
     /**
      * @return The account's attributes
      */
+    @GraphQLQuery(name = "attrs", description = "The account's attributes")
     public AccountInfoAttrs getAttrs() {
         return attrs;
     }
@@ -207,6 +219,7 @@ public class AccountInfo {
     /**
      * @return The account's preferences
      */
+    @GraphQLQuery(name = "prefs", description = "The account's preferences")
     public Preferences getPrefs() {
         return prefs;
     }
