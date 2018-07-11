@@ -2,14 +2,18 @@ package com.zimbra.graphql.models;
 
 import java.util.List;
 
+import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.types.GraphQLType;
+
 /**
- * The Folder class.
+ * The GQLFolder class.
  *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.models
  * @copyright Copyright © 2018
  */
-public class Folder {
+@GraphQLType(name = "Folder", description = "A mailbox folder.")
+public class GQLFolder {
 
     /**
      * The absolute path to this folder.
@@ -24,7 +28,7 @@ public class Folder {
     /**
      * Folder color.
      */
-    private Integer color;
+    private Long color;
 
     /**
      * Folder flags.
@@ -59,12 +63,12 @@ public class Folder {
     /**
      * Folders this user has linked from other users nested in this Folder.
      */
-    private List<Folder> linkedFolders;
+    private List<GQLFolder> linkedFolders;
 
     /**
      * Folders nested in this Folder.
      */
-    private List<Folder> folders;
+    private List<GQLFolder> folders;
 
     /**
      * Folder owner.
@@ -99,6 +103,7 @@ public class Folder {
     /**
      * @return The absolute folder path
      */
+    @GraphQLQuery(name = "absFolderPath", description = "The absolute path to this folder.")
     public String getAbsFolderPath() {
         return absFolderPath;
     }
@@ -113,6 +118,7 @@ public class Folder {
     /**
      * @return The ACL
      */
+    @GraphQLQuery(name = "acl", description = "Folder ACL.")
     public ACL getAcl() {
         return acl;
     }
@@ -127,20 +133,22 @@ public class Folder {
     /**
      * @return The folder color
      */
-    public Integer getColor() {
+    @GraphQLQuery(name = "color", description = "Folder color.")
+    public Long getColor() {
         return color;
     }
 
     /**
      * @param color The color to set
      */
-    public void setColor(Integer color) {
+    public void setColor(Long color) {
         this.color = color;
     }
 
     /**
      * @return The folder flags
      */
+    @GraphQLQuery(name = "flags", description = "Folder flags.")
     public String getFlags() {
         return flags;
     }
@@ -155,6 +163,7 @@ public class Folder {
     /**
      * @return The id
      */
+    @GraphQLQuery(name = "id", description = "Folder id.")
     public String getId() {
         return id;
     }
@@ -169,6 +178,7 @@ public class Folder {
     /**
      * @return The uuid
      */
+    @GraphQLQuery(name = "uuid", description = "Folder uuid.")
     public String getUuid() {
         return uuid;
     }
@@ -183,6 +193,7 @@ public class Folder {
     /**
      * @return The name
      */
+    @GraphQLQuery(name = "name", description = "Folder name.")
     public String getName() {
         return name;
     }
@@ -197,6 +208,7 @@ public class Folder {
     /**
      * @return The non folder item count
      */
+    @GraphQLQuery(name = "nonFolderItemCount", description = "Number of non-subfolder items in folder.")
     public Integer getNonFolderItemCount() {
         return nonFolderItemCount;
     }
@@ -211,6 +223,7 @@ public class Folder {
     /**
      * @return The non folder item count total
      */
+    @GraphQLQuery(name = "nonFolderItemCountTotal", description = "Total size of all non-subfolder items in folder.")
     public Integer getNonFolderItemCountTotal() {
         return nonFolderItemCountTotal;
     }
@@ -225,34 +238,37 @@ public class Folder {
     /**
      * @return The linked folders
      */
-    public List<Folder> getLinkedFolders() {
+    @GraphQLQuery(name = "linkedFolders", description = "Folders this user has linked from other users nested in this folder.")
+    public List<GQLFolder> getLinkedFolders() {
         return linkedFolders;
     }
 
     /**
      * @param linkedFolders The linked folders to set
      */
-    public void setLinkedFolders(List<Folder> linkedFolders) {
+    public void setLinkedFolders(List<GQLFolder> linkedFolders) {
         this.linkedFolders = linkedFolders;
     }
 
     /**
      * @return The folders
      */
-    public List<Folder> getFolders() {
+    @GraphQLQuery(name = "folders", description = "Folders nested in this folder.")
+    public List<GQLFolder> getFolders() {
         return folders;
     }
 
     /**
      * @param folders The folders to set
      */
-    public void setFolders(List<Folder> folders) {
+    public void setFolders(List<GQLFolder> folders) {
         this.folders = folders;
     }
 
     /**
      * @return The owner
      */
+    @GraphQLQuery(name = "owner", description = "Folder owner.")
     public String getOwner() {
         return owner;
     }
@@ -267,6 +283,7 @@ public class Folder {
     /**
      * @return The revision
      */
+    @GraphQLQuery(name = "revision", description = "Folder revision.")
     public Integer getRevision() {
         return revision;
     }
@@ -281,6 +298,7 @@ public class Folder {
     /**
      * @return The view
      */
+    @GraphQLQuery(name = "view", description = "Folder view.")
     public FolderView getView() {
         return view;
     }
@@ -295,6 +313,7 @@ public class Folder {
     /**
      * @return The parent folder id
      */
+    @GraphQLQuery(name = "parentFolderId", description = "Id of this folder's parent.")
     public String getParentFolderId() {
         return parentFolderId;
     }
@@ -309,6 +328,7 @@ public class Folder {
     /**
      * @return The unread count
      */
+    @GraphQLQuery(name = "unread", description = "Unread count.")
     public Integer getUnread() {
         return unread;
     }
@@ -323,6 +343,7 @@ public class Folder {
     /**
      * @return The query
      */
+    @GraphQLQuery(name = "query", description = "Folder query.")
     public String getQuery() {
         return query;
     }
