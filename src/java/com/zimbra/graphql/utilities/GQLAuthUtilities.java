@@ -20,6 +20,7 @@ import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.account.ZimbraJWToken;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.graphql.models.AuthContext;
 
@@ -47,8 +48,27 @@ public class GQLAuthUtilities {
         final AuthContext context = new AuthContext();
         context.setAuthToken(token);
         context.setAccount(account);
-        // TODO: include operation context details
+        context.setOperationContext(getOperationContext(req, token));
         return context;
+    }
+
+    protected static OperationContext getOperationContext(HttpServletRequest req,
+        AuthToken authToken) {
+        OperationContext octxt = null;
+        try {
+            octxt = new OperationContext(authToken);
+            octxt.setRequestIP(req.getRemoteAddr());
+            octxt.setUserAgent(req.getHeader("User-Agent"));
+            if (authToken != null) {
+                octxt.setmAuthTokenAccountId(authToken.getAccountId());
+                octxt.setmRequestedAccountId(authToken.getAccountId());
+            }
+            // TODO : handle change constraint, and real requestedAccountId
+        } catch (final ServiceException e) {
+            // continue on to return empty octxt
+            // some resources may not require auth
+        }
+        return octxt;
     }
 
     /**

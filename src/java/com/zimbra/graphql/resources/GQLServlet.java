@@ -15,8 +15,8 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.repositories.impl.AccountInfoRepository;
 import com.zimbra.graphql.repositories.impl.FolderRepository;
-import com.zimbra.graphql.resolvers.AccountInfoResolver;
-import com.zimbra.graphql.resolvers.FolderResolver;
+import com.zimbra.graphql.resolvers.impl.AccountInfoResolver;
+import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLUtilities;
 
