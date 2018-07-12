@@ -23,7 +23,7 @@ public class GQLFolder {
     /**
      * Folder ACL.
      */
-    private ACL acl;
+    private GQLACL acl;
 
     /**
      * Folder color.
@@ -53,12 +53,12 @@ public class GQLFolder {
     /**
      * Number of non-subfolder items in folder.
      */
-    private Integer nonFolderItemCount;
+    private Long nonFolderItemCount;
 
     /**
      * Total size of all of non-subfolder items in folder.
      */
-    private Integer nonFolderItemCountTotal;
+    private Long nonFolderItemCountTotal;
 
     /**
      * Folders this user has linked from other users nested in this Folder.
@@ -83,7 +83,7 @@ public class GQLFolder {
     /**
      * Folder view.
      */
-    private FolderView view;
+    private GQLFolderView view;
 
     /**
      * Id of this folder's parent.
@@ -119,14 +119,14 @@ public class GQLFolder {
      * @return The ACL
      */
     @GraphQLQuery(name = "acl", description = "Folder ACL.")
-    public ACL getAcl() {
+    public GQLACL getAcl() {
         return acl;
     }
 
     /**
      * @param acl The ACL to set
      */
-    public void setAcl(ACL acl) {
+    public void setAcl(GQLACL acl) {
         this.acl = acl;
     }
 
@@ -209,14 +209,14 @@ public class GQLFolder {
      * @return The non folder item count
      */
     @GraphQLQuery(name = "nonFolderItemCount", description = "Number of non-subfolder items in folder.")
-    public Integer getNonFolderItemCount() {
+    public Long getNonFolderItemCount() {
         return nonFolderItemCount;
     }
 
     /**
      * @param nonFolderItemCount The non folder item count to set
      */
-    public void setNonFolderItemCount(Integer nonFolderItemCount) {
+    public void setNonFolderItemCount(Long nonFolderItemCount) {
         this.nonFolderItemCount = nonFolderItemCount;
     }
 
@@ -224,14 +224,14 @@ public class GQLFolder {
      * @return The non folder item count total
      */
     @GraphQLQuery(name = "nonFolderItemCountTotal", description = "Total size of all non-subfolder items in folder.")
-    public Integer getNonFolderItemCountTotal() {
+    public Long getNonFolderItemCountTotal() {
         return nonFolderItemCountTotal;
     }
 
     /**
      * @param nonFolderItemCountTotal The non folder item count total to set
      */
-    public void setNonFolderItemCountTotal(Integer nonFolderItemCountTotal) {
+    public void setNonFolderItemCountTotal(Long nonFolderItemCountTotal) {
         this.nonFolderItemCountTotal = nonFolderItemCountTotal;
     }
 
@@ -299,14 +299,14 @@ public class GQLFolder {
      * @return The view
      */
     @GraphQLQuery(name = "view", description = "Folder view.")
-    public FolderView getView() {
+    public GQLFolderView getView() {
         return view;
     }
 
     /**
      * @param view The view to set
      */
-    public void setView(FolderView view) {
+    public void setView(GQLFolderView view) {
         this.view = view;
     }
 
