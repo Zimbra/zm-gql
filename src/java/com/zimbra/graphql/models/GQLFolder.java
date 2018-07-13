@@ -35,6 +35,12 @@ public class GQLFolder {
      */
     private String flags;
 
+
+    /**
+     * Folder tags.
+     */
+    private String[] tags;
+
     /**
      * Folder id.
      */
@@ -158,6 +164,21 @@ public class GQLFolder {
      */
     public void setFlags(String flags) {
         this.flags = flags;
+    }
+
+    /**
+     * @return The folder tags
+     */
+    @GraphQLQuery(name = "tags", description = "Folder tags.")
+    public String[] getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags The tags to set
+     */
+    public void setTags(String[] tags) {
+        this.tags = tags;
     }
 
     /**

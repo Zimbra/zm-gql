@@ -13,9 +13,9 @@ import io.leangen.graphql.annotations.types.GraphQLType;
 public class GQLACLGrant {
 
     /**
-     * The grant address.
+     * The grantee name.
      */
-    private String address;
+    private String granteeName;
 
     /**
      * The grant permissions.
@@ -33,9 +33,9 @@ public class GQLACLGrant {
     private GQLGranteeType granteeType;
 
     /**
-     * The Zimbra id.
+     * The grantee id.
      */
-    private String zimbraId;
+    private String granteeId;
 
     /**
      * The password.
@@ -53,17 +53,17 @@ public class GQLACLGrant {
     private Long expiry;
 
     /**
-     * @return The address
+     * @return The grantee name
      */
-    public String getAddress() {
-        return address;
+    public String getGranteeName() {
+        return granteeName;
     }
 
     /**
-     * @param address The address to set
+     * @param name The granteeName to set
      */
-    public void setAddress(String address) {
-        this.address = address;
+    public void setGranteeName(String granteeName) {
+        this.granteeName = granteeName;
     }
 
     /**
@@ -109,17 +109,17 @@ public class GQLACLGrant {
     }
 
     /**
-     * @return The Zimbra id
+     * @return The grantee id
      */
-    public String getZimbraId() {
-        return zimbraId;
+    public String getGranteeId() {
+        return granteeId;
     }
 
     /**
-     * @param zimbraId The Zimbra id to set
+     * @param granteeId The grantee id to set
      */
-    public void setZimbraId(String zimbraId) {
-        this.zimbraId = zimbraId;
+    public void setGranteeId(String granteeId) {
+        this.granteeId = granteeId;
     }
 
     /**
