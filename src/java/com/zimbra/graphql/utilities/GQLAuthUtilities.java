@@ -42,8 +42,9 @@ public class GQLAuthUtilities {
             account = getAccount(token);
         } catch (final ServiceException e) {
             ZimbraLog.extensions.debug("Could not authenticate the user.");
-            // continue on to create empty auth context
-            // some resources may not require auth
+            // if an exception occurred, auth was present but invalid
+            // return an empty auth context
+            return new AuthContext();
         }
         final AuthContext context = new AuthContext();
         context.setAuthToken(token);
@@ -55,18 +56,20 @@ public class GQLAuthUtilities {
     protected static OperationContext getOperationContext(HttpServletRequest req,
         AuthToken authToken) {
         OperationContext octxt = null;
-        try {
-            octxt = new OperationContext(authToken);
-            octxt.setRequestIP(req.getRemoteAddr());
-            octxt.setUserAgent(req.getHeader("User-Agent"));
-            if (authToken != null) {
-                octxt.setmAuthTokenAccountId(authToken.getAccountId());
-                octxt.setmRequestedAccountId(authToken.getAccountId());
+        if (authToken != null) {
+            try {
+                octxt = new OperationContext(authToken);
+                octxt.setRequestIP(req.getRemoteAddr());
+                octxt.setUserAgent(req.getHeader("User-Agent"));
+                if (authToken != null) {
+                    octxt.setmAuthTokenAccountId(authToken.getAccountId());
+                    octxt.setmRequestedAccountId(authToken.getAccountId());
+                }
+                // TODO : handle change constraint, and real requestedAccountId
+            } catch (final ServiceException e) {
+                // continue on to return empty octxt
+                // some resources may not require auth
             }
-            // TODO : handle change constraint, and real requestedAccountId
-        } catch (final ServiceException e) {
-            // continue on to return empty octxt
-            // some resources may not require auth
         }
         return octxt;
     }
@@ -135,17 +138,15 @@ public class GQLAuthUtilities {
                 throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
                     + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
             }
+            if (account == null) {
+                throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
+                    + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
+            }
+            ZimbraLog.extensions.debug("Account is:%s", account);
         } else {
-            throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
+            // do nothing if no token exists
+            // some resources may not require auth
         }
-
-        if (account == null) {
-            throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
-        }
-
-        ZimbraLog.extensions.debug("Account is:%s", account);
 
         return account;
     }
