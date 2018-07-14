@@ -14,9 +14,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.repositories.impl.AccountInfoRepository;
-import com.zimbra.graphql.repositories.impl.FolderRepository;
+import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.resolvers.impl.AccountInfoResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
+import com.zimbra.graphql.schema.GQLValueMapperFactory;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLUtilities;
 
@@ -150,14 +151,15 @@ public class GQLServlet extends ExtensionHttpHandler {
      */
     protected GraphQLSchema buildSchema() {
         final AccountInfoResolver accountInfoResolver = new AccountInfoResolver(new AccountInfoRepository());
-        final FolderResolver folderResolver = new FolderResolver(new FolderRepository());
+        final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         return new GraphQLSchemaGenerator()
+            .withValueMapperFactory(new GQLValueMapperFactory(mapper))
             .withOperationsFromSingletons(accountInfoResolver, folderResolver)
             .generate();
     }
 
     /**
-     * Utility to deserailize variables from string.
+     * Utility to deserialize variables from string.
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
@@ -171,7 +173,7 @@ public class GQLServlet extends ExtensionHttpHandler {
     }
 
     /**
-     * Utility to deserailize variables from object.
+     * Utility to deserialize variables from object.
      *
      * @param variables The variables to deserialize
      * @return A map of the variables

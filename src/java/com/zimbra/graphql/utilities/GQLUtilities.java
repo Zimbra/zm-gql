@@ -19,7 +19,7 @@ public class GQLUtilities {
      */
     public static ObjectMapper createDefaultMapper() {
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
+        mapper.setSerializationInclusion(JsonInclude.Include.USE_DEFAULTS);
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
