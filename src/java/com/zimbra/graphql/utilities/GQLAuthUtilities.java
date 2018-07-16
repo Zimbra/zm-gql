@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.ZimbraCookie;
@@ -23,8 +24,10 @@ import com.zimbra.cs.account.ZimbraJWToken;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.soap.ZimbraSoapContext;
 
 public class GQLAuthUtilities {
+
     /**
      * Creates an auth context for the request.
      *
@@ -53,10 +56,18 @@ public class GQLAuthUtilities {
         return context;
     }
 
+    /**
+     * Creates an operation context for a given http request and auth token.<br>
+     * Returns `null` if no authToken or req is present.
+     *
+     * @param req The http request
+     * @param authToken The auth token from the request
+     * @return An operation context
+     */
     protected static OperationContext getOperationContext(HttpServletRequest req,
         AuthToken authToken) {
         OperationContext octxt = null;
-        if (authToken != null) {
+        if (req != null && authToken != null) {
             try {
                 octxt = new OperationContext(authToken);
                 octxt.setRequestIP(req.getRemoteAddr());
@@ -113,7 +124,8 @@ public class GQLAuthUtilities {
 
     /**
      * Returns the requesting user's account.<br>
-     * Throws an exception if an account cannot be retrieved.
+     * If no authToken is present, returns null (some requests do not require auth).<br>
+     * Throws an exception if an account cannot be retrieved with non-null credentials.
      *
      * @param authToken The auth token to retrieve the account with
      * @return The requesting user's account
@@ -170,4 +182,23 @@ public class GQLAuthUtilities {
         }
         return cookie;
     }
+
+    /**
+     * Creates a zimbra soap context given the current context's request credentials.
+     * Ensures the operation context and account are non null.
+     *
+     * @param octxt The operation context
+     * @param account The requesting account
+     * @return A zimbra soap context
+     * @throws ServiceException If there are issues creating the soap context
+     */
+    public static ZimbraSoapContext getZimbraSoapContext(OperationContext octxt, Account account)
+        throws ServiceException {
+        if (octxt != null && account != null) {
+            return new ZimbraSoapContext(octxt.getAuthToken(), account.getId(), SoapProtocol.Soap12,
+                SoapProtocol.Soap12);
+        }
+        throw ServiceException.PERM_DENIED("Request could not be authenticated.");
+    }
+
 }
