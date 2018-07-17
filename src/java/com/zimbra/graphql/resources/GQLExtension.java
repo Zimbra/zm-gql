@@ -21,6 +21,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
 import com.zimbra.cs.extension.ExtensionException;
 import com.zimbra.cs.extension.ZimbraExtension;
+import com.zimbra.graphql.utilities.GQLConstants;
 
 /**
  * GQLExtension class.<br>
@@ -39,12 +40,12 @@ public class GQLExtension implements ZimbraExtension {
 
     @Override
     public String getName() {
-        return "zm-gql";
+        return GQLConstants.API_NAME.getValue();
     }
 
     @Override
     public void init() throws ExtensionException, ServiceException {
-        ZimbraLog.extensions.info("Registering zm-gql");
+        ZimbraLog.extensions.info("Registering %s", getName());
         ExtensionDispatcherServlet.register(this, new GQLServlet());
     }
 

@@ -32,6 +32,7 @@ import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
+import com.zimbra.graphql.utilities.GQLConstants;
 import com.zimbra.graphql.utilities.GQLUtilities;
 
 import graphql.ExecutionInput;
@@ -70,7 +71,7 @@ public class GQLServlet extends ExtensionHttpHandler {
 
     @Override
     public String getPath() {
-        return "/graphql";
+        return GQLConstants.DEFAULT_SERVER_PATH.getValue();
     }
 
     @Override
