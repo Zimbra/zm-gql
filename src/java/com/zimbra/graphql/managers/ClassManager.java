@@ -65,17 +65,23 @@ public class ClassManager {
                         final Configuration config = new Configuration();
 
                         // load the handler class
-                        final Class<?> daoClass = Class.forName(config.getString(GQLConstants.LC_REPOSITORY_CLASS_PREFIX + type));
-                        repository = (IRepository) daoClass.getConstructor(Configuration.class).newInstance(config);
+                        final Class<?> daoClass = Class.forName(config
+                            .getString(GQLConstants.LC_REPOSITORY_CLASS_PREFIX.getValue() + type));
+                        repository = (IRepository) daoClass.getConstructor(Configuration.class)
+                            .newInstance(config);
 
                         // cache the new handler
                         repositoryCache.put(type, repository);
                     } catch (final ClassNotFoundException e) {
                         ZimbraLog.extensions.error("The specified class is not supported: " + type, e);
                         // TODO : exceptions ticket
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                        ZimbraLog.extensions.error("There was an issue instantiating the repository class for type: " + type, e);
+                    } catch (InstantiationException | IllegalAccessException
+                        | IllegalArgumentException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                        ZimbraLog.extensions.error(
+                            "There was an issue instantiating the repository class for type: "
+                                + type,
+                            e);
                         // TODO : exceptions ticket
                     }
                 }
