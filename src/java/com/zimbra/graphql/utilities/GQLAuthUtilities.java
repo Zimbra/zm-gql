@@ -42,6 +42,14 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.graphql.models.AuthContext;
 import com.zimbra.soap.ZimbraSoapContext;
 
+/**
+ * The GQLAuthUtilities class.<br>
+ * Contains utility methods to assist in request authentication.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.utilities
+ * @copyright Copyright © 2018
+ */
 public class GQLAuthUtilities {
 
     /**

@@ -28,6 +28,13 @@ import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.Configuration;
 import com.zimbra.graphql.utilities.GQLConstants;
 
+/**
+ * The ClassManager class.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.managers
+ * @copyright Copyright © 2018
+ */
 public class ClassManager {
 
     /**

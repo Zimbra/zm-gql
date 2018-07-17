@@ -25,6 +25,14 @@ import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 
+/**
+ * The ZXMLItemRepository class.<br>
+ * Contains XML document based data access methods for items.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.repositories.impl
+ * @copyright Copyright © 2018
+ */
 public class ZXMLItemRepository extends ZXMLRepository implements IRepository {
 
     /**

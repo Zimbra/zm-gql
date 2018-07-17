@@ -26,6 +26,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * The GQLUtilities class.<br>
+ * Contains general utility methods.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.utilities
+ * @copyright Copyright © 2018
+ */
 public class GQLUtilities {
 
     /**

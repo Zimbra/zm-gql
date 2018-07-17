@@ -40,6 +40,14 @@ import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 
+/**
+ * The GQLServlet class.<br>
+ * Application servlet for http requests, handles request parsing.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.resources
+ * @copyright Copyright © 2018
+ */
 public class GQLServlet extends ExtensionHttpHandler {
 
     /**

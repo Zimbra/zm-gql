@@ -26,6 +26,14 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 
+/**
+ * The XMLDocumentUtilities class.<br>
+ * Contains utility methods to assist in document execution.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.utilities
+ * @copyright Copyright © 2018
+ */
 public class XMLDocumentUtilities {
 
     /**

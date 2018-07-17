@@ -37,6 +37,14 @@ import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.GetFolderSpec;
 import com.zimbra.soap.mail.type.NewFolderSpec;
 
+/**
+ * The ZXMLFolderRepository class.<br>
+ * Contains XML document based data access methods for folders.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.repositories.impl
+ * @copyright Copyright © 2018
+ */
 public class ZXMLFolderRepository extends ZXMLItemRepository implements IRepository {
 
     /**

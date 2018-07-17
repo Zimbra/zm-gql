@@ -16,6 +16,14 @@
  */
 package com.zimbra.graphql.utilities;
 
+/**
+ * The GQLConstants class.<br>
+ * Contains general service constants.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.utilities
+ * @copyright Copyright © 2018
+ */
 public class GQLConstants {
     public static final String API_NAME = "zm-gql";
     public static final String ENCODING = "utf-8";

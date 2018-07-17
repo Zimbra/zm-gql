@@ -31,6 +31,14 @@ import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.GraphQLRootContext;
 
+/**
+ * The FolderResolver class.<br>
+ * Contains folder schema resources.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.resolvers.impl
+ * @copyright Copyright © 2018
+ */
 public class FolderResolver {
 
     protected ZXMLFolderRepository folderRepository = null;

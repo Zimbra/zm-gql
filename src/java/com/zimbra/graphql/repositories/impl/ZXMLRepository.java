@@ -16,6 +16,13 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+/**
+ * The ZXMLRepository class.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.repositories.impl
+ * @copyright Copyright © 2018
+ */
 public class ZXMLRepository {
 
 }

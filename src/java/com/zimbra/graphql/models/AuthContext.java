@@ -22,6 +22,14 @@ import com.zimbra.cs.mailbox.OperationContext;
 
 import io.leangen.graphql.annotations.GraphQLQuery;
 
+/**
+ * The AuthContext class.<br>
+ * Contains request context info.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.models
+ * @copyright Copyright © 2018
+ */
 public class AuthContext {
 
     /**

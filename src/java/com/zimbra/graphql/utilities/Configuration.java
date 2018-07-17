@@ -22,7 +22,12 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
 
 /**
- * Configuration wrapper LC.
+ * The Configuration class.<br>
+ * Configuration wrapper for LC.
+ *
+ * @author Zimbra API Team
+ * @package com.zimbra.graphql.utilities
+ * @copyright Copyright © 2018
  */
 public class Configuration {
 
