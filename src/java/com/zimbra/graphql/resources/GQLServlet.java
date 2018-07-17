@@ -13,8 +13,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
-import com.zimbra.graphql.repositories.impl.AccountInfoRepository;
-import com.zimbra.graphql.resolvers.AccountInfoResolver;
+import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
+import com.zimbra.graphql.resolvers.impl.FolderResolver;
+import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLUtilities;
 
 import graphql.ExecutionInput;
@@ -74,7 +75,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         String operationName = null;
         Map<String, Object> variables = new HashMap<String, Object>();
         // read the body into json
-        final JsonNode jsonBody = mapper.readTree(GQLUtilities.decodeStream(req.getInputStream(), 4080));
+        final JsonNode jsonBody = mapper.readTree(GQLUtilities.decodeStream(req.getInputStream(), 0));
         if (jsonBody != null && !jsonBody.isNull()) {
             // seek query param (string)
             if (jsonBody.has("query")) {
@@ -117,7 +118,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         final ExecutionInput input = ExecutionInput.newExecutionInput()
             .query(query)
             .operationName(operationName)
-            .context(req)
+            .context(GQLAuthUtilities.buildContext(req))
             .variables(variables)
             .build();
         // execute
@@ -141,19 +142,24 @@ public class GQLServlet extends ExtensionHttpHandler {
     }
 
     /**
-     * Wires the application schema given resolvers.<br>
+     * Wires the application schema given resolvers.
      *
      * @return A wired schema
      */
     protected GraphQLSchema buildSchema() {
-        final AccountInfoResolver accountInfoResolver = new AccountInfoResolver(new AccountInfoRepository());
+        final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         return new GraphQLSchemaGenerator()
-            .withOperationsFromSingletons(accountInfoResolver)
-            .generate();
+            .withBasePackages(
+                "com.zimbra.graphql.models",
+                "com.zimbra.graphql.models.inputs",
+                "com.zimbra.soap.mail.type")
+            .withOperationsFromSingletons(
+                folderResolver
+            ).generate();
     }
 
     /**
-     * Utility to deserailize variables from string.
+     * Utility to deserialize variables from string.
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
@@ -162,12 +168,13 @@ public class GQLServlet extends ExtensionHttpHandler {
         try {
             return deserializeVariablesObject(mapper.readValue(variables, Object.class));
         } catch (final IOException e) {
+            // TODO: not this; handle error and relay graphql spec error
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Utility to deserailize variables from object.
+     * Utility to deserialize variables from object.
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
@@ -175,16 +182,17 @@ public class GQLServlet extends ExtensionHttpHandler {
     private Map<String, Object> deserializeVariablesObject(Object variables) {
         if (variables instanceof Map) {
             @SuppressWarnings("unchecked")
-            final
-            Map<String, Object> genericVariables = (Map<String, Object>) variables;
+            final Map<String, Object> genericVariables = (Map<String, Object>) variables;
             return genericVariables;
         } else if (variables instanceof String) {
             try {
-                return mapper.readValue((String) variables, new TypeReference<Map<String, Object>>() {});
+                return mapper.readValue((String) variables,
+                    new TypeReference<Map<String, Object>>() { });
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
+            // TODO: not this; handle error and relay graphql spec error
             throw new RuntimeException("Variables should be either an object or a string");
         }
     }
