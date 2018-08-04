@@ -24,6 +24,7 @@ import com.zimbra.soap.mail.type.FolderActionResult;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.GetFolderSpec;
 import com.zimbra.soap.mail.type.NewFolderSpec;
+import com.zimbra.soap.mail.type.NewSearchFolderSpec;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -71,6 +72,14 @@ public class FolderResolver {
         @GraphQLRootContext AuthContext context) throws ServiceException {
         return folderRepository.createFolder(context.getOperationContext(), context.getAccount(),
             folder);
+    }
+
+    @GraphQLMutation(description = "Create a search folder with given properties.")
+    public Folder createSearchFolder(
+        @GraphQLNonNull @GraphQLArgument(name = "searchFolder") NewSearchFolderSpec searchFolder,
+        @GraphQLRootContext AuthContext context) throws ServiceException {
+        return folderRepository.createSearchFolder(context.getOperationContext(), context.getAccount(),
+            searchFolder);
     }
 
     @GraphQLMutation(description = "Handles a folder action request.")
