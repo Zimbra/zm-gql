@@ -16,6 +16,8 @@
  */
 package com.zimbra.graphql.resolvers.impl;
 
+import java.util.List;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.AuthContext;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
@@ -23,7 +25,10 @@ import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.FolderActionResult;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.GetFolderSpec;
+import com.zimbra.soap.mail.type.ModifySearchFolderSpec;
 import com.zimbra.soap.mail.type.NewFolderSpec;
+import com.zimbra.soap.mail.type.NewSearchFolderSpec;
+import com.zimbra.soap.mail.type.SearchFolder;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -80,4 +85,24 @@ public class FolderResolver {
         return folderRepository.action(context.getOperationContext(), context.getAccount(), input);
     }
 
+    @GraphQLQuery(description = "Retrieve search folders for given user")
+    public List<SearchFolder> searchFolderGet(@GraphQLRootContext AuthContext context) throws ServiceException {
+        return folderRepository.searchFolderGet(context.getOperationContext(), context.getAccount());
+    }
+
+    @GraphQLMutation(description = "Create a search folder with given properties.")
+    public SearchFolder searchFolderCreate(
+        @GraphQLNonNull @GraphQLArgument(name = "searchFolder") NewSearchFolderSpec searchFolder,
+        @GraphQLRootContext AuthContext context) throws ServiceException {
+        return folderRepository.searchFolderCreate(context.getOperationContext(), context.getAccount(),
+            searchFolder);
+    }
+
+    @GraphQLMutation(description = "Modify existing search folder with given properties.")
+    public SearchFolder searchFolderModify(
+        @GraphQLNonNull @GraphQLArgument(name = "searchFolder") ModifySearchFolderSpec searchFolder,
+        @GraphQLRootContext AuthContext context) throws ServiceException {
+        return folderRepository.searchFolderModify(context.getOperationContext(), context.getAccount(),
+            searchFolder);
+    }
 }
