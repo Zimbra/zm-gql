@@ -16,6 +16,8 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+import com.zimbra.common.util.ZimbraLog;
+
 /**
  * The ZXMLRepository class.
  *
@@ -24,5 +26,9 @@ package com.zimbra.graphql.repositories.impl;
  * @copyright Copyright © 2018
  */
 public class ZXMLRepository {
+
+    public  ZXMLRepository() {
+        ZimbraLog.extensions.info("Loading %s . . .", this.getClass().getName());
+    }
 
 }

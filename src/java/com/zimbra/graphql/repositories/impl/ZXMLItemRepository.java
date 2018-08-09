@@ -46,6 +46,7 @@ public class ZXMLItemRepository extends ZXMLRepository implements IRepository {
      * @param actionHandler The document handler for this instance
      */
     public ZXMLItemRepository(ItemAction actionHandler) {
+        super();
         this.actionHandler = actionHandler;
     }
 

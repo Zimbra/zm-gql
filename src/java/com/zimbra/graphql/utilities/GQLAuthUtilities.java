@@ -16,6 +16,7 @@
  */
 package com.zimbra.graphql.utilities;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.QName;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
@@ -40,6 +42,7 @@ import com.zimbra.cs.account.ZimbraJWToken;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**
@@ -56,9 +59,10 @@ public class GQLAuthUtilities {
      * Creates an auth context for the request.
      *
      * @param req The http request
+     * @param resp The http response
      * @return An auth context
      */
-    public static AuthContext buildContext(HttpServletRequest req) {
+    public static AuthContext buildContext(HttpServletRequest req, HttpServletResponse resp) {
         AuthToken token = null;
         Account account = null;
         try {
@@ -76,6 +80,8 @@ public class GQLAuthUtilities {
         final AuthContext context = new AuthContext();
         context.setAuthToken(token);
         context.setAccount(account);
+        context.setRawRequest(req);
+        context.setRawResponse(resp);
         context.setOperationContext(getOperationContext(req, token));
         return context;
     }
@@ -179,10 +185,9 @@ public class GQLAuthUtilities {
                     + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
             }
             ZimbraLog.extensions.debug("Account is:%s", account);
-        } else {
-            // do nothing if no token exists
-            // some resources may not require auth
         }
+        // do nothing if no token exists
+        // some resources may not require auth
 
         return account;
     }
@@ -205,6 +210,23 @@ public class GQLAuthUtilities {
             }
         }
         return cookie;
+    }
+
+    /**
+     * Creates a zimbra soap context given the current request.
+     * Ensures the qName and handler are not null.
+     *
+     * @param qName The request QName
+     * @param handler The document handler for this request
+     * @return A zimbra soap context
+     * @throws ServiceException If there are issues creating the soap context
+     */
+    public static ZimbraSoapContext getGuestZimbraSoapContext(QName qName, DocumentHandler handler)
+        throws ServiceException {
+        if (qName != null && handler != null) {
+            return new ZimbraSoapContext(null, qName, handler, Collections.emptyMap(), SoapProtocol.Soap12);
+        }
+        throw ServiceException.INVALID_REQUEST("Invalid XML request.", null);
     }
 
     /**
