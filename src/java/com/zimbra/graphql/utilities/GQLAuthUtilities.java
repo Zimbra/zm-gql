@@ -65,6 +65,7 @@ public class GQLAuthUtilities {
     public static AuthContext buildContext(HttpServletRequest req, HttpServletResponse resp) {
         AuthToken token = null;
         Account account = null;
+        ZimbraLog.extensions.debug("Building request context.");
         try {
             final Cookie [] cookies = req.getCookies();
             final Map<String, String> headers = new HashMap<String, String>();
@@ -164,6 +165,7 @@ public class GQLAuthUtilities {
     protected static Account getAccount(AuthToken authToken) throws ServiceException {
         Account account = null;
         if (authToken != null) {
+            ZimbraLog.extensions.debug("Validating request auth credentials.");
             if (authToken.isZimbraUser()) {
                 if (!authToken.isRegistered()) {
                     throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
@@ -244,6 +246,7 @@ public class GQLAuthUtilities {
             return new ZimbraSoapContext(octxt.getAuthToken(), account.getId(), SoapProtocol.Soap12,
                 SoapProtocol.Soap12);
         }
+        ZimbraLog.extensions.debug("Request could not be authenticated.");
         throw ServiceException.PERM_DENIED("Request could not be authenticated.");
     }
 

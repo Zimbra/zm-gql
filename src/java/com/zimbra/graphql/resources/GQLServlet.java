@@ -17,7 +17,9 @@
 package com.zimbra.graphql.resources;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -29,8 +31,10 @@ import org.apache.commons.lang.StringUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
+import com.zimbra.graphql.errors.GQLError;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
@@ -42,6 +46,8 @@ import com.zimbra.graphql.utilities.GQLUtilities;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.GraphqlErrorHelper;
+import graphql.execution.UnknownOperationException;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 
@@ -89,12 +95,17 @@ public class GQLServlet extends ExtensionHttpHandler {
         // seek variables param (map {string -> object})
         final Map<String, Object> variables = new HashMap<String, Object>();
         final String rawVariables = req.getParameter("variables");
-        if (!StringUtils.isEmpty(rawVariables)
-            && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
-            variables.putAll(deserializeVariables(rawVariables));
+        try {
+            if (!StringUtils.isEmpty(rawVariables)
+                && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
+                variables.putAll(deserializeVariables(rawVariables));
+            }
+            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
+            sendResponse(resp, result);
+        } catch (final ServiceException | UnknownOperationException e) {
+          sendError(resp, e);
+          return;
         }
-        final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
-        sendResponse(resp, result);
     }
 
     @Override
@@ -104,33 +115,40 @@ public class GQLServlet extends ExtensionHttpHandler {
         String query = null;
         String operationName = null;
         Map<String, Object> variables = new HashMap<String, Object>();
-        // read the body into json
-        final JsonNode jsonBody = mapper.readTree(GQLUtilities.decodeStream(req.getInputStream(), 0));
-        if (jsonBody != null && !jsonBody.isNull()) {
-            // seek query param (string)
-            if (jsonBody.has("query")) {
-                final JsonNode rawQueryNode = jsonBody.get("query");
-                if (rawQueryNode != null && !rawQueryNode.isNull()) {
-                    query = rawQueryNode.asText();
+        try {
+            // read the body into json
+            ZimbraLog.extensions.debug("Reading http body.");
+            final JsonNode jsonBody = mapper.readTree(GQLUtilities.decodeStream(req.getInputStream(), 0));
+            if (jsonBody != null && !jsonBody.isNull()) {
+                // seek query param (string)
+                if (jsonBody.has("query")) {
+                    final JsonNode rawQueryNode = jsonBody.get("query");
+                    if (rawQueryNode != null && !rawQueryNode.isNull()) {
+                        query = rawQueryNode.asText();
+                    }
+                }
+                // seek operationName param (string)
+                if (jsonBody.has("operationName")) {
+                    final JsonNode rawOpNameNode = jsonBody.get("operationName");
+                    if (rawOpNameNode != null && !rawOpNameNode.isNull()) {
+                        operationName = rawOpNameNode.asText();
+                    }
+                }
+                // seek variables param (map {string -> object})
+                if (jsonBody.has("variables")) {
+                    final JsonNode rawVariablesNode = jsonBody.get("variables");
+                    if (rawVariablesNode != null && !rawVariablesNode.isNull()) {
+                        variables = deserializeVariables(rawVariablesNode.toString());
+                    }
                 }
             }
-            // seek operationName param (string)
-            if (jsonBody.has("operationName")) {
-                final JsonNode rawOpNameNode = jsonBody.get("operationName");
-                if (rawOpNameNode != null && !rawOpNameNode.isNull()) {
-                    operationName = rawOpNameNode.asText();
-                }
-            }
-            // seek variables param (map {string -> object})
-            if (jsonBody.has("variables")) {
-                final JsonNode rawVariablesNode = jsonBody.get("variables");
-                if (rawVariablesNode != null && !rawVariablesNode.isNull()) {
-                    variables = deserializeVariables(rawVariablesNode.toString());
-                }
-            }
+            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName,
+                variables);
+            sendResponse(resp, result);
+        } catch (final IOException | ServiceException | UnknownOperationException e) {
+            sendError(resp, e);
+            return;
         }
-        final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
-        sendResponse(resp, result);
     }
 
     /**
@@ -146,6 +164,7 @@ public class GQLServlet extends ExtensionHttpHandler {
     protected Map<String, Object> doGraphQLRequest(HttpServletRequest req, HttpServletResponse resp,
         String query, String operationName, Map<String, Object> variables) {
         // build gql request
+        ZimbraLog.extensions.debug("Building graphql execution input.");
         final ExecutionInput input = ExecutionInput.newExecutionInput()
             .query(query)
             .operationName(operationName)
@@ -153,10 +172,30 @@ public class GQLServlet extends ExtensionHttpHandler {
             .variables(variables)
             .build();
         // execute
+        ZimbraLog.extensions.debug("Executing graphql request.");
         final ExecutionResult executionResult = graphql.execute(input);
         // result to spec
         final Map<String, Object> result = executionResult.toSpecification();
         return result;
+    }
+
+    /**
+     * Transforms an exception into an error response before sending.
+     *
+     * @param resp The http response
+     * @param e The exception
+     * @throws IOException If there are issues converting the result to json or writing out
+     */
+    protected void sendError(HttpServletResponse resp, Exception e) throws IOException {
+        ZimbraLog.extensions.debug("An error has occurred before graphql execution : %s.",
+            e.getMessage());
+        ZimbraLog.extensions.debug(e);
+        // result map based on specification
+        // since we are not yet executing a request
+        // do not handle extensions and partial data
+        final Map<String, Object> result = new LinkedHashMap<String, Object>(1);
+        result.put("errors", Arrays.asList(GraphqlErrorHelper.toSpecification(new GQLError(e))));
+        sendResponse(resp, result);
     }
 
     /**
@@ -166,8 +205,10 @@ public class GQLServlet extends ExtensionHttpHandler {
      * @param result The graphql result to write
      * @throws IOException If there are issues converting the result to json or writing out
      */
-    protected void sendResponse(HttpServletResponse resp, Map<String, Object> result) throws IOException {
+    protected void sendResponse(HttpServletResponse resp, Map<String, Object> result)
+        throws IOException {
         // print result and flush
+        ZimbraLog.extensions.debug("Writing http response.");
         resp.getWriter().print(mapper.writeValueAsString(result));
         resp.getWriter().flush();
     }
@@ -196,13 +237,13 @@ public class GQLServlet extends ExtensionHttpHandler {
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
+     * @throws ServiceException If there are issues deserializing
      */
-    private Map<String, Object> deserializeVariables(String variables) {
+    private Map<String, Object> deserializeVariables(String variables) throws ServiceException {
         try {
             return deserializeVariablesObject(mapper.readValue(variables, Object.class));
         } catch (final IOException e) {
-            // TODO: not this; handle error and relay graphql spec error
-            throw new RuntimeException(e);
+            throw ServiceException.PARSE_ERROR("Unable to deserialize variables.", e);
         }
     }
 
@@ -211,8 +252,9 @@ public class GQLServlet extends ExtensionHttpHandler {
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
+     * @throws ServiceException If there are issues deserializing
      */
-    private Map<String, Object> deserializeVariablesObject(Object variables) {
+    private Map<String, Object> deserializeVariablesObject(Object variables) throws ServiceException {
         if (variables instanceof Map) {
             @SuppressWarnings("unchecked")
             final Map<String, Object> genericVariables = (Map<String, Object>) variables;
@@ -222,12 +264,10 @@ public class GQLServlet extends ExtensionHttpHandler {
                 return mapper.readValue((String) variables,
                     new TypeReference<Map<String, Object>>() { });
             } catch (final IOException e) {
-                throw new RuntimeException(e);
+                throw ServiceException.PARSE_ERROR("Unable to deserialize variables.", e);
             }
-        } else {
-            // TODO: not this; handle error and relay graphql spec error
-            throw new RuntimeException("Variables should be either an object or a string");
         }
+        throw ServiceException.PARSE_ERROR("Unexpected type when deserializing variables.", null);
     }
 
 }
