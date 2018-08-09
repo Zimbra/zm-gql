@@ -16,6 +16,9 @@
  */
 package com.zimbra.graphql.models;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -46,6 +49,16 @@ public class AuthContext {
      * Request operation context.
      */
     protected OperationContext operationContext;
+
+    /**
+     * Raw http request.
+     */
+    protected HttpServletRequest rawRequest;
+
+    /**
+     * Raw http response.
+     */
+    protected HttpServletResponse rawResponse;
 
     @GraphQLQuery(name = "authToken", description = "The authorization token.")
     public AuthToken getAuthToken() {
@@ -81,6 +94,30 @@ public class AuthContext {
      */
     public void setOperationContext(OperationContext operationContext) {
         this.operationContext = operationContext;
+    }
+
+    @GraphQLQuery(name = "rawRequest", description = "The raw http request.")
+    public HttpServletRequest getRawRequest() {
+        return rawRequest;
+    }
+
+    /**
+     * @param rawRequest The raw http request to set
+     */
+    public void setRawRequest(HttpServletRequest rawRequest) {
+        this.rawRequest = rawRequest;
+    }
+
+    @GraphQLQuery(name = "rawResponse", description = "The raw http response.")
+    public HttpServletResponse getRawResponse() {
+        return rawResponse;
+    }
+
+    /**
+     * @param rawResponse The raw http response to set
+     */
+    public void setRawResponse(HttpServletResponse rawResponse) {
+        this.rawResponse = rawResponse;
     }
 
 }

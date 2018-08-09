@@ -21,9 +21,11 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.graphql.models.AuthContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
+import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**
@@ -35,6 +37,26 @@ import com.zimbra.soap.ZimbraSoapContext;
  * @copyright Copyright © 2018
  */
 public class XMLDocumentUtilities {
+
+    /**
+     * Executes a given request on a document handler without
+     * validating auth credentials.
+     *
+     * @param handler The handler to handle the request
+     * @param request The request to execute
+     * @param actxt The graphql context for the request
+     * @return The document response
+     * @throws ServiceException If there are issues executing the document
+     */
+    public static Element executeDocumentAsGuest(DocumentHandler handler, Element request, AuthContext actxt)
+        throws ServiceException {
+        final Map<String, Object> context = new HashMap<String, Object>();
+        context.put(SoapEngine.ZIMBRA_CONTEXT,
+            GQLAuthUtilities.getGuestZimbraSoapContext(request.getQName(), handler));
+        context.put(SoapServlet.SERVLET_REQUEST, actxt.getRawRequest());
+        context.put(SoapServlet.SERVLET_RESPONSE, actxt.getRawResponse());
+        return handler.handle(request, context);
+    }
 
     /**
      * Executes a given request on a document handler.

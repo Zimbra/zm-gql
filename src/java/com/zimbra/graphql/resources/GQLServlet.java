@@ -24,12 +24,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
+import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
+import com.zimbra.graphql.resolvers.impl.AuthResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLConstants;
@@ -85,10 +89,11 @@ public class GQLServlet extends ExtensionHttpHandler {
         // seek variables param (map {string -> object})
         final Map<String, Object> variables = new HashMap<String, Object>();
         final String rawVariables = req.getParameter("variables");
-        if (rawVariables != null) {
+        if (!StringUtils.isEmpty(rawVariables)
+            && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
             variables.putAll(deserializeVariables(rawVariables));
         }
-        final Map<String, Object> result = doGraphQLRequest(req, query, operationName, variables);
+        final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
         sendResponse(resp, result);
     }
 
@@ -124,7 +129,7 @@ public class GQLServlet extends ExtensionHttpHandler {
                 }
             }
         }
-        final Map<String, Object> result = doGraphQLRequest(req, query, operationName, variables);
+        final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
         sendResponse(resp, result);
     }
 
@@ -132,18 +137,19 @@ public class GQLServlet extends ExtensionHttpHandler {
      * Executes a gql request given parameters.
      *
      * @param req The http request
+     * @param resp The http response
      * @param query The query from http request
      * @param operationName The operationName from http request
      * @param variables The variables from http request
      * @return A spec-based map of the query result
      */
-    protected Map<String, Object> doGraphQLRequest(HttpServletRequest req, String query,
-        String operationName, Map<String, Object> variables) {
+    protected Map<String, Object> doGraphQLRequest(HttpServletRequest req, HttpServletResponse resp,
+        String query, String operationName, Map<String, Object> variables) {
         // build gql request
         final ExecutionInput input = ExecutionInput.newExecutionInput()
             .query(query)
             .operationName(operationName)
-            .context(GQLAuthUtilities.buildContext(req))
+            .context(GQLAuthUtilities.buildContext(req, resp))
             .variables(variables)
             .build();
         // execute
@@ -172,13 +178,15 @@ public class GQLServlet extends ExtensionHttpHandler {
      * @return A wired schema
      */
     protected GraphQLSchema buildSchema() {
+        final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository());
         final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
+        ZimbraLog.extensions.info("Generating schema with loaded resolvers . . .");
         return new GraphQLSchemaGenerator()
             .withBasePackages(
                 "com.zimbra.graphql.models",
-                "com.zimbra.graphql.models.inputs",
-                "com.zimbra.soap.mail.type")
+                "com.zimbra.soap")
             .withOperationsFromSingletons(
+                authResolver,
                 folderResolver
             ).generate();
     }
