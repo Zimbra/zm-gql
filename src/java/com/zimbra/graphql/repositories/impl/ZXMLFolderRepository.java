@@ -16,6 +16,9 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -25,7 +28,9 @@ import com.zimbra.cs.service.mail.CreateFolder;
 import com.zimbra.cs.service.mail.CreateSearchFolder;
 import com.zimbra.cs.service.mail.FolderAction;
 import com.zimbra.cs.service.mail.GetFolder;
+import com.zimbra.cs.service.mail.GetSearchFolder;
 import com.zimbra.cs.service.mail.ItemAction;
+import com.zimbra.cs.service.mail.ModifySearchFolder;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
@@ -33,12 +38,16 @@ import com.zimbra.soap.mail.message.CreateFolderRequest;
 import com.zimbra.soap.mail.message.CreateSearchFolderRequest;
 import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.message.GetFolderRequest;
+import com.zimbra.soap.mail.message.GetSearchFolderRequest;
+import com.zimbra.soap.mail.message.ModifySearchFolderRequest;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.FolderActionResult;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.GetFolderSpec;
+import com.zimbra.soap.mail.type.ModifySearchFolderSpec;
 import com.zimbra.soap.mail.type.NewFolderSpec;
 import com.zimbra.soap.mail.type.NewSearchFolderSpec;
+import com.zimbra.soap.mail.type.SearchFolder;
 
 /**
  * The ZXMLFolderRepository class.<br>
@@ -66,6 +75,16 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
     protected final GetFolder getFolderHandler;
 
     /**
+     * The getFolder document handler.
+     */
+    protected final GetSearchFolder getSearchFolderHandler;
+
+    /**
+     * The getFolder document handler.
+     */
+    protected final ModifySearchFolder modifySearchFolderHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLFolderRepository() {
@@ -73,6 +92,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         createFolderHandler = new CreateFolder();
         getFolderHandler = new GetFolder();
         createSearchFolderHandler = new CreateSearchFolder();
+        getSearchFolderHandler = new GetSearchFolder();
+        modifySearchFolderHandler = new ModifySearchFolder();
     }
 
     /**
@@ -84,11 +105,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @param createSearchFolderHandler The create search folder handler
      */
     public ZXMLFolderRepository(ItemAction actionHandler, CreateFolder createHandler,
-        GetFolder getHandler, CreateSearchFolder createSearchFolderHandler) {
+        GetFolder getHandler, CreateSearchFolder createSearchFolderHandler,
+        GetSearchFolder getSearchFolderHandler, ModifySearchFolder modifySearchFolderHandler) {
         super(actionHandler);
         this.createFolderHandler = createHandler;
         this.getFolderHandler = getHandler;
         this.createSearchFolderHandler = createSearchFolderHandler;
+        this.getSearchFolderHandler = getSearchFolderHandler;
+        this.modifySearchFolderHandler = modifySearchFolderHandler;
     }
 
     /**
@@ -157,31 +181,6 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
     }
 
     /**
-     * Create a search folder with given properties.
-     *
-     * @param octxt The operation context
-     * @param account The account to create the folder
-     * @param searchFolder New search folder spec
-     * @return The newly created folder
-     * @throws ServiceException If there are issues executing the document
-     */
-    public Folder createSearchFolder(OperationContext octxt, Account account,
-            NewSearchFolderSpec searchFolder) throws ServiceException {
-        // execute
-        final CreateSearchFolderRequest req = new CreateSearchFolderRequest(searchFolder);
-        final Element response = XMLDocumentUtilities.executeDocument(
-            createSearchFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(octxt, account));
-        Folder zCreatedSearchFolder = null;
-        if (response != null) {
-            zCreatedSearchFolder = XMLDocumentUtilities
-                .fromElement(response.getElement(MailConstants.E_FOLDER), Folder.class);
-        }
-        return zCreatedSearchFolder;
-    }
-
-    /**
      * Performs a folder action with given properties.
      *
      * @param octxt The operation context
@@ -200,6 +199,77 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
                 FolderActionResult.class);
         }
         return result;
+    }
+
+    /**
+     * Get search folders with given properties.
+     *
+     * @param octxt The operation context
+     * @param account The account to create the folder
+     * @return The newly created folder
+     * @throws ServiceException If there are issues executing the document
+     */
+    public List<SearchFolder> getSearchFolder(OperationContext octxt, Account account)
+            throws ServiceException {
+        // execute
+        final GetSearchFolderRequest req = new GetSearchFolderRequest();
+        final Element response = XMLDocumentUtilities.executeDocument(getSearchFolderHandler,
+                XMLDocumentUtilities.toElement(req), GQLAuthUtilities.getZimbraSoapContext(octxt, account));
+        List<SearchFolder> searchFolders = new ArrayList<SearchFolder>();
+        if (response != null && response.hasChildren()) {
+            List<Element> searches = response.listElements(MailConstants.E_SEARCH);
+            for (Element search : searches) {
+                SearchFolder sf = XMLDocumentUtilities.fromElement(search, SearchFolder.class);
+                searchFolders.add(sf);
+            }
+        }
+        return searchFolders;
+    }
+
+    /**
+     * Create a search folder with given properties.
+     *
+     * @param octxt The operation context
+     * @param account The account to create the folder
+     * @param searchFolder New search folder spec
+     * @return The newly created folder
+     * @throws ServiceException If there are issues executing the document
+     */
+    public SearchFolder createSearchFolder(OperationContext octxt, Account account, NewSearchFolderSpec searchFolder)
+            throws ServiceException {
+        // execute
+        final CreateSearchFolderRequest req = new CreateSearchFolderRequest(searchFolder);
+        final Element response = XMLDocumentUtilities.executeDocument(createSearchFolderHandler,
+                XMLDocumentUtilities.toElement(req), GQLAuthUtilities.getZimbraSoapContext(octxt, account));
+        SearchFolder zCreatedSearchFolder = null;
+        if (response != null) {
+            zCreatedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
+                    SearchFolder.class);
+        }
+        return zCreatedSearchFolder;
+    }
+
+    /**
+     * Create a search folder with given properties.
+     *
+     * @param octxt The operation context
+     * @param account The account to create the folder
+     * @param searchFolder New search folder spec
+     * @return The newly created folder
+     * @throws ServiceException If there are issues executing the document
+     */
+    public SearchFolder modifySearchFolder(OperationContext octxt, Account account, ModifySearchFolderSpec searchFolder)
+            throws ServiceException {
+        // execute
+        final ModifySearchFolderRequest req = new ModifySearchFolderRequest(searchFolder);
+        final Element response = XMLDocumentUtilities.executeDocument(modifySearchFolderHandler,
+                XMLDocumentUtilities.toElement(req), GQLAuthUtilities.getZimbraSoapContext(octxt, account));
+        SearchFolder modifiedSearchFolder = null;
+        if (response != null) {
+            modifiedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
+                    SearchFolder.class);
+        }
+        return modifiedSearchFolder;
     }
 
 }
