@@ -75,12 +75,12 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
     protected final GetFolder getFolderHandler;
 
     /**
-     * The getFolder document handler.
+     * The getSearchFolder document handler.
      */
     protected final GetSearchFolder getSearchFolderHandler;
 
     /**
-     * The getFolder document handler.
+     * The modifySearchFolder document handler.
      */
     protected final ModifySearchFolder modifySearchFolderHandler;
 
@@ -103,6 +103,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @param createHandler The create folder handler
      * @param getHandler The get folder handler
      * @param createSearchFolderHandler The create search folder handler
+     * @param getSearchFolderHandler The get search folder handler
+     * @param modifySearchFolderHandler The modify search folder handler
      */
     public ZXMLFolderRepository(ItemAction actionHandler, CreateFolder createHandler,
         GetFolder getHandler, CreateSearchFolder createSearchFolderHandler,
@@ -205,8 +207,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * Get search folders with given properties.
      *
      * @param octxt The operation context
-     * @param account The account to create the folder
-     * @return The newly created folder
+     * @param account The account to get the search folder
+     * @return A list of search folders
      * @throws ServiceException If there are issues executing the document
      */
     public List<SearchFolder> getSearchFolder(OperationContext octxt, Account account)
@@ -253,9 +255,9 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * Create a search folder with given properties.
      *
      * @param octxt The operation context
-     * @param account The account to create the folder
-     * @param searchFolder New search folder spec
-     * @return The newly created folder
+     * @param account The account to modify the folder
+     * @param searchFolder Modify search folder spec
+     * @return The modified search folder
      * @throws ServiceException If there are issues executing the document
      */
     public SearchFolder modifySearchFolder(OperationContext octxt, Account account, ModifySearchFolderSpec searchFolder)
