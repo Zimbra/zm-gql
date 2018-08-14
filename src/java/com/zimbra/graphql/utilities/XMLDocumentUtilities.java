@@ -43,12 +43,12 @@ public class XMLDocumentUtilities {
      * validating auth credentials.
      *
      * @param handler The handler to handle the request
-     * @param request The request to execute
      * @param rctxt The graphql context for the request
+     * @param request The request to execute
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocumentAsGuest(DocumentHandler handler, Element request, RequestContext rctxt)
+    public static Element executeDocumentAsGuest(DocumentHandler handler, RequestContext rctxt, Element request)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT,
@@ -62,12 +62,12 @@ public class XMLDocumentUtilities {
      * Executes a given request on a document handler.
      *
      * @param handler The handler to handle the request
-     * @param request The request to execute
      * @param zsc The zimbra soap context for the request
+     * @param request The request to execute
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocument(DocumentHandler handler, Element request, ZimbraSoapContext zsc)
+    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);

@@ -89,8 +89,8 @@ public class ZXMLAuthRepository extends ZXMLRepository implements IRepository {
         // execute
         final Element response = XMLDocumentUtilities.executeDocumentAsGuest(
             authHandler,
-            XMLDocumentUtilities.toElement(req),
-            rctxt);
+            rctxt,
+            XMLDocumentUtilities.toElement(req));
         AuthResponse zAuthResponse = null;
         if (response != null) {
             zAuthResponse = XMLDocumentUtilities

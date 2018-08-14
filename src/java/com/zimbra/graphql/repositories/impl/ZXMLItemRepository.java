@@ -60,8 +60,8 @@ public class ZXMLItemRepository extends ZXMLRepository implements IRepository {
     public Element action(RequestContext rctxt, Object req) throws ServiceException {
         final Element response = XMLDocumentUtilities.executeDocument(
             actionHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            GQLAuthUtilities.getZimbraSoapContext(rctxt),
+            XMLDocumentUtilities.toElement(req));
         return response;
     }
 

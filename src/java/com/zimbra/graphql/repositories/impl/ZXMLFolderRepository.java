@@ -33,6 +33,7 @@ import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
+import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateFolderRequest;
 import com.zimbra.soap.mail.message.CreateSearchFolderRequest;
 import com.zimbra.soap.mail.message.FolderActionRequest;
@@ -132,6 +133,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
     public Folder getFolder(RequestContext rctxt, Boolean visible,
         Boolean needGranteeName, Folder.View view, Integer depth, Boolean traverseMountpoints,
         GetFolderSpec getFolder) throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // map the request params
         final GetFolderRequest req = new GetFolderRequest();
         req.setFolder(getFolder);
@@ -145,8 +148,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         // execute
         final Element response = XMLDocumentUtilities.executeDocument(
             getFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            zsc,
+            XMLDocumentUtilities.toElement(req));
         Folder folder = null;
         if (response != null) {
             folder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_FOLDER),
@@ -166,12 +169,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      */
     public Folder createFolder(RequestContext rctxt,
         NewFolderSpec folderToCreate) throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // execute
         final CreateFolderRequest req = new CreateFolderRequest(folderToCreate);
         final Element response = XMLDocumentUtilities.executeDocument(
             createFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            zsc,
+            XMLDocumentUtilities.toElement(req));
         Folder zCreatedFolder = null;
         if (response != null) {
             zCreatedFolder = XMLDocumentUtilities
@@ -209,12 +214,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      */
     public List<SearchFolder> searchFolderGet(RequestContext rctxt)
             throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // execute
         final GetSearchFolderRequest req = new GetSearchFolderRequest();
         final Element response = XMLDocumentUtilities.executeDocument(
             getSearchFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            zsc,
+            XMLDocumentUtilities.toElement(req));
         final List<SearchFolder> searchFolders = new ArrayList<SearchFolder>();
         if (response != null && response.hasChildren()) {
             final List<Element> searches = response.listElements(MailConstants.E_SEARCH);
@@ -236,12 +243,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      */
     public SearchFolder searchFolderCreate(RequestContext rctxt, NewSearchFolderSpec searchFolder)
             throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // execute
         final CreateSearchFolderRequest req = new CreateSearchFolderRequest(searchFolder);
         final Element response = XMLDocumentUtilities.executeDocument(
             createSearchFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            zsc,
+            XMLDocumentUtilities.toElement(req));
         SearchFolder zCreatedSearchFolder = null;
         if (response != null) {
             zCreatedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
@@ -260,12 +269,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      */
     public SearchFolder searchFolderModify(RequestContext rctxt, ModifySearchFolderSpec searchFolder)
             throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // execute
         final ModifySearchFolderRequest req = new ModifySearchFolderRequest(searchFolder);
         final Element response = XMLDocumentUtilities.executeDocument(
             modifySearchFolderHandler,
-            XMLDocumentUtilities.toElement(req),
-            GQLAuthUtilities.getZimbraSoapContext(rctxt));
+            zsc,
+            XMLDocumentUtilities.toElement(req));
         SearchFolder modifiedSearchFolder = null;
         if (response != null) {
             modifiedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
