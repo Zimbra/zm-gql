@@ -211,7 +211,7 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @return A list of search folders
      * @throws ServiceException If there are issues executing the document
      */
-    public List<SearchFolder> getSearchFolder(OperationContext octxt, Account account)
+    public List<SearchFolder> searchFolderGet(OperationContext octxt, Account account)
             throws ServiceException {
         // execute
         final GetSearchFolderRequest req = new GetSearchFolderRequest();
@@ -237,7 +237,7 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @return The newly created folder
      * @throws ServiceException If there are issues executing the document
      */
-    public SearchFolder createSearchFolder(OperationContext octxt, Account account, NewSearchFolderSpec searchFolder)
+    public SearchFolder searchFolderCreate(OperationContext octxt, Account account, NewSearchFolderSpec searchFolder)
             throws ServiceException {
         // execute
         final CreateSearchFolderRequest req = new CreateSearchFolderRequest(searchFolder);
@@ -260,7 +260,7 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @return The modified search folder
      * @throws ServiceException If there are issues executing the document
      */
-    public SearchFolder modifySearchFolder(OperationContext octxt, Account account, ModifySearchFolderSpec searchFolder)
+    public SearchFolder searchFolderModify(OperationContext octxt, Account account, ModifySearchFolderSpec searchFolder)
             throws ServiceException {
         // execute
         final ModifySearchFolderRequest req = new ModifySearchFolderRequest(searchFolder);

@@ -86,23 +86,23 @@ public class FolderResolver {
     }
 
     @GraphQLQuery(description = "Retrieve search folders for given user")
-    public List<SearchFolder> searchFolder(@GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.getSearchFolder(context.getOperationContext(), context.getAccount());
+    public List<SearchFolder> searchFolderGet(@GraphQLRootContext AuthContext context) throws ServiceException {
+        return folderRepository.searchFolderGet(context.getOperationContext(), context.getAccount());
     }
 
     @GraphQLMutation(description = "Create a search folder with given properties.")
-    public SearchFolder createSearchFolder(
+    public SearchFolder searchFolderCreate(
         @GraphQLNonNull @GraphQLArgument(name = "searchFolder") NewSearchFolderSpec searchFolder,
         @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.createSearchFolder(context.getOperationContext(), context.getAccount(),
+        return folderRepository.searchFolderCreate(context.getOperationContext(), context.getAccount(),
             searchFolder);
     }
 
     @GraphQLMutation(description = "Modify existing search folder with given properties.")
-    public SearchFolder modifySearchFolder(
+    public SearchFolder searchFolderModify(
         @GraphQLNonNull @GraphQLArgument(name = "searchFolder") ModifySearchFolderSpec searchFolder,
         @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.modifySearchFolder(context.getOperationContext(), context.getAccount(),
+        return folderRepository.searchFolderModify(context.getOperationContext(), context.getAccount(),
             searchFolder);
     }
 }
