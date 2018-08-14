@@ -65,6 +65,9 @@ public class GQLAuthUtilities {
     public static AuthContext buildContext(HttpServletRequest req, HttpServletResponse resp) {
         AuthToken token = null;
         Account account = null;
+        final AuthContext context = new AuthContext();
+        context.setRawRequest(req);
+        context.setRawResponse(resp);
         ZimbraLog.extensions.debug("Building request context.");
         try {
             final Cookie [] cookies = req.getCookies();
@@ -75,14 +78,11 @@ public class GQLAuthUtilities {
         } catch (final ServiceException e) {
             ZimbraLog.extensions.debug("Could not authenticate the user.");
             // if an exception occurred, auth was present but invalid
-            // return an empty auth context
-            return new AuthContext();
+            // return an auth context with just the request, and response
+            return context;
         }
-        final AuthContext context = new AuthContext();
         context.setAuthToken(token);
         context.setAccount(account);
-        context.setRawRequest(req);
-        context.setRawResponse(resp);
         context.setOperationContext(getOperationContext(req, token));
         return context;
     }
