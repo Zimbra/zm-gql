@@ -19,7 +19,7 @@ package com.zimbra.graphql.resolvers.impl;
 import java.util.List;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.FolderActionResult;
@@ -65,44 +65,41 @@ public class FolderResolver {
         @GraphQLArgument(name = "depth") Integer depth,
         @GraphQLArgument(name = "traverseMountpoints") Boolean traverseMountpoints,
         @GraphQLArgument(name = "getFolder") GetFolderSpec getFolder,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.getFolder(context.getOperationContext(), context.getAccount(),
-            visible, needGranteeName, view, depth, traverseMountpoints, getFolder);
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.getFolder(context, visible, needGranteeName, view, depth,
+            traverseMountpoints, getFolder);
     }
 
     @GraphQLMutation(description = "Create a folder with given properties.")
     public Folder createFolder(
         @GraphQLNonNull @GraphQLArgument(name = "folder") NewFolderSpec folder,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.createFolder(context.getOperationContext(), context.getAccount(),
-            folder);
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.createFolder(context, folder);
     }
 
     @GraphQLMutation(description = "Handles a folder action request.")
     public FolderActionResult action(
         @GraphQLNonNull @GraphQLArgument(name = "input") FolderActionSelector input,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.action(context.getOperationContext(), context.getAccount(), input);
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.action(context, input);
     }
 
     @GraphQLQuery(description = "Retrieve search folders for given user")
-    public List<SearchFolder> searchFolderGet(@GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.searchFolderGet(context.getOperationContext(), context.getAccount());
+    public List<SearchFolder> searchFolderGet(@GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.searchFolderGet(context);
     }
 
     @GraphQLMutation(description = "Create a search folder with given properties.")
     public SearchFolder searchFolderCreate(
         @GraphQLNonNull @GraphQLArgument(name = "searchFolder") NewSearchFolderSpec searchFolder,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.searchFolderCreate(context.getOperationContext(), context.getAccount(),
-            searchFolder);
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.searchFolderCreate(context, searchFolder);
     }
 
     @GraphQLMutation(description = "Modify existing search folder with given properties.")
     public SearchFolder searchFolderModify(
         @GraphQLNonNull @GraphQLArgument(name = "searchFolder") ModifySearchFolderSpec searchFolder,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
-        return folderRepository.searchFolderModify(context.getOperationContext(), context.getAccount(),
-            searchFolder);
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return folderRepository.searchFolderModify(context, searchFolder);
     }
 }

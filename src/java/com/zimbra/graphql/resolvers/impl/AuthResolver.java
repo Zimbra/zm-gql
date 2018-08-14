@@ -17,7 +17,7 @@
 package com.zimbra.graphql.resolvers.impl;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLAuthRequestInput;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.soap.account.message.AuthResponse;
@@ -51,7 +51,7 @@ public class AuthResolver {
     @GraphQLMutation(description = "Authenticate for an account.")
     public AuthResponse authenticate(
         @GraphQLNonNull @GraphQLArgument(name = "authInput") GQLAuthRequestInput authRequestInput,
-        @GraphQLRootContext AuthContext context) throws ServiceException {
+        @GraphQLRootContext RequestContext context) throws ServiceException {
         return authRepository.authenticate(context, authRequestInput);
     }
 

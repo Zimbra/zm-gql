@@ -19,7 +19,7 @@ package com.zimbra.graphql.repositories.impl;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.account.Auth;
-import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLAuthRequestInput;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
@@ -61,12 +61,12 @@ public class ZXMLAuthRepository extends ZXMLRepository implements IRepository {
     /**
      * Performs an auth request with given properties.
      *
-     * @param authContext The request context
+     * @param rctxt The request context
      * @param authInput Auth properties
      * @return The auth response
      * @throws ServiceException If there are issues executing the document
      */
-    public AuthResponse authenticate(AuthContext authContext, GQLAuthRequestInput authInput)
+    public AuthResponse authenticate(RequestContext rctxt, GQLAuthRequestInput authInput)
         throws ServiceException {
         final AuthRequest req = new AuthRequest();
         req.setAccount(authInput.getAccount());
@@ -90,7 +90,7 @@ public class ZXMLAuthRepository extends ZXMLRepository implements IRepository {
         final Element response = XMLDocumentUtilities.executeDocumentAsGuest(
             authHandler,
             XMLDocumentUtilities.toElement(req),
-            authContext);
+            rctxt);
         AuthResponse zAuthResponse = null;
         if (response != null) {
             zAuthResponse = XMLDocumentUtilities

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
@@ -44,17 +44,17 @@ public class XMLDocumentUtilities {
      *
      * @param handler The handler to handle the request
      * @param request The request to execute
-     * @param actxt The graphql context for the request
+     * @param rctxt The graphql context for the request
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocumentAsGuest(DocumentHandler handler, Element request, AuthContext actxt)
+    public static Element executeDocumentAsGuest(DocumentHandler handler, Element request, RequestContext rctxt)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT,
             GQLAuthUtilities.getGuestZimbraSoapContext(request.getQName(), handler));
-        context.put(SoapServlet.SERVLET_REQUEST, actxt.getRawRequest());
-        context.put(SoapServlet.SERVLET_RESPONSE, actxt.getRawResponse());
+        context.put(SoapServlet.SERVLET_REQUEST, rctxt.getRawRequest());
+        context.put(SoapServlet.SERVLET_RESPONSE, rctxt.getRawResponse());
         return handler.handle(request, context);
     }
 
