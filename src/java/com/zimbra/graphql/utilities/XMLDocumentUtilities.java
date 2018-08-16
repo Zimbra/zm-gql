@@ -88,7 +88,7 @@ public class XMLDocumentUtilities {
      *
      * @see JaxbUtil#elementToJaxb(Element, Class)
      */
-    public static <T> T fromElement(Element e, Class<T> klass) throws ServiceException {
+    public static <T> T fromElement(Element e, Class<?> klass) throws ServiceException {
         return JaxbUtil.elementToJaxb(e, klass);
     }
 
