@@ -73,7 +73,7 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @return A list of message hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<MessageHitInfo> searchMessages(RequestContext rctxt,
+    public List<MessageHitInfo> messageSearch(RequestContext rctxt,
         GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("message");
         return search(rctxt, searchInput, MessageHitInfo.class, MailConstants.E_MSG);
@@ -87,7 +87,7 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @return A list of conversation hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<ConversationHitInfo> searchConversations(RequestContext rctxt,
+    public List<ConversationHitInfo> conversationSearch(RequestContext rctxt,
         GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("conversation");
         return search(rctxt, searchInput, ConversationHitInfo.class, MailConstants.E_CONV);
