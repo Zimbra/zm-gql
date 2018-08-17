@@ -1,7 +1,17 @@
 /*
  * ***** BEGIN LICENSE BLOCK *****
- * Zimbra Collaboration Suite, Network Edition.
- * Copyright (C) 2013, 2014 Zimbra, Inc.  All Rights Reserved.
+ * Zimbra GraphQL Extension
+ * Copyright (C) 2018 Synacor, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software Foundation,
+ * version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program.
+ * If not, see <https://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK *****
  */
 package com.zimbra.graphql.repositories.impl;
@@ -12,9 +22,8 @@ import java.util.List;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.mail.Search;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
@@ -29,13 +38,15 @@ import com.zimbra.soap.mail.type.MessageHitInfo;
  * Contains XML document based data access methods for search.
  *
  * @author Zimbra API Team
- * @param <T>
  * @package com.zimbra.graphql.repositories.impl
  * @copyright Copyright © 2018
  */
 public class ZXMLSearchRepository extends ZXMLRepository implements IRepository {
 
-    Search searchHandler;
+    /**
+     * The search document handler.
+     */
+    protected final Search searchHandler;
 
     /**
      * Creates an instance with default document handlers.
@@ -56,50 +67,46 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
 
     /**
      * Search messages.
-     * 
+     *
+     * @param rctxt The request context
      * @param searchInput The GQLSearchRequestInput object
-     * @param operationContext The OperationContext boject 
-     * @param account The Account object
      * @return A list of message hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<MessageHitInfo> searchMessages(GQLSearchRequestInput searchInput, OperationContext octxt,
-            Account account) throws ServiceException {
+    public List<MessageHitInfo> searchMessages(RequestContext rctxt,
+        GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("message");
-        return search(searchInput, octxt, account, MessageHitInfo.class, MailConstants.E_MSG);
+        return search(rctxt, searchInput, MessageHitInfo.class, MailConstants.E_MSG);
     }
 
     /**
      * Search conversations.
-     * 
+     *
+     * @param rctxt The request context
      * @param searchInput The GQLSearchRequestInput object
-     * @param octxt The OperationContext object 
-     * @param account The Account object
      * @return A list of conversation hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<ConversationHitInfo> searchConversations(GQLSearchRequestInput searchInput,
-            OperationContext octxt, Account account) throws ServiceException {
+    public List<ConversationHitInfo> searchConversations(RequestContext rctxt,
+        GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("conversation");
-        return search(searchInput, octxt, account, ConversationHitInfo.class, MailConstants.E_CONV);
+        return search(rctxt, searchInput, ConversationHitInfo.class, MailConstants.E_CONV);
     }
 
     /**
      * Perform a search and return the requested list of objects.
-     * 
+     *
+     * @param rctxt The request context
      * @param searchInput The GQLSearchRequestInput object
-     * @param octxt The OperationContext object 
-     * @param account The Account object
      * @param responseClass The Class to package the response into
      * @param requiredElement The element name to retrieve from the search result
-     * @return A list of objects that are found in the search request 
+     * @return A list of objects that are found in the search request
      * @throws ServiceException If there are issues executing the document
      */
-    private <T> List<T> search(GQLSearchRequestInput searchInput, OperationContext octxt, 
-            Account account, Class<?> responseClass, String requiredElement
-            ) throws ServiceException {
-            ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(octxt, account);
-            final SearchRequest req = new SearchRequest();
+    private <T> List<T> search(RequestContext rctxt, GQLSearchRequestInput searchInput,
+        Class<?> responseClass, String requiredElement) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final SearchRequest req = new SearchRequest();
         req.setIncludeTagDeleted(searchInput.getIncludeTagDeleted());
         req.setIncludeTagMuted(searchInput.getIncludeTagMuted());
         req.setAllowableTaskStatus(searchInput.getAllowableTaskStatus());
@@ -136,14 +143,13 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
         // execute
         final Element response = XMLDocumentUtilities.executeDocument(
             searchHandler,
-            XMLDocumentUtilities.toElement(req),
-            zsc
-        );
-        List<T> searchHits = new ArrayList<T>();
+            zsc,
+            XMLDocumentUtilities.toElement(req));
+        final List<T> searchHits = new ArrayList<T>();
         if (response != null && response.hasChildren()) {
-            List<Element> searches = response.listElements(requiredElement);
-            for (Element search : searches) {
-                T searchHit = XMLDocumentUtilities.fromElement(search, responseClass);
+            final List<Element> searches = response.listElements(requiredElement);
+            for (final Element search : searches) {
+                final T searchHit = XMLDocumentUtilities.fromElement(search, responseClass);
                 searchHits.add(searchHit);
             }
         }
