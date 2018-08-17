@@ -37,8 +37,8 @@ import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.errors.GQLError;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
-import com.zimbra.graphql.resolvers.impl.AuthResolver;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
+import com.zimbra.graphql.resolvers.impl.AuthResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.resolvers.impl.SearchResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
@@ -189,7 +189,7 @@ public class GQLServlet extends ExtensionHttpHandler {
      * @throws IOException If there are issues converting the result to json or writing out
      */
     protected void sendError(HttpServletResponse resp, Exception e) throws IOException {
-        ZimbraLog.extensions.debug("An error has occurred before graphql execution : %s.",
+        ZimbraLog.extensions.error("An error has occurred before graphql execution : %s.",
             e.getMessage());
         ZimbraLog.extensions.debug(e);
         // result map based on specification
