@@ -39,9 +39,8 @@ import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.account.ZimbraJWToken;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.graphql.models.AuthContext;
+import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 
@@ -56,64 +55,18 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class GQLAuthUtilities {
 
     /**
-     * Creates an auth context for the request.
+     * Creates a context for the request.
      *
      * @param req The http request
      * @param resp The http response
-     * @return An auth context
+     * @return A request context
      */
-    public static AuthContext buildContext(HttpServletRequest req, HttpServletResponse resp) {
-        AuthToken token = null;
-        Account account = null;
-        final AuthContext context = new AuthContext();
+    public static RequestContext buildContext(HttpServletRequest req, HttpServletResponse resp) {
+        ZimbraLog.extensions.debug("Building request context.");
+        final RequestContext context = new RequestContext();
         context.setRawRequest(req);
         context.setRawResponse(resp);
-        ZimbraLog.extensions.debug("Building request context.");
-        try {
-            final Cookie [] cookies = req.getCookies();
-            final Map<String, String> headers = new HashMap<String, String>();
-            headers.put("Authorization", req.getHeader("Authorization"));
-            token = getAuthToken(cookies, headers);
-            account = getAccount(token);
-        } catch (final ServiceException e) {
-            ZimbraLog.extensions.debug("Could not authenticate the user.");
-            // if an exception occurred, auth was present but invalid
-            // return an auth context with just the request, and response
-            return context;
-        }
-        context.setAuthToken(token);
-        context.setAccount(account);
-        context.setOperationContext(getOperationContext(req, token));
         return context;
-    }
-
-    /**
-     * Creates an operation context for a given http request and auth token.<br>
-     * Returns `null` if no authToken or req is present.
-     *
-     * @param req The http request
-     * @param authToken The auth token from the request
-     * @return An operation context
-     */
-    protected static OperationContext getOperationContext(HttpServletRequest req,
-        AuthToken authToken) {
-        OperationContext octxt = null;
-        if (req != null && authToken != null) {
-            try {
-                octxt = new OperationContext(authToken);
-                octxt.setRequestIP(req.getRemoteAddr());
-                octxt.setUserAgent(req.getHeader("User-Agent"));
-                if (authToken != null) {
-                    octxt.setmAuthTokenAccountId(authToken.getAccountId());
-                    octxt.setmRequestedAccountId(authToken.getAccountId());
-                }
-                // TODO : handle change constraint, and real requestedAccountId
-            } catch (final ServiceException e) {
-                // continue on to return empty octxt
-                // some resources may not require auth
-            }
-        }
-        return octxt;
     }
 
     /**
@@ -147,51 +100,37 @@ public class GQLAuthUtilities {
             }
         } catch (final AuthTokenException e) {
             ZimbraLog.extensions.info("Error authenticating user.");
-            throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
+            throw ServiceException.PERM_DENIED(L10nUtil.getMessage(MsgKey.errMustAuthenticate));
         }
         return authToken;
     }
 
     /**
-     * Returns the requesting user's account.<br>
-     * If no authToken is present, returns null (some requests do not require auth).<br>
-     * Throws an exception if an account cannot be retrieved with non-null credentials.
+     * Validates an auth token.<br>
+     * Returns false if no authToken is present, or an account cannot
+     * be retrieved with the specified credentials.
      *
      * @param authToken The auth token to retrieve the account with
-     * @return The requesting user's account
-     * @throws ServiceException If there are issues retrieving the account
+     * @return True if the specified token is valid and can retrieve an account
      */
-    protected static Account getAccount(AuthToken authToken) throws ServiceException {
+    protected static boolean isValidToken(AuthToken authToken) {
         Account account = null;
-        if (authToken != null) {
-            ZimbraLog.extensions.debug("Validating request auth credentials.");
-            if (authToken.isZimbraUser()) {
-                if (!authToken.isRegistered()) {
-                    throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                        + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
+        ZimbraLog.extensions.debug("Validating request auth credentials.");
+        if (authToken != null && authToken.isZimbraUser() && authToken.isRegistered()) {
+            try {
+                account = AuthProvider.validateAuthToken(
+                    Provisioning.getInstance(), authToken, false);
+                if (account != null) {
+                    // token is valid if we got an account
+                    ZimbraLog.extensions.debug("Account is:%s", account);
+                    return true;
                 }
-                try {
-                    account = AuthProvider.validateAuthToken(Provisioning.getInstance(),
-                        authToken, false);
-                } catch (final ServiceException e) {
-                    throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                        + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
-                }
-            } else {
-                throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                    + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
+            } catch (final ServiceException e) {
+                ZimbraLog.extensions.debug(
+                    "Failed to retrieve account with request credentials.", e);
             }
-            if (account == null) {
-                throw ServiceException.PERM_DENIED(HttpServletResponse.SC_UNAUTHORIZED + ": "
-                    + L10nUtil.getMessage(MsgKey.errMustAuthenticate));
-            }
-            ZimbraLog.extensions.debug("Account is:%s", account);
         }
-        // do nothing if no token exists
-        // some resources may not require auth
-
-        return account;
+        return false;
     }
 
     /**
@@ -233,21 +172,26 @@ public class GQLAuthUtilities {
 
     /**
      * Creates a zimbra soap context given the current context's request credentials.
-     * Ensures the operation context and account are non null.
+     * Ensures the request contains an auth token.
      *
-     * @param octxt The operation context
-     * @param account The requesting account
+     * @param rctxt The request context
      * @return A zimbra soap context
      * @throws ServiceException If there are issues creating the soap context
      */
-    public static ZimbraSoapContext getZimbraSoapContext(OperationContext octxt, Account account)
+    public static ZimbraSoapContext getZimbraSoapContext(RequestContext rctxt)
         throws ServiceException {
-        if (octxt != null && account != null) {
-            return new ZimbraSoapContext(octxt.getAuthToken(), account.getId(), SoapProtocol.Soap12,
+        final HttpServletRequest req = rctxt.getRawRequest();
+        final Cookie [] cookies = req.getCookies();
+        final Map<String, String> headers = new HashMap<String, String>(1);
+        headers.put("Authorization", req.getHeader("Authorization"));
+        final AuthToken token = getAuthToken(cookies, headers);
+        if (isValidToken(token)) {
+            return new ZimbraSoapContext(token, token.getAccountId(), SoapProtocol.Soap12,
                 SoapProtocol.Soap12);
         }
+        // if we couldn't retrieve a token, there was no auth on this request
         ZimbraLog.extensions.debug("Request could not be authenticated.");
-        throw ServiceException.PERM_DENIED("Request could not be authenticated.");
+        throw ServiceException.PERM_DENIED(L10nUtil.getMessage(MsgKey.errMustAuthenticate));
     }
 
 }
