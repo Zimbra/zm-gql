@@ -29,7 +29,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
 
 /**
  * The AccountResolver class.<br>
- * Contains folder schema resources.
+ * Contains account schema resources.
  *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.resolvers.impl
@@ -49,15 +49,15 @@ public class AccountResolver {
     }
 
     @GraphQLQuery(description = "Retrieve account info")
-    public AccountInfo accountInfoGet(@GraphQLRootContext RequestContext context) throws ServiceException {
+    public AccountInfo accountInfoGet(@GraphQLRootContext RequestContext context)
+        throws ServiceException {
         return accountRepository.accountInfoGet(context);
     }
 
-    @GraphQLMutation(description="logout/end session for current user")
+    @GraphQLMutation(description="Logout/end session for current user")
     public void accountEndSession(
-            @GraphQLRootContext RequestContext context,
-            @GraphQLArgument(name=GqlConstants.CLEAR_COOKIES, description="clear cookies with end session")
-            boolean clearCookies) throws ServiceException {
+        @GraphQLArgument(name = GqlConstants.CLEAR_COOKIES, description = "Denotes whether to clear cookies") boolean clearCookies,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
         accountRepository.accountEndSession(context, clearCookies);
     }
 }

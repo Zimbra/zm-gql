@@ -66,19 +66,19 @@ public class FolderResolver {
         @GraphQLArgument(name = "traverseMountpoints") Boolean traverseMountpoints,
         @GraphQLArgument(name = "getFolder") GetFolderSpec getFolder,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        return folderRepository.getFolder(context, visible, needGranteeName, view, depth,
+        return folderRepository.folder(context, visible, needGranteeName, view, depth,
             traverseMountpoints, getFolder);
     }
 
     @GraphQLMutation(description = "Create a folder with given properties.")
-    public Folder createFolder(
+    public Folder folderCreate(
         @GraphQLNonNull @GraphQLArgument(name = "folder") NewFolderSpec folder,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return folderRepository.createFolder(context, folder);
     }
 
     @GraphQLMutation(description = "Handles a folder action request.")
-    public FolderActionResult action(
+    public FolderActionResult folderAction(
         @GraphQLNonNull @GraphQLArgument(name = "input") FolderActionSelector input,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return folderRepository.action(context, input);
