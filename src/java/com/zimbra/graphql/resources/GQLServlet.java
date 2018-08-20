@@ -35,8 +35,10 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.errors.GQLError;
+import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
+import com.zimbra.graphql.resolvers.impl.AccountResolver;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
@@ -224,6 +226,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository());
         final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         final SearchResolver searchResolver = new SearchResolver(new ZXMLSearchRepository());
+        final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
         ZimbraLog.extensions.info("Generating schema with loaded resolvers . . .");
         return new GraphQLSchemaGenerator()
             .withBasePackages(
@@ -232,7 +235,8 @@ public class GQLServlet extends ExtensionHttpHandler {
             .withOperationsFromSingletons(
                 authResolver,
                 folderResolver,
-                searchResolver
+                searchResolver,
+                accountResolver
             ).generate();
     }
 
