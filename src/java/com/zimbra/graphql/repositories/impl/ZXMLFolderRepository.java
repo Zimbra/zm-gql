@@ -88,18 +88,14 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * Creates an instance with default document handlers.
      */
     public ZXMLFolderRepository() {
-        super(new FolderAction());
-        createFolderHandler = new CreateFolder();
-        getFolderHandler = new GetFolder();
-        createSearchFolderHandler = new CreateSearchFolder();
-        getSearchFolderHandler = new GetSearchFolder();
-        modifySearchFolderHandler = new ModifySearchFolder();
+        this(new FolderAction(), new CreateFolder(), new GetFolder(), new CreateSearchFolder(),
+            new GetSearchFolder(), new ModifySearchFolder());
     }
 
     /**
      * Creates an instance with specified handlers.
      *
-     * @param actionHandler The item action handler.
+     * @param actionHandler The item action handler
      * @param createHandler The create folder handler
      * @param getHandler The get folder handler
      * @param createSearchFolderHandler The create search folder handler
@@ -127,10 +123,10 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * @param depth Filter subfolder tree depth
      * @param traverseMountpoints Whether or not to traverse one level of mountpoints
      * @param getFolder The primary folder identifiers
-     * @return Fetch reuslts
+     * @return Fetch folder results
      * @throws ServiceException If there are issues executing the document
      */
-    public Folder getFolder(RequestContext rctxt, Boolean visible,
+    public Folder folder(RequestContext rctxt, Boolean visible,
         Boolean needGranteeName, Folder.View view, Integer depth, Boolean traverseMountpoints,
         GetFolderSpec getFolder) throws ServiceException {
         // get auth context

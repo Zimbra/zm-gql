@@ -38,9 +38,9 @@ import com.zimbra.graphql.errors.GQLError;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
+import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
 import com.zimbra.graphql.resolvers.impl.AccountResolver;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
-import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.resolvers.impl.SearchResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
@@ -223,20 +223,20 @@ public class GQLServlet extends ExtensionHttpHandler {
      * @return A wired schema
      */
     protected GraphQLSchema buildSchema() {
+        final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
         final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository());
         final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         final SearchResolver searchResolver = new SearchResolver(new ZXMLSearchRepository());
-        final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
         ZimbraLog.extensions.info("Generating schema with loaded resolvers . . .");
         return new GraphQLSchemaGenerator()
             .withBasePackages(
                 "com.zimbra.graphql.models",
                 "com.zimbra.soap")
             .withOperationsFromSingletons(
+                accountResolver,
                 authResolver,
                 folderResolver,
-                searchResolver,
-                accountResolver
+                searchResolver
             ).generate();
     }
 
