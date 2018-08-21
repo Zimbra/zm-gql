@@ -53,19 +53,19 @@ public class SearchResolver {
     }
 
     @GraphQLQuery(description = "Retrieves search results for the given properties.")
-    public List<MessageHitInfo> searchMessages(
+    public List<MessageHitInfo> messageSearch(
             @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
-        return searchRepository.searchMessages(context, searchInput);
+        return searchRepository.messageSearch(context, searchInput);
     }
 
     @GraphQLQuery(description = "Retrieves search results for the given properties.")
-    public List<ConversationHitInfo> searchConversations(
+    public List<ConversationHitInfo> conversationSearch(
             @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
-        return searchRepository.searchConversations(context, searchInput);
+        return searchRepository.conversationSearch(context, searchInput);
     }
 
 }
