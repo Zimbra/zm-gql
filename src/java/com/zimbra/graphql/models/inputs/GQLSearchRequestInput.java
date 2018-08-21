@@ -25,6 +25,7 @@ import com.zimbra.soap.type.MsgContent;
 import com.zimbra.soap.type.WantRecipsSetting;
 import com.zimbra.soap.type.ZmBoolean;
 
+import io.leangen.graphql.annotations.GraphQLIgnore;
 import io.leangen.graphql.annotations.GraphQLInputField;
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.types.GraphQLType;
@@ -48,6 +49,7 @@ public class GQLSearchRequestInput {
     protected Long calItemExpandEnd;
     protected String query;
     protected Boolean inDumpster;
+    @GraphQLIgnore
     protected String searchTypes;
     protected String groupBy;
     protected Boolean quick;
@@ -211,6 +213,7 @@ public class GQLSearchRequestInput {
      *
      * @return The searchTypes value
      */
+    @GraphQLIgnore
     public String getSearchTypes() {
         return searchTypes;
     }
@@ -221,6 +224,7 @@ public class GQLSearchRequestInput {
      *
      * @param searchTypes The searchTypes string to set
      */
+    @GraphQLIgnore
     @GraphQLInputField(name = "searchTypes", description="Comma separated list of search types. Legal values are: conversation, message, contact, appointment, task, wiki, document")
     public void setSearchTypes(String searchTypes) {
         this.searchTypes = searchTypes;
