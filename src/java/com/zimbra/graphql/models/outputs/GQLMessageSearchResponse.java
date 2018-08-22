@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
+import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.soap.mail.type.MessageHitInfo;
 import com.zimbra.soap.type.SearchHit;
 
@@ -35,21 +36,14 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name = "GQLMessageSearchResponse", description = "Search response data for a message search")
+@GraphQLType(name = GqlConstants.MESSAGE_SEARCH_RESPONSE, description = "Search response data for a message search")
 public class GQLMessageSearchResponse extends GQLSearchResponse {
 
     @Override
     public void setSearchHits(Iterable<SearchHit> setHits) {
         this.searchHits.clear();
         if (setHits != null) {
-            final List<MessageHitInfo> hits = new ArrayList<MessageHitInfo>();
-
-            for (final SearchHit hit : setHits) {
-                if (hit.getClass().equals(MessageHitInfo.class)) {
-                    hits.add((MessageHitInfo) hit);
-                }
-            }
-            Iterables.addAll(this.searchHits, hits);
+            Iterables.addAll(this.searchHits, setHits);
         }
     }
 
@@ -59,7 +53,7 @@ public class GQLMessageSearchResponse extends GQLSearchResponse {
     }
 
     @Override
-    @GraphQLQuery(name="searchHits", description="Search hits for messages")
+    @GraphQLQuery(name=GqlConstants.SEARCH_HITS, description="Search hits for messages")
     public List<MessageHitInfo> getSearchHits() {
         final List<MessageHitInfo> hits = new ArrayList<MessageHitInfo>();
         for (final SearchHit hit : searchHits) {

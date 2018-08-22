@@ -17,6 +17,7 @@
 package com.zimbra.graphql.resolvers.impl;
 
 
+import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
@@ -52,7 +53,7 @@ public class SearchResolver {
 
     @GraphQLQuery(description = "Search for messages with the given properties.")
     public GQLMessageSearchResponse messageSearch(
-            @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
         return searchRepository.messageSearch(context, searchInput);
@@ -60,7 +61,7 @@ public class SearchResolver {
 
     @GraphQLQuery(description = "Search for conversations with the given properties.")
     public GQLConversationSearchResponse conversationSearch(
-            @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
         return searchRepository.conversationSearch(context, searchInput);
