@@ -19,6 +19,7 @@ package com.zimbra.graphql.models.inputs;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.soap.type.AttributeName;
 import com.zimbra.soap.type.Id;
 
@@ -34,30 +35,30 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name="GetContactsRequest", description="Input for get contacts request.")
+@GraphQLType(name=GqlConstants.CLASS_GET_CONTACTS_REQUEST, description="Input for get contacts request.")
 public class GQLGetContactsRequestInput {
 
     private String folderId;
     private String sortBy;
     private Boolean doSync;
     private Boolean doDerefGroupMember;
-    private Boolean doGetMemberOf;
-    private Boolean doGetHiddenAttrs;
-    private Boolean doGetCertInfo;
-    private Boolean goGetImapUid;
+    private Boolean includeMemberOf;
+    private Boolean includeHiddenAttrs;
+    private Boolean includeCertInfo;
+    private Boolean includeImapUid;
     private Long maxMembers;
-    @GraphQLInputField(name="attributes", description="If present, return only the specified attribute(s).")
+    @GraphQLInputField(name=GqlConstants.ATTRIBUTES, description="If present, return only the specified attribute(s).")
     private final List<AttributeName> attributes = Lists.newArrayList();
-    @GraphQLInputField(name="memberAttributes", description="If present, return only the specified attribute(s) for derefed members, applicable only when doDerefGroupMember is set.")
+    @GraphQLInputField(name=GqlConstants.MEMBER_ATTRIBUTES, description="If present, return only the specified attribute(s) for derefed members, applicable only when doDerefGroupMember is set.")
     private final List<AttributeName> memberAttributes = Lists.newArrayList();
-    @GraphQLInputField(name="contacts", description="If present, only get the specified contact(s).")
+    @GraphQLInputField(name=GqlConstants.CONTACTS, description="If present, only get the specified contact(s).")
     private final List<Id> contacts = Lists.newArrayList();
 
     public String getFolderId() {
         return folderId;
     }
 
-    @GraphQLInputField(name="folderId", description="If is present, return only contacts in the specified folder")
+    @GraphQLInputField(name=GqlConstants.FOLDER_ID, description="If is present, return only contacts in the specified folder")
     public void setFolderId(String folderId) {
         this.folderId = folderId;
     }
@@ -66,7 +67,7 @@ public class GQLGetContactsRequestInput {
         return sortBy;
     }
 
-    @GraphQLInputField(name="sortBy", description="Sort By")
+    @GraphQLInputField(name=GqlConstants.SORT_BY, description="Sort By")
     public void setSortBy(String sortBy) {
         this.sortBy = sortBy;
     }
@@ -75,7 +76,7 @@ public class GQLGetContactsRequestInput {
         return doSync;
     }
 
-    @GraphQLInputField(name="doSync", description="Denotes whether to return modified date (md) on contacts")
+    @GraphQLInputField(name=GqlConstants.DO_SYNC, description="Denotes whether to return modified date (md) on contacts")
     public void setDoSync(Boolean doSync) {
         this.doSync = doSync;
     }
@@ -84,52 +85,52 @@ public class GQLGetContactsRequestInput {
         return doDerefGroupMember;
     }
 
-    @GraphQLInputField(name="doDerefGroupMember", description="Denotes whether to deref contact group members")
+    @GraphQLInputField(name=GqlConstants.DO_DEREF_GROUP_MEMBER, description="Denotes whether to deref contact group members")
     public void setDoDerefGroupMember(Boolean doDerefGroupMember) {
         this.doDerefGroupMember = doDerefGroupMember;
     }
 
-    public Boolean getDoGetMemberOf() {
-        return doGetMemberOf;
+    public Boolean getIncludeMemberOf() {
+        return includeMemberOf;
     }
 
-    @GraphQLInputField(name="doGetMemberOf", description="Denotes whether to include the list of contact groups this contact is a member of")
-    public void setDoGetMemberOf(Boolean doGetMemberOf) {
-        this.doGetMemberOf = doGetMemberOf;
+    @GraphQLInputField(name=GqlConstants.INCLUDE_MEMBER_OF, description="Denotes whether to include the list of contact groups this contact is a member of")
+    public void setIncludeMemberOf(Boolean includeMemberOf) {
+        this.includeMemberOf = includeMemberOf;
     }
 
-    public Boolean getDoGetHiddenAttrs() {
-        return doGetHiddenAttrs;
+    public Boolean getIncludeHiddenAttrs() {
+        return includeHiddenAttrs;
     }
 
-    @GraphQLInputField(name="doGetHiddenAttrs", description="Denotes whether to return contact hidden attrs defined in zimbraContactHiddenAttributes")
-    public void setDoGetHiddenAttrs(Boolean doGetHiddenAttrs) {
-        this.doGetHiddenAttrs = doGetHiddenAttrs;
+    @GraphQLInputField(name=GqlConstants.INCLUDE_HIDDEN_ATTRS, description="Denotes whether to return contact hidden attrs defined in zimbraContactHiddenAttributes")
+    public void setIncludeHiddenAttrs(Boolean includeHiddenAttrs) {
+        this.includeHiddenAttrs = includeHiddenAttrs;
     }
 
-    public Boolean getDoGetCertInfo() {
-        return doGetCertInfo;
+    public Boolean getIncludeCertInfo() {
+        return includeCertInfo;
     }
 
-    @GraphQLInputField(name="doGetCertInfo", description="Denotes whether to return smime certificate info")
-    public void setDoGetCertInfo(Boolean doGetCertInfo) {
-        this.doGetCertInfo = doGetCertInfo;
+    @GraphQLInputField(name=GqlConstants.INCLUDE_CERT_INFO, description="Denotes whether to return smime certificate info")
+    public void setIncludeCertInfo(Boolean includeCertInfo) {
+        this.includeCertInfo = includeCertInfo;
     }
 
-    public Boolean getDoGetImapUid() {
-        return goGetImapUid;
+    public Boolean getIncludeImapUid() {
+        return includeImapUid;
     }
 
-    @GraphQLInputField(name="doGetImapUid", description="Set to return IMAP UID.  (default is unset.)")
-    public void setDoGetImapUid(Boolean doGetImapUid) {
-        this.goGetImapUid = doGetImapUid;
+    @GraphQLInputField(name=GqlConstants.INCLUDE_IMAP_UID, description="Set to return IMAP UID.  (default is unset.)")
+    public void setIncludeImapUid(Boolean includeImapUid) {
+        this.includeImapUid = includeImapUid;
     }
 
     public Long getMaxMembers() {
         return maxMembers;
     }
 
-    @GraphQLInputField(name="maxMembers", description="Set to return IMAP UID.  (default is unset.)")
+    @GraphQLInputField(name=GqlConstants.MAX_MEMBERS, description="Set to return IMAP UID.  (default is unset.)")
     public void setMaxMembers(Long maxMembers) {
         this.maxMembers = maxMembers;
     }
@@ -138,7 +139,7 @@ public class GQLGetContactsRequestInput {
         return attributes;
     }
 
-    @GraphQLInputField(name="attributes", description="If present, return only the specified attribute(s).")
+    @GraphQLInputField(name=GqlConstants.ATTRIBUTES, description="If present, return only the specified attribute(s).")
     public void addAttributes(List<AttributeName> attrs) {
         this.attributes.addAll(attrs);
     }
@@ -147,7 +148,7 @@ public class GQLGetContactsRequestInput {
         return memberAttributes;
     }
 
-    @GraphQLInputField(name="memberAttributes", description="If present, return only the specified attribute(s) for derefed members, applicable only when doDerefGroupMember is set.")
+    @GraphQLInputField(name=GqlConstants.MEMBER_ATTRIBUTES, description="If present, return only the specified attribute(s) for derefed members, applicable only when doDerefGroupMember is set.")
     public void addMemberAttributes(List<AttributeName> attrs) {
         this.memberAttributes.addAll(attrs);
     }
@@ -156,7 +157,7 @@ public class GQLGetContactsRequestInput {
         return contacts;
     }
 
-    @GraphQLInputField(name="contacts", description="If present, only get the specified contact(s).")
+    @GraphQLInputField(name=GqlConstants.CONTACTS, description="If present, only get the specified contact(s).")
     public void addContacts(List<Id> contacts) {
         this.contacts.addAll(contacts);
     }

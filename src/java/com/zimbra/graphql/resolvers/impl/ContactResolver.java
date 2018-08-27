@@ -18,6 +18,7 @@ package com.zimbra.graphql.resolvers.impl;
 
 import java.util.List;
 
+import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLGetContactsRequestInput;
@@ -56,100 +57,100 @@ public class ContactResolver {
     }
 
     @GraphQLQuery(description="Retrieve contacts by given properties.")
-    public List<ContactInfo> contacts(@GraphQLArgument(name="input") GQLGetContactsRequestInput input,
+    public List<ContactInfo> contacts(@GraphQLArgument(name=GqlConstants.INPUT) GQLGetContactsRequestInput input,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.contacts(context, input);
     }
 
     @GraphQLMutation(description="Create a contact with given properties.")
     public ContactInfo contactCreate(
-        @GraphQLArgument(name="doGetImapUid", description="Denotes whether to return IMAP UID") Boolean doGetImapUid,
-        @GraphQLArgument(name="doVerbose", description="If set, the returned <cn> is just a placeholder containing the new contact ID") Boolean doVerbose,
-        @GraphQLArgument(name="doGetModifiedSequence", description="Denotes whether to return the modified sequence") Boolean doGetModifiedSequence,
-        @GraphQLNonNull @GraphQLArgument(name="contact", description="The contact to create") ContactSpec contact,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_IMAP_UID, description="Denotes whether to return IMAP UID") Boolean includeImapUid,
+        @GraphQLArgument(name=GqlConstants.DO_VERBOSE, description="If set, the returned info is just a placeholder containing the new contact ID") Boolean doVerbose,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_MODIFIED_SEQUENCE, description="Denotes whether to return the modified sequence") Boolean includeModifiedSequence,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.CONTACT, description="The contact to create") ContactSpec contact,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        return contactRepository.contactCreate(context, doGetImapUid, doVerbose, doGetModifiedSequence, contact);
+        return contactRepository.contactCreate(context, includeImapUid, doVerbose, includeModifiedSequence, contact);
     }
 
     @GraphQLMutation(description="Moves the given contacts to the specified folder.")
     public ActionResult contactMove(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="folderId", description="The destination folder") String folderId,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.FOLDER_ID, description="The destination folder") String folderId,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemMove(context, ids, folderId, constraint);
     }
 
     @GraphQLMutation(description="Copies the given contacts to the specified folder.")
     public ActionResult contactCopy(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="folderId", description="The destination folder") String folderId,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.FOLDER_ID, description="The destination folder") String folderId,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemCopy(context, ids, folderId, constraint);
     }
 
     @GraphQLMutation(description="Deletes the given contacts.")
     public ActionResult contactDelete(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemDelete(context, ids, constraint);
     }
 
     @GraphQLMutation(description="Adds the specified flags on the given contacts.")
     public ActionResult contactFlag(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="flags", description="The flags to add") String flags,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.FLAGS, description="The flags to add") String flags,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemFlag(context, ids, flags, constraint);
     }
 
     @GraphQLMutation(description="Removes the specified flags from the given contacts.")
-    public ActionResult contactUnFlag(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="flags", description="The flags to remove") String flags,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+    public ActionResult contactUnflag(
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.FLAGS, description="The flags to remove") String flags,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemUnflag(context, ids, flags, constraint);
     }
 
     @GraphQLMutation(description="Trashes the given contacts.")
     public ActionResult contactTrash(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemTrash(context, ids, constraint);
     }
 
     @GraphQLMutation(description="Adds the specified tags to the given contacts.")
     public ActionResult contactTag(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="tagNames", description="The tags to add") String tagNames,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.TAG_NAMES, description="The tags to add") String tagNames,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemTag(context, ids, tagNames, constraint);
     }
 
     @GraphQLMutation(description="Removes the specified tags from the given contacts.")
     public ActionResult contactUntag(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLNonNull @GraphQLArgument(name="tagNames", description="The tags to remove") String tagNames,
-        @GraphQLArgument(name="constraint", description="Target constraints") String constraint,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.TAG_NAMES, description="The tags to remove") String tagNames,
+        @GraphQLArgument(name=GqlConstants.CONSTRAINT, description="Target constraints") String constraint,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.itemUntag(context, ids, tagNames, constraint);
     }
 
     @GraphQLMutation(description="Updates a given contact with the specified properties.")
     public FolderActionResult contactUpdate(
-        @GraphQLNonNull @GraphQLArgument(name="ids", description="Comma-separated item ids to act on") String ids,
-        @GraphQLArgument(name="folderId", description="The destination folder") String folderId,
-        @GraphQLArgument(name="flags", description="The flags to set") String flags,
-        @GraphQLArgument(name="tagNames", description="The tags to set") String tagNames,
-        @GraphQLArgument(name="rgb", description="RGB color in format #rrggbb where r,g and b are hex digits") String rgb,
-        @GraphQLArgument(name="color", description="color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7") Byte color,
-        @GraphQLArgument(name="attributes", description="The attributes to set") List<NewContactAttr> attributes,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated item ids to act on") String ids,
+        @GraphQLArgument(name=GqlConstants.FOLDER_ID, description="The destination folder") String folderId,
+        @GraphQLArgument(name=GqlConstants.FLAGS, description="The flags to set") String flags,
+        @GraphQLArgument(name=GqlConstants.TAG_NAMES, description="The tags to set") String tagNames,
+        @GraphQLArgument(name=GqlConstants.RGB, description="RGB color in format #rrggbb where r,g and b are hex digits") String rgb,
+        @GraphQLArgument(name=GqlConstants.COLOR, description="color numeric; range 0-127; defaults to 0 if not present; client can display only 0-7") Byte color,
+        @GraphQLArgument(name=GqlConstants.ATTRIBUTES, description="The attributes to set") List<NewContactAttr> attributes,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.contactUpdate(context, ids, folderId, flags, tagNames, rgb, color, attributes);
     }

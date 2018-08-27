@@ -102,10 +102,10 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
             req.setSortBy(input.getSortBy());
             req.setSync(input.getDoSync());
             req.setDerefGroupMember(input.getDoDerefGroupMember());
-            req.setIncludeMemberOf(input.getDoGetMemberOf());
-            req.setReturnHiddenAttrs(input.getDoGetHiddenAttrs());
-            req.setReturnCertInfo(input.getDoGetCertInfo());
-            req.setWantImapUid(input.getDoGetImapUid());
+            req.setIncludeMemberOf(input.getIncludeMemberOf());
+            req.setReturnHiddenAttrs(input.getIncludeHiddenAttrs());
+            req.setReturnCertInfo(input.getIncludeCertInfo());
+            req.setWantImapUid(input.getIncludeImapUid());
             req.setMaxMembers(input.getMaxMembers());
             req.setAttributes(input.getAttributes());
             req.setMemberAttributes(input.getMemberAttributes());
@@ -131,22 +131,22 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
      * Create a contact with given properties.
      *
      * @param rctxt The request context
-     * @param doGetImapUid Denotes whether to return IMAP UID
-     * @param doVerbose If set, the returned <cn> is just a placeholder containing the new contact ID
-     * @param doGetModifiedSequence Denotes whether to return the modified sequence
+     * @param includeImapUid Denotes whether to return IMAP UID
+     * @param doVerbose If set, the returned info is just a placeholder containing the new contact ID
+     * @param includeModifiedSequence Denotes whether to return the modified sequence
      * @param contactToCreate The contact to create
      * @return The newly created contact
      * @throws ServiceException If there are issues executing the document
      */
-    public ContactInfo contactCreate(RequestContext rctxt, Boolean doGetImapUid, Boolean doVerbose,
-        Boolean doGetModifiedSequence, ContactSpec contactToCreate) throws ServiceException {
+    public ContactInfo contactCreate(RequestContext rctxt, Boolean includeImapUid, Boolean doVerbose,
+        Boolean includeModifiedSequence, ContactSpec contactToCreate) throws ServiceException {
         // get auth context
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // execute
         final CreateContactRequest req = new CreateContactRequest(contactToCreate);
         req.setVerbose(doVerbose);
-        req.setWantImapUid(doGetImapUid);
-        req.setWantModifiedSequence(doGetModifiedSequence);
+        req.setWantImapUid(includeImapUid);
+        req.setWantModifiedSequence(includeModifiedSequence);
         final Element response = XMLDocumentUtilities.executeDocument(
             createContactHandler,
             zsc,
