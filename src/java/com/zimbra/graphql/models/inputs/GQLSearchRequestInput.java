@@ -120,13 +120,12 @@ public class GQLSearchRequestInput {
         this.calItemExpandEnd = calItemExpandEnd;
     }
 
-    @GraphQLNonNull
     public String getQuery() {
         return query;
     }
 
     @GraphQLInputField(name = GqlConstants.QUERY, description="Query string to use for the search")
-    public void setQuery(String query) {
+    public void setQuery(@GraphQLNonNull String query) {
         this.query = query;
     }
 
