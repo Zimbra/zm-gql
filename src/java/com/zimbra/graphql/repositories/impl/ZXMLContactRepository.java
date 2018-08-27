@@ -40,6 +40,7 @@ import com.zimbra.soap.mail.type.ContactActionSelector;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.FolderActionResult;
+import com.zimbra.soap.mail.type.NewContactAttr;
 
 /**
  * The ZXMLContactRepository class.<br>
@@ -176,6 +177,33 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
                 FolderActionResult.class);
         }
         return result;
+    }
+
+    /**
+     * Performs an update action with given properties.
+     *
+     * @param rctxt The request context
+     * @param ids Comma-separated item ids to act on
+     * @param folderId A folderId to set
+     * @param flags The flags to set
+     * @param tagNames The tags to set
+     * @param rgb The rgb to set
+     * @param color The color to set
+     * @param attributes The attributes to set
+     * @return Action result
+     * @throws ServiceException If there are issues executing the document
+     */
+    public FolderActionResult contactUpdate(RequestContext rctxt, String ids, String folderId,
+        String flags, String tagNames, String rgb, Byte color, List<NewContactAttr> attributes)
+        throws ServiceException {
+        final ContactActionSelector input = new ContactActionSelector(ids, MailConstants.OP_UPDATE);
+        input.setFolder(folderId);
+        input.setFlags(flags);
+        input.setTagNames(tagNames);
+        input.setRgb(rgb);
+        input.setColor(color);
+        input.setAttrs(attributes);
+        return contactAction(rctxt, input);
     }
 
 }
