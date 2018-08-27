@@ -16,22 +16,19 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
+import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
+import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.SearchRequest;
-import com.zimbra.soap.mail.type.ConversationHitInfo;
-import com.zimbra.soap.mail.type.MessageHitInfo;
+import com.zimbra.soap.mail.message.SearchResponse;
 
 /**
  * The ZXMLSearchRepository class.<br>
@@ -73,10 +70,18 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @return A list of message hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<MessageHitInfo> messageSearch(RequestContext rctxt,
+    public GQLMessageSearchResponse messageSearch(RequestContext rctxt,
         GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("message");
-        return search(rctxt, searchInput, MessageHitInfo.class, MailConstants.E_MSG);
+        final SearchResponse searchResponse = search(rctxt, searchInput);
+        final GQLMessageSearchResponse messageSearchResponse = new GQLMessageSearchResponse();
+        messageSearchResponse.setQueryInfos(searchResponse.getQueryInfos());
+        messageSearchResponse.setQueryMore(searchResponse.getQueryMore());
+        messageSearchResponse.setQueryOffset(searchResponse.getQueryOffset());
+        messageSearchResponse.setSortBy(searchResponse.getSortBy());
+        messageSearchResponse.setTotalSize(searchResponse.getTotalSize());
+        messageSearchResponse.setSearchHits(searchResponse.getSearchHits());
+        return messageSearchResponse;
     }
 
     /**
@@ -87,10 +92,18 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @return A list of conversation hits from the search
      * @throws ServiceException If there are issues executing the document
      */
-    public List<ConversationHitInfo> conversationSearch(RequestContext rctxt,
+    public GQLConversationSearchResponse conversationSearch(RequestContext rctxt,
         GQLSearchRequestInput searchInput) throws ServiceException {
         searchInput.setSearchTypes("conversation");
-        return search(rctxt, searchInput, ConversationHitInfo.class, MailConstants.E_CONV);
+        final SearchResponse searchResponse = search(rctxt, searchInput);
+        final GQLConversationSearchResponse conversationSearchResponse = new GQLConversationSearchResponse();
+        conversationSearchResponse.setQueryInfos(searchResponse.getQueryInfos());
+        conversationSearchResponse.setQueryMore(searchResponse.getQueryMore());
+        conversationSearchResponse.setQueryOffset(searchResponse.getQueryOffset());
+        conversationSearchResponse.setSortBy(searchResponse.getSortBy());
+        conversationSearchResponse.setTotalSize(searchResponse.getTotalSize());
+        conversationSearchResponse.setSearchHits(searchResponse.getSearchHits());
+        return conversationSearchResponse;
     }
 
     /**
@@ -98,13 +111,11 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      *
      * @param rctxt The request context
      * @param searchInput The GQLSearchRequestInput object
-     * @param responseClass The Class to package the response into
-     * @param requiredElement The element name to retrieve from the search result
-     * @return A list of objects that are found in the search request
+     * @return A SearchResponse object
      * @throws ServiceException If there are issues executing the document
      */
-    private <T> List<T> search(RequestContext rctxt, GQLSearchRequestInput searchInput,
-        Class<?> responseClass, String requiredElement) throws ServiceException {
+    private SearchResponse search(RequestContext rctxt, GQLSearchRequestInput searchInput)
+        throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final SearchRequest req = new SearchRequest();
         req.setIncludeTagDeleted(searchInput.getIncludeTagDeleted());
@@ -145,15 +156,7 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
             searchHandler,
             zsc,
             XMLDocumentUtilities.toElement(req));
-        final List<T> searchHits = new ArrayList<T>();
-        if (response != null && response.hasChildren()) {
-            final List<Element> searches = response.listElements(requiredElement);
-            for (final Element search : searches) {
-                final T searchHit = XMLDocumentUtilities.fromElement(search, responseClass);
-                searchHits.add(searchHit);
-            }
-        }
-        return searchHits;
+        return XMLDocumentUtilities.fromElement(response, SearchResponse.class);
     }
 
 }

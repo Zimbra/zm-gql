@@ -17,14 +17,13 @@
 package com.zimbra.graphql.resolvers.impl;
 
 
-import java.util.List;
-
+import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
+import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
+import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
-import com.zimbra.soap.mail.type.ConversationHitInfo;
-import com.zimbra.soap.mail.type.MessageHitInfo;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLNonNull;
@@ -52,17 +51,17 @@ public class SearchResolver {
         this.searchRepository = searchRepository;
     }
 
-    @GraphQLQuery(description = "Retrieves search results for the given properties.")
-    public List<MessageHitInfo> messageSearch(
-            @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
+    @GraphQLQuery(description = "Search for messages with the given properties.")
+    public GQLMessageSearchResponse messageSearch(
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
         return searchRepository.messageSearch(context, searchInput);
     }
 
-    @GraphQLQuery(description = "Retrieves search results for the given properties.")
-    public List<ConversationHitInfo> conversationSearch(
-            @GraphQLNonNull @GraphQLArgument(name = "params") GQLSearchRequestInput searchInput,
+    @GraphQLQuery(description = "Search for conversations with the given properties.")
+    public GQLConversationSearchResponse conversationSearch(
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
             @GraphQLRootContext RequestContext context
             ) throws ServiceException {
         return searchRepository.conversationSearch(context, searchInput);
