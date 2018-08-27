@@ -16,11 +16,15 @@
  */
 package com.zimbra.graphql.resolvers.impl;
 
+import java.util.List;
+
 import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
+import com.zimbra.soap.account.type.Pref;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -48,7 +52,7 @@ public class AccountResolver {
         this.accountRepository = accountRepository;
     }
 
-    @GraphQLQuery(description = "Retrieve account info")
+    @GraphQLQuery(description="Retrieve account info")
     public AccountInfo accountInfoGet(@GraphQLRootContext RequestContext context)
         throws ServiceException {
         return accountRepository.accountInfoGet(context);
@@ -59,5 +63,17 @@ public class AccountResolver {
         @GraphQLArgument(name = GqlConstants.CLEAR_COOKIES, description = "Denotes whether to clear cookies") boolean clearCookies,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         accountRepository.accountEndSession(context, clearCookies);
+    }
+
+    @GraphQLQuery(description="Retrieves prefs by given properties.")
+    public List<Pref> prefsGet(@GraphQLArgument(name = "prefs") List<Pref> wantPrefs,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.getPrefs(context, wantPrefs);
+    }
+
+    @GraphQLMutation(description="Modify listed prefs with given properties.")
+    public List<Pref> prefsModify(@GraphQLArgument(name = "prefs") List<GQLPrefInput> setPref,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.setPrefs(context, setPref);
     }
 }
