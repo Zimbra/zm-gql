@@ -27,13 +27,13 @@ import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
-@GraphQLType(name=GqlConstants.ACCOUNT_INFO, description="account info response data")
+@GraphQLType(name=GqlConstants.CLASS_ACCOUNT_INFO, description="account info response data")
 public class AccountInfo {
     @GraphQLNonNull
     @GraphQLQuery(name=GqlConstants.NAME)
     private String name;
     @GraphQLNonNull
-    @GraphQLQuery(name=GqlConstants.ATTRS, description="account attributes")
+    @GraphQLQuery(name=GqlConstants.ATTRIBUTES, description="account attributes")
     private List<NamedValue> attrs = Lists.newArrayList();
     @GraphQLQuery(name=GqlConstants.SOAP_URL, description="soap url")
     private String soapURL;

@@ -36,7 +36,7 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name = GqlConstants.CONVERSATION_SEARCH_RESPONSE, description = "Search response data for a conversation search")
+@GraphQLType(name = GqlConstants.CLASS_CONVERSATION_SEARCH_RESPONSE, description = "Search response data for a conversation search")
 public class GQLConversationSearchResponse extends GQLSearchResponse {
 
     @Override

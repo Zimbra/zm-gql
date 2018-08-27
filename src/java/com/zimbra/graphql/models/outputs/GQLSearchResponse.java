@@ -38,7 +38,7 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name = GqlConstants.SEARCH_RESPONSE, description = "Search response data")
+@GraphQLType(name = GqlConstants.CLASS_SEARCH_RESPONSE, description = "Search response data")
 public class GQLSearchResponse {
 
 	protected String sortBy;
