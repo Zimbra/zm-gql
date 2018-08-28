@@ -62,7 +62,7 @@ public class GQLPrefInput {
         return modifiedTimestamp;
     }
 
-    @GraphQLInputField(name="setModifiedTimestamp", description="The value for the prefs modifiedTimestamp to set")
+    @GraphQLInputField(name=GqlConstants.SET_MODIFIED_TIMESTAMP, description="The value for the prefs modifiedTimestamp to set")
     public void setModifiedTimestamp(Long modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
     }
