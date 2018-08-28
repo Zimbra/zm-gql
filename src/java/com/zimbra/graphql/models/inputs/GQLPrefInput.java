@@ -42,7 +42,7 @@ public class GQLPrefInput {
         return name;
     }
 
-    @GraphQLInputField(name="setName", description="The name of the pref to set")
+    @GraphQLInputField(name=GqlConstants.SET_NAME, description="The name of the pref to set")
     public void setName(@GraphQLNonNull String name) {
         this.name = name;
     }
@@ -52,7 +52,7 @@ public class GQLPrefInput {
         return value;
     }
 
-    @GraphQLInputField(name="setValue", description="The value for the pref to set")
+    @GraphQLInputField(name=GqlConstants.SET_VALUE, description="The value for the pref to set")
     public void setValue(@GraphQLNonNull String value) {
         this.value = value;
     }
