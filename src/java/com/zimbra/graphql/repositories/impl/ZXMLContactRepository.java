@@ -26,6 +26,7 @@ import com.zimbra.cs.service.mail.ContactAction;
 import com.zimbra.cs.service.mail.CreateContact;
 import com.zimbra.cs.service.mail.GetContacts;
 import com.zimbra.cs.service.mail.ItemAction;
+import com.zimbra.cs.service.mail.ModifyContact;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLGetContactsRequestInput;
 import com.zimbra.graphql.repositories.IRepository;
@@ -36,10 +37,12 @@ import com.zimbra.soap.mail.message.ContactActionRequest;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.message.GetContactsRequest;
 import com.zimbra.soap.mail.message.GetContactsResponse;
+import com.zimbra.soap.mail.message.ModifyContactRequest;
 import com.zimbra.soap.mail.type.ContactActionSelector;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.FolderActionResult;
+import com.zimbra.soap.mail.type.ModifyContactSpec;
 import com.zimbra.soap.mail.type.NewContactAttr;
 
 /**
@@ -63,10 +66,15 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
     protected final GetContacts getContactHandler;
 
     /**
+     * The modifyContact document handler.
+     */
+    protected final ModifyContact modifyContactHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLContactRepository() {
-        this(new ContactAction(), new CreateContact(), new GetContacts());
+        this(new ContactAction(), new CreateContact(), new GetContacts(), new ModifyContact());
     }
 
     /**
@@ -75,12 +83,14 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
      * @param actionHandler The item action handler
      * @param createHandler The create contact handler
      * @param getHandler The get contacts handler
+     * @param modifyHandler The modify contacts handler
      */
     public ZXMLContactRepository(ItemAction actionHandler, CreateContact createHandler,
-        GetContacts getHandler) {
+        GetContacts getHandler, ModifyContact modifyHandler) {
         super(actionHandler);
         this.createContactHandler = createHandler;
         this.getContactHandler = getHandler;
+        this.modifyContactHandler = modifyHandler;
     }
 
     /**
@@ -204,6 +214,39 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
         input.setColor(color);
         input.setAttrs(attributes);
         return contactAction(rctxt, input);
+    }
+
+    /**
+     * Modifies a contact with given properties.
+     *
+     * @param rcctxt The request context
+     * @param doReplace Denotes whether to replace or append attributes and group members
+     * @param doVerbose If set, the returned info is just a placeholder containing the new contact ID
+     * @param includeImapUid Denotes whether to return IMAP UID
+     * @param includeModifiedSequence Denotes whether to return the modified sequence
+     * @param contact The contact properties to modify
+     * @return The modified contact
+     */
+    public ContactInfo contactModify(RequestContext rctxt, Boolean doReplace,
+        Boolean doVerbose, Boolean includeImapUid, Boolean includeModifiedSequence,
+        ModifyContactSpec contact) throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final ModifyContactRequest req = new ModifyContactRequest(contact);
+        req.setReplace(doReplace);
+        req.setVerbose(doVerbose);
+        req.setWantImapUid(includeImapUid);
+        req.setWantModifiedSequence(includeModifiedSequence);
+        final Element response = XMLDocumentUtilities.executeDocument(
+            modifyContactHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(req));
+        ContactInfo result = null;
+        if (response != null) {
+            result = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_CONTACT),
+                ContactInfo.class);
+        }
+        return result;
     }
 
 }

@@ -27,6 +27,7 @@ import com.zimbra.soap.mail.type.ActionResult;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.FolderActionResult;
+import com.zimbra.soap.mail.type.ModifyContactSpec;
 import com.zimbra.soap.mail.type.NewContactAttr;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -153,5 +154,16 @@ public class ContactResolver {
         @GraphQLArgument(name=GqlConstants.ATTRIBUTES, description="The attributes to set") List<NewContactAttr> attributes,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return contactRepository.contactUpdate(context, ids, folderId, flags, tagNames, rgb, color, attributes);
+    }
+
+    @GraphQLMutation(description="Modifies a given contact with the specified properties.")
+    public ContactInfo contactModify(
+        @GraphQLArgument(name=GqlConstants.DO_REPLACE, description="Denotes whether to replace or append attributes and group members") Boolean doReplace,
+        @GraphQLArgument(name=GqlConstants.DO_VERBOSE, description="If set, the returned info is just a placeholder containing the new contact ID") Boolean doVerbose,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_IMAP_UID, description="Denotes whether to return IMAP UID") Boolean includeImapUid,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_MODIFIED_SEQUENCE, description="Denotes whether to return the modified sequence") Boolean includeModifiedSequence,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.CONTACT, description="The contact properties to modify") ModifyContactSpec contact,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return contactRepository.contactModify(context, doReplace, doVerbose, includeImapUid, includeModifiedSequence, contact);
     }
 }
