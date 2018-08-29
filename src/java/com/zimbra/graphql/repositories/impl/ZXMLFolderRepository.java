@@ -158,7 +158,6 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
      * Create a folder with given properties.
      *
      * @param rctxt The request context
-     * @param account The account to create the folder
      * @param folderToCreate New folder properties
      * @return The newly created folder
      * @throws ServiceException If there are issues executing the document

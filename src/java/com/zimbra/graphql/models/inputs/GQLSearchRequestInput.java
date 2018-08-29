@@ -40,7 +40,7 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name=GqlConstants.SEARCH_REQUEST, description="Input for search request.")
+@GraphQLType(name=GqlConstants.CLASS_SEARCH_REQUEST, description="Input for search request.")
 public class GQLSearchRequestInput {
 
     protected Boolean includeTagDeleted;
@@ -58,10 +58,10 @@ public class GQLSearchRequestInput {
     protected String fetch;
     protected Boolean markRead;
     protected Integer maxInlinedLength;
-    protected Boolean wantHtml;
-    protected Boolean needCanExpand;
+    protected Boolean includeHtml;
+    protected Boolean includeIsExpandable;
     protected Boolean neuterImages;
-    protected WantRecipsSetting wantRecipients;
+    protected WantRecipsSetting includeRecipients;
     protected Boolean prefetch;
     protected String resultMode;
     protected Boolean fullConversation;
@@ -203,22 +203,22 @@ public class GQLSearchRequestInput {
         this.maxInlinedLength = maxInlinedLength;
     }
 
-    public Boolean getWantHtml() {
-        return wantHtml;
+    public Boolean getIncludeHtml() {
+        return includeHtml;
     }
 
-    @GraphQLInputField(name = GqlConstants.WANT_HTML, description="Inlined hits to return HTML parts if available")
-    public void setWantHtml(Boolean wantHtml) {
-        this.wantHtml = wantHtml;
+    @GraphQLInputField(name = GqlConstants.INCLUDE_HTML, description="Inlined hits to return HTML parts if available")
+    public void setIncludeHtml(Boolean includeHtml) {
+        this.includeHtml = includeHtml;
     }
 
-    public Boolean getNeedCanExpand() {
-        return needCanExpand;
+    public Boolean getIncludeIsExpandable() {
+        return includeIsExpandable;
     }
 
-    @GraphQLInputField(name = GqlConstants.NEED_CAN_EXPAND, description="If `needExp` is set in the request, two additional flags may be included in `emails` results elements for messages returned inline. (1) `isGroup`: set if the email address is a group. (2) `exp`: present only when `isGroup` set to true. Unset if the authenticated user does not have permission to expand group members")
-    public void setNeedCanExpand(Boolean needCanExpand) {
-        this.needCanExpand = needCanExpand;
+    @GraphQLInputField(name = GqlConstants.INCLUDE_IS_EXPANDABLE, description="Denotes whether two additional flags may be included in `emails` results elements for messages returned inline. (1) `isGroup`: set if the email address is a group. (2) `exp`: present only when `isGroup` set to true. Unset if the authenticated user does not have permission to expand group members")
+    public void setIncludeIsExpandable(Boolean includeIsExpandable) {
+        this.includeIsExpandable = includeIsExpandable;
     }
 
     public Boolean getNeuterImages() {
@@ -230,13 +230,13 @@ public class GQLSearchRequestInput {
         this.neuterImages = neuterImages;
     }
 
-    public WantRecipsSetting getWantRecipients() {
-        return wantRecipients;
+    public WantRecipsSetting getIncludeRecipients() {
+        return includeRecipients;
     }
 
-    @GraphQLInputField(name = GqlConstants.WANT_RECEPIENTS, description="Want recipients setting. If true, sent messages that contain the \"To:\" recipients instead of the sender. Returned conversations whose first hit was sent by the user will contain that hit's \"To:\" recipients instead of the conversation's sender list")
-    public void setWantRecipients(WantRecipsSetting wantRecipients) {
-        this.wantRecipients = wantRecipients;
+    @GraphQLInputField(name = GqlConstants.INCLUDE_RECEPIENTS, description="If true, sent messages that contain the \"To:\" recipients instead of the sender. Returned conversations whose first hit was sent by the user will contain that hit's \"To:\" recipients instead of the conversation's sender list")
+    public void setIncludeRecipients(WantRecipsSetting includeRecipients) {
+        this.includeRecipients = includeRecipients;
     }
 
     public Boolean getPrefetch() {

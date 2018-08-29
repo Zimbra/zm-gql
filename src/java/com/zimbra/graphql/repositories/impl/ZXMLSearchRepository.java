@@ -132,10 +132,10 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
         req.setFetch(searchInput.getFetch());
         req.setMarkRead(searchInput.getMarkRead());
         req.setMaxInlinedLength(searchInput.getMaxInlinedLength());
-        req.setWantHtml(searchInput.getWantHtml());
-        req.setNeedCanExpand(searchInput.getNeedCanExpand());
+        req.setWantHtml(searchInput.getIncludeHtml());
+        req.setNeedCanExpand(searchInput.getIncludeIsExpandable());
         req.setNeuterImages(searchInput.getNeuterImages());
-        req.setWantRecipients(searchInput.getWantRecipients());
+        req.setWantRecipients(searchInput.getIncludeRecipients());
         req.setPrefetch(searchInput.getPrefetch());
         req.setResultMode(searchInput.getResultMode());
         req.setFullConversation(searchInput.getFullConversation());
