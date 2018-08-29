@@ -19,6 +19,7 @@ import com.zimbra.common.gql.GqlConstants;
 
 import io.leangen.graphql.annotations.GraphQLInputField;
 import io.leangen.graphql.annotations.GraphQLNonNull;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
@@ -30,40 +31,30 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.inputs
  * @copyright Copyright © 2018
  */
-@GraphQLType(name=GqlConstants.ACCOUNT_PREF_INPUT, description="Input for prefs.")
+@GraphQLType(name=GqlConstants.CLASS_ACCOUNT_PREF_INPUT, description="Input for prefs.")
 public class GQLPrefInput {
 
     String name;
     String value;
     Long modifiedTimestamp;
 
-    @GraphQLInputField(name=GqlConstants.NAME, description="The name of the pref to get")
+    @GraphQLQuery(name=GqlConstants.NAME, description="The name of the pref to get")
     public String getName() {
         return name;
     }
 
-    @GraphQLInputField(name=GqlConstants.SET_NAME, description="The name of the pref to set")
+    @GraphQLInputField(name=GqlConstants.NAME, description="The name of the pref to set")
     public void setName(@GraphQLNonNull String name) {
         this.name = name;
     }
 
-    @GraphQLInputField(name=GqlConstants.VALUE, description="The value for the pref to get")
+    @GraphQLQuery(name=GqlConstants.VALUE, description="The value for the pref to get")
     public String getValue() {
         return value;
     }
 
-    @GraphQLInputField(name=GqlConstants.SET_VALUE, description="The value for the pref to set")
+    @GraphQLInputField(name=GqlConstants.VALUE, description="The value for the pref to set")
     public void setValue(@GraphQLNonNull String value) {
         this.value = value;
-    }
-
-    @GraphQLInputField(name=GqlConstants.MODIFIED_TIMESTAMP, description="The value for the prefs modifiedTimestamp to get")
-    public Long getModifiedTimestamp() {
-        return modifiedTimestamp;
-    }
-
-    @GraphQLInputField(name=GqlConstants.SET_MODIFIED_TIMESTAMP, description="The value for the prefs modifiedTimestamp to set")
-    public void setModifiedTimestamp(Long modifiedTimestamp) {
-        this.modifiedTimestamp = modifiedTimestamp;
     }
 }

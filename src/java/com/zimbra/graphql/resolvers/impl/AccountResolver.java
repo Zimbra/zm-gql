@@ -28,6 +28,7 @@ import com.zimbra.soap.account.type.Pref;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
+import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.GraphQLRootContext;
 
@@ -65,14 +66,14 @@ public class AccountResolver {
         accountRepository.accountEndSession(context, clearCookies);
     }
 
-    @GraphQLQuery(description="Retrieves prefs by given properties.")
-    public List<Pref> prefsGet(@GraphQLArgument(name = "prefs") List<Pref> wantPrefs,
+    @GraphQLQuery(description="Retrieves prefs by given properties")
+    public List<Pref> prefsGet(@GraphQLArgument(name = GqlConstants.PREFERENCES) List<Pref> wantPrefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.getPrefs(context, wantPrefs);
     }
 
-    @GraphQLMutation(description="Modify listed prefs with given properties.")
-    public List<Pref> prefsModify(@GraphQLArgument(name = "prefs") List<GQLPrefInput> setPref,
+    @GraphQLMutation(description="Modify listed prefs with given properties")
+    public List<Pref> prefsModify(@GraphQLNonNull @GraphQLArgument(name = GqlConstants.PREFERENCES) List<GQLPrefInput> setPref,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.setPrefs(context, setPref);
     }
