@@ -40,7 +40,7 @@ import com.zimbra.soap.account.type.AuthToken;
  * @package com.zimbra.graphql.repositories.impl
  * @copyright Copyright © 2018
  */
-public class ZNativeAuthRepository extends ZXMLRepository implements IRepository {
+public class ZNativeAuthRepository extends ZRepository implements IRepository {
 
     /**
      * Creates an instance.
