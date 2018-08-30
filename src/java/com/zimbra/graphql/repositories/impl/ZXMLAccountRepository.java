@@ -157,7 +157,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @return A list of Pref objects
      * @throws ServiceException If there are issues executing the document
      */
-    public List<Pref> getPrefs(RequestContext rctxt, List<Pref> prefs) throws ServiceException {
+    public List<Pref> prefs(RequestContext rctxt, List<Pref> prefs) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final GetPrefsRequest request = new GetPrefsRequest();
         request.setPref(prefs);
@@ -181,7 +181,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @return A list of updated Pref objects
      * @throws ServiceException If there are issues executing the document
      */
-    public List<Pref> setPrefs(RequestContext rctxt, List<GQLPrefInput> prefs) throws ServiceException {
+    public List<Pref> prefsModify(RequestContext rctxt, List<GQLPrefInput> prefs) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final ModifyPrefsRequest request = new ModifyPrefsRequest();
         for(final GQLPrefInput p: prefs) {
@@ -196,7 +196,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             XMLDocumentUtilities.toElement(request));
         List<Pref> responsePrefs = request.getPrefs();
         if (response != null && !request.getPrefs().isEmpty()) {
-            responsePrefs  = this.getPrefs(rctxt, responsePrefs);
+            responsePrefs  = this.prefs(rctxt, responsePrefs);
         }
         return responsePrefs;
     }

@@ -67,14 +67,14 @@ public class AccountResolver {
     }
 
     @GraphQLQuery(description="Retrieves prefs by given properties")
-    public List<Pref> prefsGet(@GraphQLArgument(name = GqlConstants.PREFERENCES) List<Pref> prefs,
+    public List<Pref> prefs(@GraphQLArgument(name = GqlConstants.PREFERENCES) List<Pref> prefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        return accountRepository.getPrefs(context, prefs);
+        return accountRepository.prefs(context, prefs);
     }
 
     @GraphQLMutation(description="Modify listed prefs with given properties")
     public List<Pref> prefsModify(@GraphQLNonNull @GraphQLArgument(name = GqlConstants.PREFERENCES) List<GQLPrefInput> prefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        return accountRepository.setPrefs(context, prefs);
+        return accountRepository.prefsModify(context, prefs);
     }
 }
