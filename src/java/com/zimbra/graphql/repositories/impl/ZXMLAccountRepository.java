@@ -153,38 +153,38 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * Get prefs for the account.
      *
      * @param context The request context
-     * @param wantPrefs A list of pref names to get
+     * @param prefs A list of pref names to get
      * @return A list of Pref objects
      * @throws ServiceException If there are issues executing the document
      */
-    public List<Pref> getPrefs(RequestContext rctxt, List<Pref> wantPrefs) throws ServiceException {
+    public List<Pref> getPrefs(RequestContext rctxt, List<Pref> prefs) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final GetPrefsRequest request = new GetPrefsRequest();
-        request.setPref(wantPrefs);
+        request.setPref(prefs);
         final Element response = XMLDocumentUtilities.executeDocument(
             prefsHandler,
             zsc,
             XMLDocumentUtilities.toElement(request));
-        List<Pref> prefs = null;
+        List<Pref> responsePrefs = null;
         if (response != null) {
             final GetPrefsResponse prefsResponse = XMLDocumentUtilities.fromElement(response, GetPrefsResponse.class);
-            prefs = prefsResponse.getPref();
+            responsePrefs = prefsResponse.getPref();
         }
-        return prefs;
+        return responsePrefs;
     }
 
     /**
      * Modify prefs on the account.
      *
      * @param context The request context
-     * @param setPrefs A list of Pref objects to set
+     * @param prefs A list of Pref objects to set
      * @return A list of updated Pref objects
      * @throws ServiceException If there are issues executing the document
      */
-    public List<Pref> setPrefs(RequestContext rctxt, List<GQLPrefInput> setPrefs) throws ServiceException {
+    public List<Pref> setPrefs(RequestContext rctxt, List<GQLPrefInput> prefs) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final ModifyPrefsRequest request = new ModifyPrefsRequest();
-        for(final GQLPrefInput p: setPrefs) {
+        for(final GQLPrefInput p: prefs) {
             final Pref pref = new Pref();
             pref.setName(p.getName());
             pref.setValue(p.getValue());
@@ -194,11 +194,11 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             modifyPrefsHandler,
             zsc,
             XMLDocumentUtilities.toElement(request));
-        List<Pref> prefs = request.getPrefs();
-        if (response != null) {
-            prefs  = this.getPrefs(rctxt, prefs);
+        List<Pref> responsePrefs = request.getPrefs();
+        if (response != null && !request.getPrefs().isEmpty()) {
+            responsePrefs  = this.getPrefs(rctxt, responsePrefs);
         }
-        return prefs;
+        return responsePrefs;
     }
 
 }
