@@ -19,7 +19,6 @@ import com.zimbra.common.gql.GqlConstants;
 
 import io.leangen.graphql.annotations.GraphQLInputField;
 import io.leangen.graphql.annotations.GraphQLNonNull;
-import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
@@ -34,26 +33,23 @@ import io.leangen.graphql.annotations.types.GraphQLType;
 @GraphQLType(name=GqlConstants.CLASS_ACCOUNT_PREF_INPUT, description="Input for prefs.")
 public class GQLPrefInput {
 
-    String name;
-    String value;
-    Long modifiedTimestamp;
+    protected String name;
+    protected String value;
 
-    @GraphQLQuery(name=GqlConstants.NAME, description="The name of the pref to get")
     public String getName() {
         return name;
     }
 
-    @GraphQLInputField(name=GqlConstants.NAME, description="The name of the pref to set")
+    @GraphQLInputField(name=GqlConstants.NAME, description="The preference name to set")
     public void setName(@GraphQLNonNull String name) {
         this.name = name;
     }
 
-    @GraphQLQuery(name=GqlConstants.VALUE, description="The value for the pref to get")
     public String getValue() {
         return value;
     }
 
-    @GraphQLInputField(name=GqlConstants.VALUE, description="The value for the pref to set")
+    @GraphQLInputField(name=GqlConstants.VALUE, description="The preference value to set")
     public void setValue(@GraphQLNonNull String value) {
         this.value = value;
     }
