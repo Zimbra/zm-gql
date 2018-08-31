@@ -52,7 +52,7 @@ public class XMLDocumentUtilities {
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT,
-            GQLAuthUtilities.getGuestZimbraSoapContext(request.getQName(), handler));
+            GQLAuthUtilities.getGuestZimbraSoapContext(request.getQName(), handler, rctxt));
         context.put(SoapServlet.SERVLET_REQUEST, rctxt.getRawRequest());
         context.put(SoapServlet.SERVLET_RESPONSE, rctxt.getRawResponse());
         return handler.handle(request, context);

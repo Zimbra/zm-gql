@@ -16,18 +16,19 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+import com.zimbra.common.util.ZimbraLog;
+
 /**
- * The ZXMLRepository class.<br>
- * Will contain shared xml repository methods.
+ * The ZRepository class.
  *
  * @author Zimbra API Team
  * @package com.zimbra.graphql.repositories.impl
  * @copyright Copyright © 2018
  */
-public abstract class ZXMLRepository extends ZRepository {
+public abstract class ZRepository {
 
-    public  ZXMLRepository() {
-        super();
+    public  ZRepository() {
+        ZimbraLog.extensions.info("Loading %s . . .", this.getClass().getName());
     }
 
 }

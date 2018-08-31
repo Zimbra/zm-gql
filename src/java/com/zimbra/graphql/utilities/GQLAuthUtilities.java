@@ -16,18 +16,20 @@
  */
 package com.zimbra.graphql.utilities;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.QName;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
@@ -42,6 +44,7 @@ import com.zimbra.cs.account.ZimbraJWToken;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
+import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**
@@ -154,18 +157,30 @@ public class GQLAuthUtilities {
     }
 
     /**
-     * Creates a zimbra soap context given the current request.
-     * Ensures the qName and handler are not null.
+     * Creates a zimbra soap context given the current request.<br>
+     * Ensures the qName and handler are not null.<br>
+     * Enables sessions, tracks the user agent, and the raw request ip/port.
      *
      * @param qName The request QName
      * @param handler The document handler for this request
+     * @param rctxt The request context
      * @return A zimbra soap context
      * @throws ServiceException If there are issues creating the soap context
      */
-    public static ZimbraSoapContext getGuestZimbraSoapContext(QName qName, DocumentHandler handler)
-        throws ServiceException {
+    public static ZimbraSoapContext getGuestZimbraSoapContext(QName qName, DocumentHandler handler,
+        RequestContext rctxt) throws ServiceException {
         if (qName != null && handler != null) {
-            return new ZimbraSoapContext(null, qName, handler, Collections.emptyMap(), SoapProtocol.Soap12);
+            final HttpServletRequest request = rctxt.getRawRequest();
+            // create a ctxt element to enable session tracking and user agent specification
+            final Element ctxtElement = Element.create(SoapProtocol.Soap12, HeaderConstants.CONTEXT);
+            ctxtElement.addUniqueElement(HeaderConstants.E_SESSION);
+            ctxtElement.addUniqueElement(HeaderConstants.E_USER_AGENT)
+                .addAttribute(HeaderConstants.A_NAME, request.getHeader(HttpHeaders.USER_AGENT));
+            // create a context map to track request ip and port
+            final Map<String, Object> context = new HashMap<String, Object>();
+            context.put(SoapEngine.REQUEST_IP, request.getRemoteAddr());
+            context.put(SoapEngine.REQUEST_PORT, request.getRemotePort());
+            return new ZimbraSoapContext(ctxtElement, qName, handler, context, SoapProtocol.Soap12);
         }
         throw ServiceException.INVALID_REQUEST("Invalid XML request.", null);
     }
