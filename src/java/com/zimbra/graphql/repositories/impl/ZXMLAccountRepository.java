@@ -25,6 +25,8 @@ import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
 import com.zimbra.cs.service.account.GetPrefs;
 import com.zimbra.cs.service.account.ModifyPrefs;
+import com.zimbra.cs.service.mail.GetFilterRules;
+import com.zimbra.cs.service.mail.ModifyFilterRules;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
@@ -39,6 +41,10 @@ import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.mail.message.GetFilterRulesRequest;
+import com.zimbra.soap.mail.message.GetFilterRulesResponse;
+import com.zimbra.soap.mail.message.ModifyFilterRulesRequest;
+import com.zimbra.soap.mail.message.ModifyFilterRulesResponse;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 
@@ -73,11 +79,22 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     private final ModifyPrefs modifyPrefsHandler;
 
     /**
+     * The getFilterRules document handler.
+     */
+    protected final GetFilterRules getFilterRulesHandler;
+
+    /**
+     * The modifyFilterRules document handler.
+     */
+    protected final ModifyFilterRules modifyFilterRulesHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
-            new GetPrefs(), new ModifyPrefs());
+            new GetPrefs(), new ModifyPrefs(),
+            new GetFilterRules(), new ModifyFilterRules());
     }
 
     /**
@@ -87,14 +104,19 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param endSessionHandler The endSession handler
      * @param prefsHandler The prefs handler
      * @param modifyPrefsHandler The pref mutation handler
+     * @param getFilterRulesHandler The filter rules handler
+     * @param modifyFilterRulesHandler The filter rules mutation handler
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
-        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler) {
+        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler,
+        GetFilterRules getFilterRulesHandler, ModifyFilterRules modifyFilterRulesHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
         this.modifyPrefsHandler = modifyPrefsHandler;
+        this.getFilterRulesHandler = getFilterRulesHandler;
+        this.modifyFilterRulesHandler = modifyFilterRulesHandler;
     }
 
     /**
@@ -199,6 +221,49 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             responsePrefs  = this.prefs(rctxt, responsePrefs);
         }
         return responsePrefs;
+    }
+
+    /**
+     * Get filter rules.
+     *
+     * @param rctxt The request context
+     * @return GetFilterRulesResponse The response object
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GetFilterRulesResponse getFilterRules(RequestContext rctxt) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetFilterRulesRequest req = new GetFilterRulesRequest();
+        final Element response = XMLDocumentUtilities.executeDocument(
+            getFilterRulesHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(req));
+        GetFilterRulesResponse resp = null;
+        if (response != null) {
+            resp = XMLDocumentUtilities.fromElement(response, GetFilterRulesResponse.class);
+        }
+        return resp;
+    }
+
+    /**
+     * Modify filter rules.
+     *
+     * @param rctxt The request context
+     * @param modifyFilterRulesRequest A ModifyFilterRulesRequest object
+     * @return ModifyFilterRulesResponse The response object
+     * @throws ServiceException If there are issues executing the document
+     */
+    public ModifyFilterRulesResponse modifyFilterRules(RequestContext rctxt,
+        ModifyFilterRulesRequest modifyFilterRulesRequest) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final Element response = XMLDocumentUtilities.executeDocument(
+            modifyFilterRulesHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(modifyFilterRulesRequest));
+        ModifyFilterRulesResponse responseObject = null;
+        if (response != null) {
+            responseObject = XMLDocumentUtilities.fromElement(response, ModifyFilterRulesResponse.class);
+        }
+        return responseObject;
     }
 
 }

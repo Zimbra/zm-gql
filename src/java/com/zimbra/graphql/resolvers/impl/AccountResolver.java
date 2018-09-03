@@ -25,6 +25,9 @@ import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.mail.message.GetFilterRulesResponse;
+import com.zimbra.soap.mail.message.ModifyFilterRulesRequest;
+import com.zimbra.soap.mail.message.ModifyFilterRulesResponse;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -53,7 +56,21 @@ public class AccountResolver {
         this.accountRepository = accountRepository;
     }
 
-    @GraphQLQuery(description="Retrieve account info")
+    @GraphQLMutation(description = "Modify account filter rules")
+    public ModifyFilterRulesResponse modifyFilterRules(
+        @GraphQLArgument(name = GqlConstants.PARAMETERS) ModifyFilterRulesRequest inputParameters,
+        @GraphQLRootContext RequestContext context)
+        throws ServiceException {
+        return accountRepository.modifyFilterRules(context, inputParameters);
+    }
+
+    @GraphQLQuery(description = "Get account filter rules")
+    public GetFilterRulesResponse filters(@GraphQLRootContext RequestContext context)
+        throws ServiceException {
+        return accountRepository.getFilterRules(context);
+    }
+
+    @GraphQLQuery(description = "Retrieve account info")
     public AccountInfo accountInfoGet(@GraphQLRootContext RequestContext context)
         throws ServiceException {
         return accountRepository.accountInfoGet(context);
