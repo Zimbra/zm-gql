@@ -32,10 +32,20 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  */
 @GraphQLType(name=GqlConstants.CLASS_SESSION_INFO, description="Session information")
 public class GQLSessionInfo {
+    protected String sessionId;
     protected Long createdDate;
     protected Long lastAccessed;
     protected String userAgent;
     protected String requestIPAddress;
+
+    @GraphQLQuery(name=GqlConstants.SESSION_ID, description="The session id")
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
 
     @GraphQLQuery(name=GqlConstants.CREATED_DATE, description="The date of session creation")
     public Long getCreatedDate() {

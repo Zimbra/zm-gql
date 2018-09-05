@@ -75,6 +75,7 @@ public class ZNativeAuthRepository extends ZRepository implements IRepository {
      */
     protected GQLSessionInfo toSessionInfo(Session session) {
         final GQLSessionInfo sessionInfo = new GQLSessionInfo();
+        sessionInfo.setSessionId(session.getSessionId());
         sessionInfo.setCreatedDate(session.getCreationTime());
         sessionInfo.setLastAccessed(session.getLastAccessTime());
         sessionInfo.setUserAgent(session.getUserAgent());
