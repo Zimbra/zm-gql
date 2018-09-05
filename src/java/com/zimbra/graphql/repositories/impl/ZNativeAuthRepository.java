@@ -20,17 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.session.SessionCache;
-import com.zimbra.cs.session.SoapSession;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.outputs.GQLSessionInfo;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.account.type.AuthToken;
 
 /**
  * The ZNativeAuthRepository class.<br>
@@ -79,38 +75,11 @@ public class ZNativeAuthRepository extends ZRepository implements IRepository {
      */
     protected GQLSessionInfo toSessionInfo(Session session) {
         final GQLSessionInfo sessionInfo = new GQLSessionInfo();
-        sessionInfo.setAuthToken(getAuthToken(session));
         sessionInfo.setCreatedDate(session.getCreationTime());
         sessionInfo.setLastAccessed(session.getLastAccessTime());
         sessionInfo.setUserAgent(session.getUserAgent());
         sessionInfo.setRequestIPAddress(session.getRequestIPAddress());
         return sessionInfo;
-    }
-
-    /**
-     * Retrieves auth token from session and converts to response token.
-     *
-     * @param session The session to retrieve auth token from
-     * @return Response AuthToken
-     */
-    protected AuthToken getAuthToken(Session session) {
-        AuthToken responseToken = null;
-        // fetch auth token if soap session
-        if (session != null && session instanceof SoapSession) {
-            try {
-                final com.zimbra.cs.account.AuthToken authToken = ((SoapSession)session).getAuthToken();
-                if (authToken != null) {
-                    responseToken = new AuthToken(authToken.getEncoded(), false);
-                    responseToken.setLifetime(authToken.getExpires());
-                }
-            } catch (final AuthTokenException e) {
-                ZimbraLog.extensions.error(
-                    "Unable to determine auth token associated with session id: %s.",
-                    session.getSessionId());
-                // don't fail all on missing authToken
-            }
-        }
-        return responseToken;
     }
 
 }
