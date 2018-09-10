@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.session.Session;
 import com.zimbra.cs.session.SessionCache;
+import com.zimbra.cs.session.SoapSession;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.outputs.GQLSessionInfo;
 import com.zimbra.graphql.repositories.IRepository;
@@ -80,6 +81,9 @@ public class ZNativeAuthRepository extends ZRepository implements IRepository {
         sessionInfo.setLastAccessed(session.getLastAccessTime());
         sessionInfo.setUserAgent(session.getUserAgent());
         sessionInfo.setRequestIPAddress(session.getRequestIPAddress());
+        if (session instanceof SoapSession) {
+            sessionInfo.setBrowserInfo(((SoapSession)session).getOriginalUserAgent());
+        }
         return sessionInfo;
     }
 
