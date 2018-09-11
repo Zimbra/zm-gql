@@ -17,6 +17,7 @@
 
 package com.zimbra.graphql.repositories.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.zimbra.common.service.ServiceException;
@@ -43,8 +44,8 @@ import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.mail.message.GetFilterRulesRequest;
 import com.zimbra.soap.mail.message.GetFilterRulesResponse;
-import com.zimbra.soap.mail.message.ModifyFilterRulesRequest;
 import com.zimbra.soap.mail.message.ModifyFilterRulesResponse;
+import com.zimbra.soap.mail.type.FilterRule;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 
@@ -230,7 +231,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @return GetFilterRulesResponse The response object
      * @throws ServiceException If there are issues executing the document
      */
-    public GetFilterRulesResponse getFilterRules(RequestContext rctxt) throws ServiceException {
+    public List<FilterRule> filterRules(RequestContext rctxt) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final GetFilterRulesRequest req = new GetFilterRulesRequest();
         final Element response = XMLDocumentUtilities.executeDocument(
@@ -240,8 +241,11 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         GetFilterRulesResponse resp = null;
         if (response != null) {
             resp = XMLDocumentUtilities.fromElement(response, GetFilterRulesResponse.class);
+            if (resp != null) {
+                return resp.getFilterRules();
+            }
         }
-        return resp;
+        return Collections.emptyList();
     }
 
     /**
@@ -252,8 +256,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @return ModifyFilterRulesResponse The response object
      * @throws ServiceException If there are issues executing the document
      */
-    public ModifyFilterRulesResponse modifyFilterRules(RequestContext rctxt,
-        ModifyFilterRulesRequest modifyFilterRulesRequest) throws ServiceException {
+    public Boolean filterRulesModify(RequestContext rctxt,
+        List<FilterRule >modifyFilterRulesRequest) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final Element response = XMLDocumentUtilities.executeDocument(
             modifyFilterRulesHandler,
@@ -262,8 +266,11 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         ModifyFilterRulesResponse responseObject = null;
         if (response != null) {
             responseObject = XMLDocumentUtilities.fromElement(response, ModifyFilterRulesResponse.class);
+            if(responseObject != null) {
+                return true;
+            }
         }
-        return responseObject;
+        return false;
     }
 
 }
