@@ -17,7 +17,6 @@
 package com.zimbra.graphql.models.outputs;
 
 import com.zimbra.common.gql.GqlConstants;
-import com.zimbra.soap.account.type.AuthToken;
 
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
@@ -33,19 +32,29 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  */
 @GraphQLType(name=GqlConstants.CLASS_SESSION_INFO, description="Session information")
 public class GQLSessionInfo {
-    protected AuthToken authToken;
+    protected String sessionId;
+    protected String browserInfo;
     protected Long createdDate;
     protected Long lastAccessed;
     protected String userAgent;
     protected String requestIPAddress;
 
-    @GraphQLQuery(name=GqlConstants.AUTH_TOKEN, description="The session auth token")
-    public AuthToken getAuthToken() {
-        return authToken;
+    @GraphQLQuery(name=GqlConstants.SESSION_ID, description="The session id")
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setAuthToken(AuthToken authToken) {
-        this.authToken = authToken;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @GraphQLQuery(name=GqlConstants.BROWSER_INFO, description="The browser information at session creation")
+    public String getBrowserInfo() {
+        return browserInfo;
+    }
+
+    public void setBrowserInfo(String browserInfo) {
+        this.browserInfo = browserInfo;
     }
 
     @GraphQLQuery(name=GqlConstants.CREATED_DATE, description="The date of session creation")
