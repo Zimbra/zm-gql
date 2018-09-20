@@ -53,7 +53,7 @@ public class AccountResolver {
     public AccountResolver(ZXMLAccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-
+/*
     @GraphQLMutation(description = "Modify account filter rules")
     public Boolean filterRulesModify(
         @GraphQLArgument(name = GqlConstants.FILTER_RULES) List<FilterRule> filterRules,
@@ -61,7 +61,7 @@ public class AccountResolver {
         throws ServiceException {
         return accountRepository.filterRulesModify(context, filterRules);
     }
-
+*/
     @GraphQLQuery(description = "Get account filter rules")
     public List<FilterRule> filterRules(@GraphQLRootContext RequestContext context)
         throws ServiceException {

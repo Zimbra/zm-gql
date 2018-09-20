@@ -17,11 +17,13 @@
 
 package com.zimbra.graphql.repositories.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
 import com.zimbra.cs.service.account.GetPrefs;
@@ -44,8 +46,11 @@ import com.zimbra.soap.account.message.ModifyPrefsRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.mail.message.GetFilterRulesRequest;
 import com.zimbra.soap.mail.message.GetFilterRulesResponse;
+import com.zimbra.soap.mail.message.GetSearchFolderRequest;
 import com.zimbra.soap.mail.message.ModifyFilterRulesResponse;
+import com.zimbra.soap.mail.type.FilterAction;
 import com.zimbra.soap.mail.type.FilterRule;
+import com.zimbra.soap.mail.type.SearchFolder;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 
@@ -238,14 +243,13 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             getFilterRulesHandler,
             zsc,
             XMLDocumentUtilities.toElement(req));
-        GetFilterRulesResponse resp = null;
+        List<FilterRule> resp = null;
         if (response != null) {
-            resp = XMLDocumentUtilities.fromElement(response, GetFilterRulesResponse.class);
-            if (resp != null) {
-                return resp.getFilterRules();
-            }
+            final GetFilterRulesResponse prefFilters = XMLDocumentUtilities.fromElement(response, GetFilterRulesResponse.class);
+            resp = prefFilters.getFilterRules();
         }
-        return Collections.emptyList();
+        //return Collections.emptyList();
+        return resp;
     }
 
     /**
@@ -255,7 +259,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param modifyFilterRulesRequest A ModifyFilterRulesRequest object
      * @return ModifyFilterRulesResponse The response object
      * @throws ServiceException If there are issues executing the document
-     */
+    
     public Boolean filterRulesModify(RequestContext rctxt,
         List<FilterRule >modifyFilterRulesRequest) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -272,5 +276,5 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         }
         return false;
     }
-
+ */
 }
