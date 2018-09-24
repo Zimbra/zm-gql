@@ -61,19 +61,20 @@ public class AccountResolver {
 
     @GraphQLMutation(description="Logout/end session for current user")
     public void accountEndSession(
-        @GraphQLArgument(name = GqlConstants.CLEAR_COOKIES, description = "Denotes whether to clear cookies") boolean clearCookies,
+        @GraphQLArgument(name=GqlConstants.SESSION_ID, description="The id of a specific session to end") String sessionId,
+        @GraphQLArgument(name=GqlConstants.CLEAR_COOKIES, description="Denotes whether to clear cookies") boolean clearCookies,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        accountRepository.accountEndSession(context, clearCookies);
+        accountRepository.accountEndSession(context, sessionId, clearCookies);
     }
 
     @GraphQLQuery(description="Retrieves prefs by given properties")
-    public List<Pref> prefs(@GraphQLArgument(name = GqlConstants.PREFERENCES) List<Pref> prefs,
+    public List<Pref> prefs(@GraphQLArgument(name=GqlConstants.PREFERENCES) List<Pref> prefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.prefs(context, prefs);
     }
 
     @GraphQLMutation(description="Modify listed prefs with given properties")
-    public List<Pref> prefsModify(@GraphQLNonNull @GraphQLArgument(name = GqlConstants.PREFERENCES) List<GQLPrefInput> prefs,
+    public List<Pref> prefsModify(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.PREFERENCES) List<GQLPrefInput> prefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.prefsModify(context, prefs);
     }
