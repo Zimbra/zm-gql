@@ -133,12 +133,14 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * Ends session for the currently requesting user.
      *
      * @param rctxt The request context
+     * @param sessionId The id of a specific session to end
      * @param clearCookies Denotes whether to clear cookies for the requester
      * @throws ServiceException If there are issues executing the document
      */
-    public void accountEndSession(RequestContext rctxt, Boolean clearCookies) throws ServiceException {
+    public void accountEndSession(RequestContext rctxt, String sessionId, Boolean clearCookies) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final EndSessionRequest request = new EndSessionRequest();
+        request.setSessionId(sessionId);
         request.setLogOff(clearCookies);
         final Element response = XMLDocumentUtilities.executeDocument(
                 endSessionHandler,
