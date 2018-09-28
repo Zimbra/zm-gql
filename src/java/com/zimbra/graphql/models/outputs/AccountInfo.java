@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.soap.type.NamedValue;
+import com.zimbra.soap.account.type.LicenseInfo;
 
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
@@ -47,6 +48,8 @@ public class AccountInfo {
     private String adminURL;
     @GraphQLQuery(name=GqlConstants.BOSH_URL, description="bosh url")
     private String boshURL;
+    @GraphQLQuery(name=GqlConstants.LICENSE, description="License details")
+    private LicenseInfo License;
 
     /*
      * default constructor
@@ -175,6 +178,20 @@ public class AccountInfo {
      */
     public void setBoshURL(String boshURL) {
         this.boshURL = boshURL;
+    }
+    
+    /**
+     * @return the boshURL
+     */
+    public LicenseInfo getLicense() {
+        return License;
+    }
+
+    /**
+     * @param boshURL the boshURL to set
+     */
+    public void setLicense(LicenseInfo License) {
+        this.License = License;
     }
 
 }

@@ -23,6 +23,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
+import com.zimbra.cs.service.account.GetInfo;
 import com.zimbra.cs.service.account.GetPrefs;
 import com.zimbra.cs.service.account.ModifyPrefs;
 import com.zimbra.graphql.models.RequestContext;
@@ -35,6 +36,8 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetAccountInfoRequest;
 import com.zimbra.soap.account.message.GetAccountInfoResponse;
+import com.zimbra.soap.account.message.GetInfoRequest;
+import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
@@ -53,9 +56,14 @@ import com.zimbra.soap.type.AccountSelector;
 public class ZXMLAccountRepository extends ZXMLRepository implements IRepository {
 
     /**
-     * The getAccountInfo document handler.
+     * The getInfo document handler.
      */
     protected final GetAccountInfo accountInfoHandler;
+
+    /**
+     * The getAccountInfo document handler.
+     */
+    protected final GetInfo detailInfoHandler;
 
     /**
      * The endSession document handler.
@@ -76,7 +84,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
-        this(new GetAccountInfo(), new EndSession(),
+        this(new GetInfo(), new GetAccountInfo(), new EndSession(),
             new GetPrefs(), new ModifyPrefs());
     }
 
@@ -88,9 +96,10 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param prefsHandler The prefs handler
      * @param modifyPrefsHandler The pref mutation handler
      */
-    public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
+    public ZXMLAccountRepository(GetInfo detailInfoHandler, GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
         GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler) {
         super();
+        this.detailInfoHandler = detailInfoHandler;
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
@@ -107,24 +116,33 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     public AccountInfo accountInfoGet(RequestContext rctxt) throws ServiceException{
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final AccountInfo info = new AccountInfo();
-        final AccountSelector selector = new AccountSelector(AccountBy.id,
-            zsc.getAuthToken().getAccountId());
-        final GetAccountInfoRequest request = new GetAccountInfoRequest(selector);
+        final AccountSelector selector = new AccountSelector(AccountBy.id, zsc.getAuthToken().getAccountId());
+        final GetAccountInfoRequest accountInfoRequest = new GetAccountInfoRequest(selector);
+        final GetInfoRequest request = new GetInfoRequest();
+        final Element accountResponse = XMLDocumentUtilities.executeDocument(
+            accountInfoHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(accountInfoRequest));
         final Element response = XMLDocumentUtilities.executeDocument(
-                accountInfoHandler,
+                detailInfoHandler,
                 zsc,
                 XMLDocumentUtilities.toElement(request));
-        if (response != null) {
-            final GetAccountInfoResponse resp = XMLDocumentUtilities.fromElement(response,
+        if (accountResponse != null) {
+            final GetAccountInfoResponse acctResp = XMLDocumentUtilities.fromElement(accountResponse,
                 GetAccountInfoResponse.class);
-            info.setName(resp.getName());
-            info.setAttrs(resp.getAttrs());
-            info.setSoapURL(resp.getSoapURL());
-            info.setPublicURL(resp.getPublicURL());
-            info.setCommunityURL(resp.getCommunityURL());
-            info.setChangePasswordURL(resp.getChangePasswordURL());
-            info.setAdminURL(resp.getAdminURL());
-            info.setBoshURL(resp.getBoshURL());
+            info.setName(acctResp.getName());
+            info.setAttrs(acctResp.getAttrs());
+            info.setSoapURL(acctResp.getSoapURL());
+            info.setPublicURL(acctResp.getPublicURL());
+            info.setCommunityURL(acctResp.getCommunityURL());
+            info.setChangePasswordURL(acctResp.getChangePasswordURL());
+            info.setAdminURL(acctResp.getAdminURL());
+            info.setBoshURL(acctResp.getBoshURL());
+        }
+        if (response != null) {
+            final GetInfoResponse resp = XMLDocumentUtilities.fromElement(response,
+                GetInfoResponse.class);
+            info.setLicense(resp.getLicense());
         }
         return info;
     }
