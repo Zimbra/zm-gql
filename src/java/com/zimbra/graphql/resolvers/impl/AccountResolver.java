@@ -62,7 +62,7 @@ public class AccountResolver {
     @GraphQLMutation(description="Logout/end session for current user")
     public void accountEndSession(
         @GraphQLArgument(name=GqlConstants.SESSION_ID, description="The id of a specific session to end") String sessionId,
-        @GraphQLArgument(name=GqlConstants.CLEAR_COOKIES, description="Denotes whether to clear cookies") boolean clearCookies,
+        @GraphQLArgument(name=GqlConstants.CLEAR_COOKIES, description="Denotes whether to clear cookies", defaultValue="false") boolean clearCookies,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         accountRepository.accountEndSession(context, sessionId, clearCookies);
     }
