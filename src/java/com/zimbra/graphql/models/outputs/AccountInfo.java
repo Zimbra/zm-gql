@@ -181,14 +181,14 @@ public class AccountInfo {
     }
     
     /**
-     * @return the boshURL
+     * @return the LicenseInfo
      */
     public LicenseInfo getLicense() {
         return License;
     }
 
     /**
-     * @param boshURL the boshURL to set
+     * @param LicenseInfo the LicenseInfo to set
      */
     public void setLicense(LicenseInfo License) {
         this.License = License;

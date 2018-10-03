@@ -56,12 +56,12 @@ import com.zimbra.soap.type.AccountSelector;
 public class ZXMLAccountRepository extends ZXMLRepository implements IRepository {
 
     /**
-     * The getInfo document handler.
+     * The GetAccountInfo document handler.
      */
     protected final GetAccountInfo accountInfoHandler;
 
     /**
-     * The getAccountInfo document handler.
+     * The GetInfo document handler.
      */
     protected final GetInfo detailInfoHandler;
 
