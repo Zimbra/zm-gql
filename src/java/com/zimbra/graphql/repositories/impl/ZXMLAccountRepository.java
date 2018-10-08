@@ -19,10 +19,13 @@ package com.zimbra.graphql.repositories.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
+import com.zimbra.cs.service.account.GetInfo;
 import com.zimbra.cs.service.account.GetPrefs;
 import com.zimbra.cs.service.account.ModifyPrefs;
 import com.zimbra.graphql.models.RequestContext;
@@ -35,6 +38,8 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetAccountInfoRequest;
 import com.zimbra.soap.account.message.GetAccountInfoResponse;
+import com.zimbra.soap.account.message.GetInfoRequest;
+import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
@@ -73,11 +78,16 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     private final ModifyPrefs modifyPrefsHandler;
 
     /**
+     * GetInfo document handler.
+     */
+    private final GetInfo infoHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
-            new GetPrefs(), new ModifyPrefs());
+            new GetPrefs(), new ModifyPrefs(), new GetInfo());
     }
 
     /**
@@ -87,14 +97,46 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param endSessionHandler The endSession handler
      * @param prefsHandler The prefs handler
      * @param modifyPrefsHandler The pref mutation handler
+     * @param infoHandler Handler for GetInfo
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
-        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler) {
+        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
         this.modifyPrefsHandler = modifyPrefsHandler;
+        this.infoHandler = infoHandler;
+    }
+
+    /**
+     * Retrieves info.
+     *
+     * @param rctxt The request context
+     * @param sections Comma separated list of sections to return information about
+     * @param rights Comma separated list of rights to return information about
+     * @return The GetInfoResponse as per the request
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GetInfoResponse info(RequestContext rctxt, String sections, String rights) throws ServiceException{
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetInfoRequest request = new GetInfoRequest();
+        if (!StringUtils.isEmpty(sections)) {
+            request.setSections(sections);
+        }
+        if (!StringUtils.isEmpty(rights)) {
+            request.setRights(rights);
+        }
+        final Element response = XMLDocumentUtilities.executeDocument(
+                infoHandler,
+                zsc,
+                XMLDocumentUtilities.toElement(request));
+        GetInfoResponse resp = null;
+        if (response != null) {
+            resp = XMLDocumentUtilities.fromElement(response,
+                GetInfoResponse.class);
+        }
+        return resp;
     }
 
     /**

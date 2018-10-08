@@ -24,6 +24,7 @@ import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
+import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Pref;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -57,6 +58,23 @@ public class AccountResolver {
     public AccountInfo accountInfoGet(@GraphQLRootContext RequestContext context)
         throws ServiceException {
         return accountRepository.accountInfoGet(context);
+    }
+
+    /**
+     * @param context
+     * @param sections
+     * @param rights
+     * @return GetInfoResponse
+     * @throws ServiceException
+     */
+    @GraphQLQuery(description="Retrieve info")
+    public GetInfoResponse info(@GraphQLRootContext RequestContext context,
+            @GraphQLArgument(name=GqlConstants.SECTIONS,
+                description="Comma separated list of sections to return information about") String sections,
+            @GraphQLArgument(name=GqlConstants.RIGHTS,
+                description="Comma separated list of rights to return information about") String rights)
+        throws ServiceException {
+        return accountRepository.info(context, sections, rights);
     }
 
     @GraphQLMutation(description="Logout/end session for current user")

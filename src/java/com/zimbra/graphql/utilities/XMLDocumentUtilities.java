@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
@@ -80,7 +81,11 @@ public class XMLDocumentUtilities {
      * @see JaxbUtil#jaxbToElement(Object)
      */
     public static Element toElement(Object o) throws ServiceException {
-        return JaxbUtil.jaxbToElement(o);
+        Element element = JaxbUtil.jaxbToElement(o);
+        if (element != null) {
+            ZimbraLog.gql.debug("\n" + element.prettyPrint());
+        }
+        return element;
     }
 
     /**
@@ -89,6 +94,9 @@ public class XMLDocumentUtilities {
      * @see JaxbUtil#elementToJaxb(Element, Class)
      */
     public static <T> T fromElement(Element e, Class<?> klass) throws ServiceException {
+        if (e != null) {
+            ZimbraLog.gql.debug("\n" + e.prettyPrint());
+        }
         return JaxbUtil.elementToJaxb(e, klass);
     }
 
