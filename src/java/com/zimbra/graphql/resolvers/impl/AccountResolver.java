@@ -27,7 +27,9 @@ import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
+import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
 
@@ -131,4 +133,27 @@ public class AccountResolver {
         return accountRepository.whiteBlackListModify(context, whiteListEntries, blackListEntries);
     }
 
+    @GraphQLQuery(description="Get a list of signatures associated with the requester")
+    public List<Signature> signatures(@GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.signatures(context);
+    }
+
+    @GraphQLMutation(description="Create a signature")
+    public NameId signatureCreate(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.SIGNATURE) Signature signature,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.signatureCreate(context, signature);
+    }
+
+    @GraphQLMutation(description="Modify a signature")
+    public Boolean signatureModify(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.ID) String id,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SIGNATURE) Signature signature,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.signatureModify(context, id, signature);
+    }
+
+    @GraphQLMutation(description="Delete a signature")
+    public Boolean signatureDelete(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDENTIFIER) NameId identifier,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.signatureDelete(context, identifier);
+    }
 }
