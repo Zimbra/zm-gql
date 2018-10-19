@@ -24,8 +24,10 @@ import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
+import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.type.AccountSelector;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -95,5 +97,17 @@ public class AccountResolver {
     public List<Pref> prefsModify(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.PREFERENCES) List<GQLPrefInput> prefs,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.prefsModify(context, prefs);
+    }
+
+    @GraphQLMutation(description="Change password.")
+    public ChangePasswordResponse changePassword(
+        @GraphQLArgument(name = GqlConstants.ACCOUNT_SELECTOR, description =
+            "Denotes the account for which password is to be changed.") AccountSelector accountInput,
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.OLD_PASSWORD,
+            description = "The old password for this account).") String password,
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.NEW_PASSWORD,
+            description = "The new password for this account.") String oldPassword,
+        @GraphQLNonNull @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.changePassword(accountInput, password, oldPassword, context);
     }
 }
