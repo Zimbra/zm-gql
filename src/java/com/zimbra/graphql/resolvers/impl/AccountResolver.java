@@ -66,13 +66,6 @@ public class AccountResolver {
         return accountRepository.accountInfoGet(context);
     }
 
-    /**
-     * @param context
-     * @param sections
-     * @param rights
-     * @return GetInfoResponse
-     * @throws ServiceException
-     */
     @GraphQLQuery(description="Retrieve info")
     public GetInfoResponse info(@GraphQLRootContext RequestContext context,
             @GraphQLArgument(name=GqlConstants.SECTIONS,
