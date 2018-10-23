@@ -66,7 +66,8 @@ public class ZXMLItemRepository extends ZXMLRepository implements IRepository {
         final Element response = XMLDocumentUtilities.executeDocument(
             actionHandler,
             GQLAuthUtilities.getZimbraSoapContext(rctxt),
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         return response;
     }
 
@@ -85,7 +86,8 @@ public class ZXMLItemRepository extends ZXMLRepository implements IRepository {
         final Element response = XMLDocumentUtilities.executeDocument(
             actionHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         // return operation results
         ActionResult result = null;
         if (response != null) {

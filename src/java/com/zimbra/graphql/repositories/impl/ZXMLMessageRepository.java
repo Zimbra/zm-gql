@@ -93,7 +93,8 @@ public class ZXMLMessageRepository extends ZXMLItemRepository implements IReposi
         final Element response = XMLDocumentUtilities.executeDocument(
             getMessageHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         Msg message = null;
         if (response != null) {
             message = XMLDocumentUtilities
@@ -132,7 +133,8 @@ public class ZXMLMessageRepository extends ZXMLItemRepository implements IReposi
         final Element response = XMLDocumentUtilities.executeDocument(
             sendMessageHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         MsgWithGroupInfo message = null;
         if (response != null) {
             message = XMLDocumentUtilities

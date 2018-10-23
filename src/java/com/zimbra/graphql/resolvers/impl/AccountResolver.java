@@ -100,14 +100,16 @@ public class AccountResolver {
     }
 
     @GraphQLMutation(description="Change password.")
-    public ChangePasswordResponse changePassword(
+    public ChangePasswordResponse passwordChange(
         @GraphQLArgument(name = GqlConstants.ACCOUNT_SELECTOR, description =
             "Denotes the account for which password is to be changed.") AccountSelector accountInput,
         @GraphQLNonNull @GraphQLArgument(name = GqlConstants.OLD_PASSWORD,
             description = "The old password for this account).") String password,
         @GraphQLNonNull @GraphQLArgument(name = GqlConstants.NEW_PASSWORD,
             description = "The new password for this account.") String oldPassword,
+        @GraphQLArgument(name = GqlConstants.VIRTUAL_HOST,
+        description = "The virtual host to indicae domain for the account.") String virtualHost,
         @GraphQLNonNull @GraphQLRootContext RequestContext context) throws ServiceException {
-        return accountRepository.changePassword(accountInput, password, oldPassword, context);
+        return accountRepository.changePassword(accountInput, password, oldPassword, virtualHost, context);
     }
 }

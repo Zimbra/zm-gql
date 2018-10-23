@@ -67,32 +67,15 @@ public class XMLDocumentUtilities {
      * @param handler The handler to handle the request
      * @param zsc The zimbra soap context for the request
      * @param request The request to execute
-     * @return The document response
-     * @throws ServiceException If there are issues executing the document
-     */
-    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request)
-        throws ServiceException {
-        final Map<String, Object> context = new HashMap<String, Object>();
-        context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-        return handler.handle(request, context);
-    }
-
-    /**
-     * Executes a given request on a document handler.
-     *
-     * @param handler The handler to handle the request
-     * @param zsc The zimbra soap context for the request
      * @param rctxt The request context
-     * @param request The request to execute
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc,
-        RequestContext rctxt, Element request)
+    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request, RequestContext rctxt)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
-        final HttpServletRequest req = rctxt.getRawRequest();
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        final HttpServletRequest req = rctxt.getRawRequest();
         context.put(SoapServlet.SERVLET_REQUEST, req);
         return handler.handle(request, context);
     }

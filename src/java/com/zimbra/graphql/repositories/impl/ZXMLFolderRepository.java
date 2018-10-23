@@ -145,7 +145,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         final Element response = XMLDocumentUtilities.executeDocument(
             getFolderHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         Folder folder = null;
         if (response != null) {
             folder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_FOLDER),
@@ -171,7 +172,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         final Element response = XMLDocumentUtilities.executeDocument(
             createFolderHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         Folder zCreatedFolder = null;
         if (response != null) {
             zCreatedFolder = XMLDocumentUtilities
@@ -216,7 +218,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         final Element response = XMLDocumentUtilities.executeDocument(
             getSearchFolderHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         final List<SearchFolder> searchFolders = new ArrayList<SearchFolder>();
         if (response != null && response.hasChildren()) {
             final List<Element> searches = response.listElements(MailConstants.E_SEARCH);
@@ -245,7 +248,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         final Element response = XMLDocumentUtilities.executeDocument(
             createSearchFolderHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         SearchFolder zCreatedSearchFolder = null;
         if (response != null) {
             zCreatedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
@@ -271,7 +275,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
         final Element response = XMLDocumentUtilities.executeDocument(
             modifySearchFolderHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         SearchFolder modifiedSearchFolder = null;
         if (response != null) {
             modifiedSearchFolder = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_SEARCH),
