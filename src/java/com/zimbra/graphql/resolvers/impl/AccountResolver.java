@@ -24,8 +24,10 @@ import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
+import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.type.AccountSelector;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -84,7 +86,7 @@ public class AccountResolver {
         @GraphQLArgument(name=GqlConstants.CLEAR_ALL_SOAP_SESSIONS, description="Denotes whether to clear all soap sessions", defaultValue="false") boolean clearAllSoapSessions,
         @GraphQLArgument(name=GqlConstants.EXCLUDE_CURRENT_SESSION, description="Denotes whether to retain current session, when clear all session is true", defaultValue="false") boolean excludeCurrentSession,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        accountRepository.accountEndSession(context, sessionId, clearCookies);
+        accountRepository.accountEndSession(context, sessionId, clearCookies, clearAllSoapSessions, excludeCurrentSession);
     }
 
     @GraphQLQuery(description="Retrieves prefs by given properties")
@@ -98,4 +100,19 @@ public class AccountResolver {
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.prefsModify(context, prefs);
     }
+
+    @GraphQLMutation(description="Change password.")
+    public ChangePasswordResponse passwordChange(
+        @GraphQLArgument(name = GqlConstants.ACCOUNT_SELECTOR, description =
+            "Denotes the account for which password is to be changed.") AccountSelector accountInput,
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.OLD_PASSWORD,
+            description = "The old password for this account).") String password,
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.NEW_PASSWORD,
+            description = "The new password for this account.") String oldPassword,
+        @GraphQLArgument(name = GqlConstants.VIRTUAL_HOST,
+        description = "The virtual host to indicae domain for the account.") String virtualHost,
+        @GraphQLNonNull @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.changePassword(accountInput, password, oldPassword, virtualHost, context);
+    }
 }
+

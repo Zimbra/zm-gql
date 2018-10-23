@@ -155,7 +155,8 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
         final Element response = XMLDocumentUtilities.executeDocument(
             searchHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         return XMLDocumentUtilities.fromElement(response, SearchResponse.class);
     }
 

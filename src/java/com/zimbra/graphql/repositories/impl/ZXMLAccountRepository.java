@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.service.account.ChangePassword;
 import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
 import com.zimbra.cs.service.account.GetInfo;
@@ -35,6 +36,8 @@ import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.account.message.ChangePasswordRequest;
+import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetAccountInfoRequest;
 import com.zimbra.soap.account.message.GetAccountInfoResponse;
@@ -43,6 +46,7 @@ import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
+import com.zimbra.soap.account.type.AuthToken;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
@@ -81,13 +85,18 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * GetInfo document handler.
      */
     private final GetInfo infoHandler;
+    
+    /**
+     * Change password document handler.
+     */
+    private final ChangePassword changePasswordHandler;
 
     /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
-            new GetPrefs(), new ModifyPrefs(), new GetInfo());
+            new GetPrefs(), new ModifyPrefs(), new GetInfo(), new ChangePassword());
     }
 
     /**
@@ -98,15 +107,17 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param prefsHandler The prefs handler
      * @param modifyPrefsHandler The pref mutation handler
      * @param infoHandler Handler for GetInfo
+     * @param changePasswordHandler Handler for change password
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
-        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler) {
+        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler, ChangePassword changePasswordHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
         this.modifyPrefsHandler = modifyPrefsHandler;
         this.infoHandler = infoHandler;
+        this.changePasswordHandler = changePasswordHandler;
     }
 
     /**
@@ -130,7 +141,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
                 infoHandler,
                 zsc,
-                XMLDocumentUtilities.toElement(request));
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
         GetInfoResponse resp = null;
         if (response != null) {
             resp = XMLDocumentUtilities.fromElement(response,
@@ -155,7 +167,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
                 accountInfoHandler,
                 zsc,
-                XMLDocumentUtilities.toElement(request));
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
         if (response != null) {
             final GetAccountInfoResponse resp = XMLDocumentUtilities.fromElement(response,
                 GetAccountInfoResponse.class);
@@ -190,7 +203,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
                 endSessionHandler,
                 zsc,
-                XMLDocumentUtilities.toElement(request));
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
         if (response == null) {
             throw ServiceException.FAILURE("EndSessionRequest failed", null);
         }
@@ -211,7 +225,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
             prefsHandler,
             zsc,
-            XMLDocumentUtilities.toElement(request));
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
         List<Pref> responsePrefs = null;
         if (response != null) {
             final GetPrefsResponse prefsResponse = XMLDocumentUtilities.fromElement(response, GetPrefsResponse.class);
@@ -240,12 +255,45 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
             modifyPrefsHandler,
             zsc,
-            XMLDocumentUtilities.toElement(request));
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
         List<Pref> responsePrefs = request.getPrefs();
         if (response != null && !request.getPrefs().isEmpty()) {
             responsePrefs  = this.prefs(rctxt, responsePrefs);
         }
         return responsePrefs;
+    }
+
+
+    /**
+     * 
+     * @param acctSelector The account for which password is changed
+     * @param oldPassword old Password
+     * @param newPassword  new password
+     * @param virtualHost  virtualHost
+     * @param rctxt The request context
+     * @return Change password response
+     * @throws ServiceException If there are issues executing the document
+     */
+    public ChangePasswordResponse changePassword(AccountSelector acctSelector, String oldPassword, 
+        String newPassword, String virtualHost, RequestContext rctxt) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setOldPassword(oldPassword);
+        request.setPassword(newPassword);
+        request.setAccount(acctSelector);
+        request.setVirtualHost(virtualHost);
+        final Element response = XMLDocumentUtilities.executeDocument(
+                changePasswordHandler,
+                zsc,
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
+        if (response == null) {
+            throw ServiceException.FAILURE("ChangePasswordRequest failed", null);
+        }
+        ChangePasswordResponse resp = XMLDocumentUtilities.fromElement(response,
+            ChangePasswordResponse.class);
+        return resp;
     }
 
 }

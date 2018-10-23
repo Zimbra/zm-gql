@@ -125,7 +125,8 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
         final Element response = XMLDocumentUtilities.executeDocument(
             getContactHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         if (response != null) {
             final GetContactsResponse contactsResponse = XMLDocumentUtilities.fromElement(
                 response,
@@ -160,7 +161,8 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
         final Element response = XMLDocumentUtilities.executeDocument(
             createContactHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         ContactInfo zCreatedContact = null;
         if (response != null) {
             zCreatedContact = XMLDocumentUtilities
@@ -240,7 +242,8 @@ public class ZXMLContactRepository extends ZXMLItemRepository implements IReposi
         final Element response = XMLDocumentUtilities.executeDocument(
             modifyContactHandler,
             zsc,
-            XMLDocumentUtilities.toElement(req));
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
         ContactInfo result = null;
         if (response != null) {
             result = XMLDocumentUtilities.fromElement(response.getElement(MailConstants.E_CONTACT),

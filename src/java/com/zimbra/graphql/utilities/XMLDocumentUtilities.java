@@ -19,6 +19,8 @@ package com.zimbra.graphql.utilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
@@ -65,13 +67,16 @@ public class XMLDocumentUtilities {
      * @param handler The handler to handle the request
      * @param zsc The zimbra soap context for the request
      * @param request The request to execute
+     * @param rctxt The request context
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request)
+    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request, RequestContext rctxt)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        final HttpServletRequest req = rctxt.getRawRequest();
+        context.put(SoapServlet.SERVLET_REQUEST, req);
         return handler.handle(request, context);
     }
 
