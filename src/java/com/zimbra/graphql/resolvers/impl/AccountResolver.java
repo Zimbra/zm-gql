@@ -23,11 +23,13 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.type.AccountSelector;
+import com.zimbra.soap.type.OpValue;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -114,5 +116,19 @@ public class AccountResolver {
         @GraphQLNonNull @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.changePassword(accountInput, password, oldPassword, virtualHost, context);
     }
-}
 
+    @GraphQLQuery(description="Retrieves white and black list entries")
+    public GQLWhiteBlackListResponse whiteBlackList(@GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.whiteBlackList(context);
+    }
+
+    @GraphQLMutation(description="Modify white and black list entries.\n * "
+        + "If no operation is present in a list, it means to remove all addresses in the list.")
+    public Boolean whiteBlackListModify(
+        @GraphQLArgument(name=GqlConstants.WHITE_LIST_ENTRIES, description="Whitelist entry operations") List<OpValue> whiteListEntries,
+        @GraphQLArgument(name=GqlConstants.BLACK_LIST_ENTRIES, description="Blacklist entry operations") List<OpValue> blackListEntries,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.whiteBlackListModify(context, whiteListEntries, blackListEntries);
+    }
+
+}

@@ -14,7 +14,6 @@
  * If not, see <https://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK *****
  */
-
 package com.zimbra.graphql.repositories.impl;
 
 import java.util.List;
@@ -28,10 +27,13 @@ import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
 import com.zimbra.cs.service.account.GetInfo;
 import com.zimbra.cs.service.account.GetPrefs;
+import com.zimbra.cs.service.account.GetWhiteBlackList;
 import com.zimbra.cs.service.account.ModifyPrefs;
+import com.zimbra.cs.service.account.ModifyWhiteBlackList;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
@@ -45,11 +47,14 @@ import com.zimbra.soap.account.message.GetInfoRequest;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
+import com.zimbra.soap.account.message.GetWhiteBlackListRequest;
+import com.zimbra.soap.account.message.GetWhiteBlackListResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
-import com.zimbra.soap.account.type.AuthToken;
+import com.zimbra.soap.account.message.ModifyWhiteBlackListRequest;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
+import com.zimbra.soap.type.OpValue;
 
 /**
  * The ZXMLAccountRepository class.<br>
@@ -85,18 +90,29 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * GetInfo document handler.
      */
     private final GetInfo infoHandler;
-    
+
     /**
      * Change password document handler.
      */
     private final ChangePassword changePasswordHandler;
 
     /**
+     * GetWhiteBlackList document handler.
+     */
+    private final GetWhiteBlackList getWhiteBlackListHandler;
+
+    /**
+     * ModifyWhiteBlackList document handler.
+     */
+    private final ModifyWhiteBlackList modifyWhiteBlackListHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
-            new GetPrefs(), new ModifyPrefs(), new GetInfo(), new ChangePassword());
+            new GetPrefs(), new ModifyPrefs(), new GetInfo(), new ChangePassword(),
+            new GetWhiteBlackList(), new ModifyWhiteBlackList());
     }
 
     /**
@@ -108,9 +124,12 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param modifyPrefsHandler The pref mutation handler
      * @param infoHandler Handler for GetInfo
      * @param changePasswordHandler Handler for change password
+     * @param getWhiteBlackListHandler The whiteblack list handler
+     * @param modifyWhiteBlackListHandler The whiteblack list mutation handler
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
-        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler, ChangePassword changePasswordHandler) {
+        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler, ChangePassword changePasswordHandler,
+        GetWhiteBlackList getWhiteBlackListHandler, ModifyWhiteBlackList modifyWhiteBlackListHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
@@ -118,6 +137,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         this.modifyPrefsHandler = modifyPrefsHandler;
         this.infoHandler = infoHandler;
         this.changePasswordHandler = changePasswordHandler;
+        this.getWhiteBlackListHandler = getWhiteBlackListHandler;
+        this.modifyWhiteBlackListHandler = modifyWhiteBlackListHandler;
     }
 
     /**
@@ -264,9 +285,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         return responsePrefs;
     }
 
-
     /**
-     * 
+     *
      * @param acctSelector The account for which password is changed
      * @param oldPassword old Password
      * @param newPassword  new password
@@ -275,7 +295,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @return Change password response
      * @throws ServiceException If there are issues executing the document
      */
-    public ChangePasswordResponse changePassword(AccountSelector acctSelector, String oldPassword, 
+    public ChangePasswordResponse changePassword(AccountSelector acctSelector, String oldPassword,
         String newPassword, String virtualHost, RequestContext rctxt) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final ChangePasswordRequest request = new ChangePasswordRequest();
@@ -291,9 +311,58 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         if (response == null) {
             throw ServiceException.FAILURE("ChangePasswordRequest failed", null);
         }
-        ChangePasswordResponse resp = XMLDocumentUtilities.fromElement(response,
+        final ChangePasswordResponse resp = XMLDocumentUtilities.fromElement(response,
             ChangePasswordResponse.class);
         return resp;
+    }
+
+    /**
+     * Retrieves white and black list entries.
+     *
+     * @param context The request context
+     * @return White and black list entries
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GQLWhiteBlackListResponse whiteBlackList(RequestContext rctxt) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetWhiteBlackListRequest request = new GetWhiteBlackListRequest();
+        final Element response = XMLDocumentUtilities.executeDocument(
+            getWhiteBlackListHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        final GQLWhiteBlackListResponse gqlResponse = new GQLWhiteBlackListResponse();
+        if (response != null) {
+            final GetWhiteBlackListResponse lists = XMLDocumentUtilities
+                .fromElement(response, GetWhiteBlackListResponse.class);
+            gqlResponse.setWhiteListEntries(lists.getWhiteListEntries());
+            gqlResponse.setBlackListEntries(lists.getBlackListEntries());
+        }
+        return gqlResponse;
+    }
+
+    /**
+     * Modify white and black list entries.<br>
+     * If no operation is present in a list, it means to remove all addresses in the list.
+     *
+     * @param context The request context
+     * @param whiteListEntries Whitelist entry operations
+     * @param blackListEntries Blacklist entry operations
+     * @return True if modify was successful
+     * @throws ServiceException If there are issues executing the document
+     */
+    public Boolean whiteBlackListModify(RequestContext rctxt, List<OpValue> whiteListEntries,
+        List<OpValue> blackListEntries) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final ModifyWhiteBlackListRequest request = new ModifyWhiteBlackListRequest();
+        request.setWhiteListEntries(whiteListEntries);
+        request.setBlackListEntries(blackListEntries);
+        XMLDocumentUtilities.executeDocument(
+            modifyWhiteBlackListHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        return true;
     }
 
 }
