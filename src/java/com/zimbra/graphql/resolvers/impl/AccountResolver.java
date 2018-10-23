@@ -86,7 +86,7 @@ public class AccountResolver {
         @GraphQLArgument(name=GqlConstants.CLEAR_ALL_SOAP_SESSIONS, description="Denotes whether to clear all soap sessions", defaultValue="false") boolean clearAllSoapSessions,
         @GraphQLArgument(name=GqlConstants.EXCLUDE_CURRENT_SESSION, description="Denotes whether to retain current session, when clear all session is true", defaultValue="false") boolean excludeCurrentSession,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        accountRepository.accountEndSession(context, sessionId, clearCookies);
+        accountRepository.accountEndSession(context, sessionId, clearCookies, clearAllSoapSessions, excludeCurrentSession);
     }
 
     @GraphQLQuery(description="Retrieves prefs by given properties")
