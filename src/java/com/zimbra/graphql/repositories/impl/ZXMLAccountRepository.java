@@ -278,7 +278,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     /**
      * Get prefs for the account.
      *
-     * @param context The request context
+     * @param rctxt The request context
      * @param prefs A list of pref names to get
      * @return A list of Pref objects
      * @throws ServiceException If there are issues executing the document
@@ -303,7 +303,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     /**
      * Modify prefs on the account.
      *
-     * @param context The request context
+     * @param rctxt The request context
      * @param prefs A list of Pref objects to set
      * @return A list of updated Pref objects
      * @throws ServiceException If there are issues executing the document
@@ -330,11 +330,12 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     }
 
     /**
+     * Modifies the selected account password.
      *
      * @param acctSelector The account for which password is changed
      * @param oldPassword old Password
-     * @param newPassword  new password
-     * @param virtualHost  virtualHost
+     * @param newPassword new password
+     * @param virtualHost virtualHost
      * @param rctxt The request context
      * @return Change password response
      * @throws ServiceException If there are issues executing the document
