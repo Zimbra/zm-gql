@@ -114,7 +114,7 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @return A SearchResponse object
      * @throws ServiceException If there are issues executing the document
      */
-    private SearchResponse search(RequestContext rctxt, GQLSearchRequestInput searchInput)
+    protected SearchResponse search(RequestContext rctxt, GQLSearchRequestInput searchInput)
         throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final SearchRequest req = new SearchRequest();
