@@ -98,7 +98,7 @@ public class ZXMLAuthRepositoryTest {
         PowerMock.expectLastCall().andReturn(mockRequest);
         // expect to execute an element on the Auth document handler as a guest
         expect(XMLDocumentUtilities
-                .executeDocumentAsGuest(anyObject(Auth.class), eq(rctxt), eq(mockRequest)))
+                .executeDocumentAsGuest(anyObject(Auth.class), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);

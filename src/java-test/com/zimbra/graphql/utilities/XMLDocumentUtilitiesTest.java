@@ -78,7 +78,7 @@ public class XMLDocumentUtilitiesTest {
         replay(handler);
         PowerMock.replay(GQLAuthUtilities.class);
 
-        XMLDocumentUtilities.executeDocumentAsGuest(handler, rctxt, request);
+        XMLDocumentUtilities.executeDocumentAsGuest(handler, request, rctxt);
 
         verify(handler);
         PowerMock.verify(GQLAuthUtilities.class);
