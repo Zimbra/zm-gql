@@ -291,7 +291,7 @@ public class ZXMLAccountRepositoryTest {
        PowerMock.replay(GQLAuthUtilities.class);
        PowerMock.replay(XMLDocumentUtilities.class);
 
-       repository.changePassword(null, "old-pass", "new-pass", "vhost", rctxt);
+       repository.changePassword(rctxt, null, "old-pass", "new-pass", "vhost");
 
        PowerMock.verify(GQLAuthUtilities.class);
        PowerMock.verify(XMLDocumentUtilities.class);
