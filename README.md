@@ -27,6 +27,16 @@ Afterwards, become the `zimbra` user and perform a `zmmailboxdctl restart`.
 
 ---
 
+## Testing
+
+**Unit testing the extension from CLI**
+
+```sh
+ant clean test
+```
+
+---
+
 ## Usage
 
 **API**

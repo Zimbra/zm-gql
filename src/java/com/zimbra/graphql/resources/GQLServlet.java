@@ -127,7 +127,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         try {
             // read the body into json
             ZimbraLog.extensions.debug("Reading http body.");
-            final JsonNode jsonBody = mapper.readTree(GQLUtilities.decodeStream(req.getInputStream(), 0));
+            final JsonNode jsonBody = readBytes(GQLUtilities.decodeStream(req.getInputStream(), 0));
             if (jsonBody != null && !jsonBody.isNull()) {
                 // seek query param (string)
                 if (jsonBody.has("query")) {
@@ -250,13 +250,24 @@ public class GQLServlet extends ExtensionHttpHandler {
     }
 
     /**
+     * Translates bytes to json.
+     *
+     * @param bytes The bytes to read
+     * @return Json representation
+     * @throws IOException If there are parsing issues
+     */
+    protected JsonNode readBytes(byte[] bytes) throws IOException {
+        return mapper.readTree(bytes);
+    }
+
+    /**
      * Utility to deserialize variables from string.
      *
      * @param variables The variables to deserialize
      * @return A map of the variables
      * @throws ServiceException If there are issues deserializing
      */
-    private Map<String, Object> deserializeVariables(String variables) throws ServiceException {
+    protected Map<String, Object> deserializeVariables(String variables) throws ServiceException {
         try {
             return deserializeVariablesObject(mapper.readValue(variables, Object.class));
         } catch (final IOException e) {
