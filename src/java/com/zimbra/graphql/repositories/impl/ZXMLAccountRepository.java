@@ -331,17 +331,17 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
 
     /**
      * Modifies the selected account password.
-     *
+     * @param rctxt The request context
      * @param acctSelector The account for which password is changed
      * @param oldPassword old Password
      * @param newPassword new password
      * @param virtualHost virtualHost
-     * @param rctxt The request context
+     *
      * @return Change password response
      * @throws ServiceException If there are issues executing the document
      */
-    public ChangePasswordResponse changePassword(AccountSelector acctSelector, String oldPassword,
-        String newPassword, String virtualHost, RequestContext rctxt) throws ServiceException {
+    public ChangePasswordResponse changePassword(RequestContext rctxt, AccountSelector acctSelector,
+        String oldPassword, String newPassword, String virtualHost) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final ChangePasswordRequest request = new ChangePasswordRequest();
         request.setOldPassword(oldPassword);

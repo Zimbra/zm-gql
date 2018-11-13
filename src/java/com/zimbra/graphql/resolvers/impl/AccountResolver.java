@@ -109,7 +109,7 @@ public class AccountResolver {
         @GraphQLArgument(name = GqlConstants.VIRTUAL_HOST,
         description = "The virtual host to indicae domain for the account.") String virtualHost,
         @GraphQLNonNull @GraphQLRootContext RequestContext context) throws ServiceException {
-        return accountRepository.changePassword(accountInput, password, oldPassword, virtualHost, context);
+        return accountRepository.changePassword(context, accountInput, password, oldPassword, virtualHost);
     }
 
     @GraphQLQuery(description="Retrieves white and black list entries")
