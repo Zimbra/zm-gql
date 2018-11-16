@@ -29,12 +29,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.common.soap.Element;
-import com.zimbra.cs.service.mail.GetMsg;
+import com.zimbra.cs.service.mail.AutoComplete;
+import com.zimbra.cs.service.mail.Search;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.type.GalSearchType;
 
 
 /**
@@ -98,9 +100,9 @@ public class ZXMLSearchRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the GetMsg document handler
+        // expect to execute an element on the Search document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(GetMsg.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(Search.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(mockResponse);
         // expect to marshall a response
         XMLDocumentUtilities.fromElement(eq(mockResponse), anyObject());
@@ -115,4 +117,34 @@ public class ZXMLSearchRepositoryTest {
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
+    /**
+     * Test method for {@link ZXMLSearchRepository#autoComplete}<br>
+     * Validates that the auto-complete request is executed.
+     *
+     * @throws Exception If there are issues testing
+     */
+    @Test
+    public void testAutoComplete() throws Exception {
+        final ZXMLSearchRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLSearchRepository.class, "autoComplete");
+
+        // expect to create a zimbra soap context
+        GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        PowerMock.expectLastCall().andReturn(mockZsc);
+        // expect to unmarshall a request
+        XMLDocumentUtilities.toElement(anyObject());
+        PowerMock.expectLastCall().andReturn(mockRequest);
+        // expect to execute an element on the AutoComplete document handler
+        expect(XMLDocumentUtilities
+                .executeDocument(anyObject(AutoComplete.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+            .andReturn(null);
+
+        PowerMock.replay(GQLAuthUtilities.class);
+        PowerMock.replay(XMLDocumentUtilities.class);
+
+        repository.autoComplete(rctxt, "test-name", GalSearchType.all, false, "", false);
+
+        PowerMock.verify(GQLAuthUtilities.class);
+        PowerMock.verify(XMLDocumentUtilities.class);
+    }
 }

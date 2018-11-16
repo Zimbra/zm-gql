@@ -18,17 +18,22 @@ package com.zimbra.graphql.repositories.impl;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.service.mail.AutoComplete;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
+import com.zimbra.graphql.models.outputs.GQLAutoCompleteResponse;
 import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
 import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.AutoCompleteRequest;
+import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
+import com.zimbra.soap.type.GalSearchType;
 
 /**
  * The ZXMLSearchRepository class.<br>
@@ -46,20 +51,27 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
     protected final Search searchHandler;
 
     /**
+     * The auto-complete handler.
+     */
+    protected final AutoComplete autoCompleteHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLSearchRepository() {
-        this(new Search());
+        this(new Search(), new AutoComplete());
     }
 
     /**
      * Creates an instance with specified handlers.
      *
      * @param searchHandler The search handler
+     * @param autoCompleteHandler The auto-complete handler
      */
-    public ZXMLSearchRepository(Search searchHandler) {
+    public ZXMLSearchRepository(Search searchHandler, AutoComplete autoCompleteHandler) {
         super();
         this.searchHandler = searchHandler;
+        this.autoCompleteHandler = autoCompleteHandler;
     }
 
     /**
@@ -158,6 +170,46 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
             XMLDocumentUtilities.toElement(req),
             rctxt);
         return XMLDocumentUtilities.fromElement(response, SearchResponse.class);
+    }
+
+    /**
+     * Retrieves auto-complete search hits.
+     *
+     * @param rctxt The request context
+     * @param name The name
+     * @param type Type of addresses to auto-complete on
+     * @param includeIsExpandable Denotes whether to include `isExpandable` flag for group entries
+     * @param folders Comma-separated list of folder ids
+     * @param includeGal Denotes whether to search the global address list
+     * @return List of auto-complete matches
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GQLAutoCompleteResponse autoComplete(RequestContext rctxt, String name,
+        GalSearchType type, Boolean includeIsExpandable, String folders, Boolean includeGal)
+        throws ServiceException {
+        // get auth context
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        // map the request params
+        final AutoCompleteRequest req = new AutoCompleteRequest(name);
+        req.setType(type);
+        req.setNeedCanExpand(includeIsExpandable);
+        req.setFolderList(folders);
+        req.setIncludeGal(includeGal);
+
+        // execute
+        final Element response = XMLDocumentUtilities.executeDocument(
+            autoCompleteHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
+        final GQLAutoCompleteResponse gqlResponse = new GQLAutoCompleteResponse();
+        if (response != null) {
+            final AutoCompleteResponse autoComplete = XMLDocumentUtilities.fromElement(response,
+                AutoCompleteResponse.class);
+            gqlResponse.setIsCacheable(autoComplete.getCanBeCached());
+            gqlResponse.setMatches(autoComplete.getMatches());
+        }
+        return gqlResponse;
     }
 
 }
