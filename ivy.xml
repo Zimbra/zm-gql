@@ -22,6 +22,7 @@
       <dependency org="zimbra" name="zm-client" rev="latest.integration" />
       <dependency org="zimbra" name="zm-soap" rev="latest.integration" />
       <dependency org="zimbra" name="zm-store" rev="latest.integration" />
+      <dependency org="zimbra" name="zm-network-store" rev="latest.integration" />
       <!-- Test Requirements -->
       <dependency org="junit" name="junit" rev="4.8.2" />
       <dependency org="org.powermock" name="powermock-core" rev="1.6.5" />

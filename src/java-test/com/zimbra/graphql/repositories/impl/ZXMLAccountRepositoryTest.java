@@ -34,6 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.network.GetSMIMEPublicCerts;
 import com.zimbra.cs.service.account.ChangePassword;
 import com.zimbra.cs.service.account.CreateSignature;
 import com.zimbra.cs.service.account.DeleteSignature;
@@ -53,6 +54,8 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.CreateSignatureResponse;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Signature;
+import com.zimbra.soap.type.SourceLookupOpt;
+import com.zimbra.soap.type.StoreLookupOpt;
 
 
 /**
@@ -486,6 +489,37 @@ public class ZXMLAccountRepositoryTest {
        PowerMock.replay(XMLDocumentUtilities.class);
 
        repository.signatureDelete(rctxt, new NameId(null, "sig-id"));
+
+       PowerMock.verify(GQLAuthUtilities.class);
+       PowerMock.verify(XMLDocumentUtilities.class);
+   }
+
+   /**
+    * Test method for {@link ZXMLAccountRepository#smimePublicCertificates}<br>
+    * Validates that the smimePublicCertificates request is executed.
+    *
+    * @throws Exception If there are issues
+    */
+   @Test
+   public void testSmimePublicCertificates() throws Exception {
+       final ZXMLAccountRepository repository = PowerMock
+           .createPartialMockForAllMethodsExcept(ZXMLAccountRepository.class, "smimePublicCertificates");
+
+       // expect to create a zimbra soap context
+       GQLAuthUtilities.getZimbraSoapContext(rctxt);
+       PowerMock.expectLastCall().andReturn(mockZsc);
+       // expect to unmarshall a request
+       XMLDocumentUtilities.toElement(anyObject());
+       PowerMock.expectLastCall().andReturn(mockRequest);
+       // expect to execute an element on the GetSMIMEPublicCerts document handler
+       expect(XMLDocumentUtilities
+               .executeDocument(anyObject(GetSMIMEPublicCerts.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+           .andReturn(null);
+
+       PowerMock.replay(GQLAuthUtilities.class);
+       PowerMock.replay(XMLDocumentUtilities.class);
+
+       repository.smimePublicCertificates(rctxt, StoreLookupOpt.ANY, SourceLookupOpt.ALL, Collections.emptyList(), Collections.emptyList());
 
        PowerMock.verify(GQLAuthUtilities.class);
        PowerMock.verify(XMLDocumentUtilities.class);

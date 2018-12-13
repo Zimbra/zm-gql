@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.network.GetSMIMEPublicCerts;
 import com.zimbra.cs.service.account.ChangePassword;
 import com.zimbra.cs.service.account.CreateSignature;
 import com.zimbra.cs.service.account.DeleteSignature;
@@ -55,6 +56,8 @@ import com.zimbra.soap.account.message.GetInfoRequest;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
+import com.zimbra.soap.account.message.GetSMIMEPublicCertsRequest;
+import com.zimbra.soap.account.message.GetSMIMEPublicCertsResponse;
 import com.zimbra.soap.account.message.GetSignaturesRequest;
 import com.zimbra.soap.account.message.GetSignaturesResponse;
 import com.zimbra.soap.account.message.GetWhiteBlackListRequest;
@@ -64,10 +67,15 @@ import com.zimbra.soap.account.message.ModifySignatureRequest;
 import com.zimbra.soap.account.message.ModifyWhiteBlackListRequest;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.account.type.SMIMEPublicCertsInfo;
+import com.zimbra.soap.account.type.SMIMEPublicCertsStoreSpec;
 import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
+import com.zimbra.soap.type.SMIMEStoreType;
+import com.zimbra.soap.type.SourceLookupOpt;
+import com.zimbra.soap.type.StoreLookupOpt;
 
 /**
  * The ZXMLAccountRepository class.<br>
@@ -140,13 +148,17 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     private final DeleteSignature deleteSignatureHandler;
 
     /**
+     * GetSMIMEPublicCerts document handler.
+     */
+    private final GetSMIMEPublicCerts getSMIMEPublicCertificatesHandler;
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
             new GetPrefs(), new ModifyPrefs(), new GetInfo(), new ChangePassword(),
             new GetWhiteBlackList(), new ModifyWhiteBlackList(), new GetSignatures(),
-            new CreateSignature(), new ModifySignature(), new DeleteSignature());
+            new CreateSignature(), new ModifySignature(), new DeleteSignature(), new GetSMIMEPublicCerts());
     }
 
     /**
@@ -164,12 +176,13 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param createSignatureHandler Handler for creating signatures
      * @param modifySignatureHandler Handler for modifying signatures
      * @param deleteSignatureHandler Handler for deleting signatures
+     * @param getSMIMEPublicCertificatesHandler Handler for getting smime public certificates
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
          GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler, ChangePassword changePasswordHandler,
          GetWhiteBlackList getWhiteBlackListHandler, ModifyWhiteBlackList modifyWhiteBlackListHandler,
          GetSignatures getSignaturesHandler, CreateSignature createSignatureHandler,
-         ModifySignature modifySignatureHandler, DeleteSignature deleteSignatureHandler) {
+         ModifySignature modifySignatureHandler, DeleteSignature deleteSignatureHandler, GetSMIMEPublicCerts getSMIMEPublicCertificatesHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
@@ -183,6 +196,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         this.createSignatureHandler = createSignatureHandler;
         this.modifySignatureHandler = modifySignatureHandler;
         this.deleteSignatureHandler = deleteSignatureHandler;
+        this.getSMIMEPublicCertificatesHandler = getSMIMEPublicCertificatesHandler;
     }
 
     /**
@@ -496,4 +510,36 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         return true;
     }
 
+    /**
+     * Get SMIME Public certificates
+     * @param rctxt The request context
+     * @param storeLookupOption Lookup option related to stores
+     * @param sourceLookupOption Lookup option related to sources configured for stores
+     * @param storeTypes certificate stores
+     * @param emails List of email addresses whose certificates has to be returned
+     * @return SMIME public certificates associated with email address given in input
+     * @throws ServiceException
+     */
+    public List<SMIMEPublicCertsInfo> smimePublicCertificates(RequestContext rctxt, StoreLookupOpt storeLookupOption,
+            SourceLookupOpt sourceLookupOption, List<SMIMEStoreType> storeTypes, List<String> emails)
+            throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final SMIMEPublicCertsStoreSpec storeSpec = new SMIMEPublicCertsStoreSpec();
+        storeSpec.setStoreLookupOpt(storeLookupOption);
+        storeSpec.setSourceLookupOpt(sourceLookupOption);
+        storeTypes.stream().forEach( st -> storeSpec.addStoreType(st.name()));
+        final GetSMIMEPublicCertsRequest request = new GetSMIMEPublicCertsRequest(storeSpec);
+        request.setEmails(emails);
+        final Element response = XMLDocumentUtilities.executeDocument(getSMIMEPublicCertificatesHandler, zsc,
+                XMLDocumentUtilities.toElement(request), rctxt);
+        List<SMIMEPublicCertsInfo> resp = null;
+        if (response != null) {
+            final GetSMIMEPublicCertsResponse certResponse = XMLDocumentUtilities.fromElement(response,
+                    GetSMIMEPublicCertsResponse.class);
+            if (certResponse != null) {
+                resp = certResponse.getCerts();
+            }
+        }
+        return resp;
+    }
 }

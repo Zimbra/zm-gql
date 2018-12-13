@@ -29,9 +29,13 @@ import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.account.type.SMIMEPublicCertsInfo;
 import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
+import com.zimbra.soap.type.SMIMEStoreType;
+import com.zimbra.soap.type.SourceLookupOpt;
+import com.zimbra.soap.type.StoreLookupOpt;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -148,5 +152,15 @@ public class AccountResolver {
     public Boolean signatureDelete(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.IDENTIFIER) NameId identifier,
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.signatureDelete(context, identifier);
+    }
+
+    @GraphQLQuery(description="Get SMIME Public Certificates")
+    public List<SMIMEPublicCertsInfo> smimePublicCertificates(
+            @GraphQLArgument(name=GqlConstants.STORE_LOOKUP_OPT, description="Lookup option related to stores, default value ANY") StoreLookupOpt storeLookupOption,
+            @GraphQLArgument(name=GqlConstants.SOURCE_LOOKUP_OPT, description="Lookup option related to sources configured for stores, default value ALL") SourceLookupOpt sourceLookupOption,
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.STORE_TYPES, description="certificate stores") List<SMIMEStoreType> storeTypes,
+            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.EMAIL, description="List of email addresses") List<String> emails,
+            @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.smimePublicCertificates(context, storeLookupOption, sourceLookupOption, storeTypes, emails);
     }
 }
