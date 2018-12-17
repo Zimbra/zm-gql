@@ -16,6 +16,8 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+import org.dom4j.QName;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.mail.CancelAppointment;
@@ -105,6 +107,12 @@ public class ZXMLCalendarRepository extends ZXMLRepository implements IRepositor
         this.modifyAppointmentHandler = modifyAppointmentHandler;
         this.cancelAppointmentHandler = cancelAppointmentHandler;
         this.inviteReplyHandler = inviteReplyHandler;
+        // set response models
+        this.createAppointmentHandler.setResponseQName(QName.get("CreateAppointmentResponse"));
+        this.createAppointmentExceptionHandler.setResponseQName(QName.get("CreateAppointmentExceptionResponse"));
+        this.modifyAppointmentHandler.setResponseQName(QName.get("ModifyAppointmentResponse"));
+        this.cancelAppointmentHandler.setResponseQName(QName.get("CancelAppointmentResponse"));
+        this.inviteReplyHandler.setResponseQName(QName.get("SendInviteReplyResponse"));
     }
 
     /**
