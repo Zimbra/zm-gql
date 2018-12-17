@@ -149,4 +149,5 @@ public class AccountResolver {
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.signatureDelete(context, identifier);
     }
+
 }

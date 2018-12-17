@@ -38,12 +38,14 @@ import com.zimbra.graphql.errors.GQLError;
 import com.zimbra.graphql.repositories.impl.ZNativeAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
+import com.zimbra.graphql.repositories.impl.ZXMLCalendarRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
 import com.zimbra.graphql.resolvers.impl.AccountResolver;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
+import com.zimbra.graphql.resolvers.impl.CalendarResolver;
 import com.zimbra.graphql.resolvers.impl.ContactResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.resolvers.impl.MessageResolver;
@@ -230,6 +232,7 @@ public class GQLServlet extends ExtensionHttpHandler {
     protected GraphQLSchema buildSchema() {
         final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
         final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository(), new ZNativeAuthRepository());
+        final CalendarResolver calendarResolver = new CalendarResolver(new ZXMLCalendarRepository());
         final ContactResolver contactResolver = new ContactResolver(new ZXMLContactRepository());
         final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         final MessageResolver messageResolver = new MessageResolver(new ZXMLMessageRepository());
@@ -242,6 +245,7 @@ public class GQLServlet extends ExtensionHttpHandler {
             .withOperationsFromSingletons(
                 accountResolver,
                 authResolver,
+                calendarResolver,
                 contactResolver,
                 folderResolver,
                 messageResolver,
