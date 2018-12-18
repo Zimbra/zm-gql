@@ -21,9 +21,11 @@ import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
+import com.zimbra.graphql.models.outputs.GQLAutoCompleteResponse;
 import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
 import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
+import com.zimbra.soap.type.GalSearchType;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLNonNull;
@@ -53,18 +55,27 @@ public class SearchResolver {
 
     @GraphQLQuery(description = "Search for messages with the given properties.")
     public GQLMessageSearchResponse messageSearch(
-            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
-            @GraphQLRootContext RequestContext context
-            ) throws ServiceException {
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
         return searchRepository.messageSearch(context, searchInput);
     }
 
     @GraphQLQuery(description = "Search for conversations with the given properties.")
     public GQLConversationSearchResponse conversationSearch(
-            @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
-            @GraphQLRootContext RequestContext context
-            ) throws ServiceException {
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for the search") GQLSearchRequestInput searchInput,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
         return searchRepository.conversationSearch(context, searchInput);
+    }
+
+    @GraphQLQuery(description = "Search for auto-complete matches.")
+    public GQLAutoCompleteResponse autoComplete(
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.NAME, description="Name") String name,
+        @GraphQLArgument(name=GqlConstants.TYPE, description="Type of addresses to auto-complete on") GalSearchType type,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_IS_EXPANDABLE, description="Denotes whether to include `isExpandable` flag for group entries", defaultValue="false") Boolean includeIsExpandable,
+        @GraphQLArgument(name=GqlConstants.FOLDERS, description="Comma-separated list of folder ids") String folders,
+        @GraphQLArgument(name=GqlConstants.INCLUDE_GAL, description="Denotes whether to search the global address list") Boolean includeGal,
+        @GraphQLRootContext RequestContext rctxt) throws ServiceException {
+        return searchRepository.autoComplete(rctxt, name, type, includeIsExpandable, folders, includeGal);
     }
 
 }

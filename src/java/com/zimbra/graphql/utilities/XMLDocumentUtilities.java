@@ -19,8 +19,11 @@ package com.zimbra.graphql.utilities;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
@@ -43,12 +46,12 @@ public class XMLDocumentUtilities {
      * validating auth credentials.
      *
      * @param handler The handler to handle the request
-     * @param rctxt The graphql context for the request
      * @param request The request to execute
+     * @param rctxt The graphql context for the request
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocumentAsGuest(DocumentHandler handler, RequestContext rctxt, Element request)
+    public static Element executeDocumentAsGuest(DocumentHandler handler, Element request, RequestContext rctxt)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT,
@@ -64,13 +67,16 @@ public class XMLDocumentUtilities {
      * @param handler The handler to handle the request
      * @param zsc The zimbra soap context for the request
      * @param request The request to execute
+     * @param rctxt The request context
      * @return The document response
      * @throws ServiceException If there are issues executing the document
      */
-    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request)
+    public static Element executeDocument(DocumentHandler handler, ZimbraSoapContext zsc, Element request, RequestContext rctxt)
         throws ServiceException {
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        final HttpServletRequest req = rctxt.getRawRequest();
+        context.put(SoapServlet.SERVLET_REQUEST, req);
         return handler.handle(request, context);
     }
 
@@ -80,7 +86,11 @@ public class XMLDocumentUtilities {
      * @see JaxbUtil#jaxbToElement(Object)
      */
     public static Element toElement(Object o) throws ServiceException {
-        return JaxbUtil.jaxbToElement(o);
+        Element element = JaxbUtil.jaxbToElement(o);
+        if (element != null) {
+            ZimbraLog.gql.debug("\n" + element.prettyPrint());
+        }
+        return element;
     }
 
     /**
@@ -89,6 +99,9 @@ public class XMLDocumentUtilities {
      * @see JaxbUtil#elementToJaxb(Element, Class)
      */
     public static <T> T fromElement(Element e, Class<?> klass) throws ServiceException {
+        if (e != null) {
+            ZimbraLog.gql.debug("\n" + e.prettyPrint());
+        }
         return JaxbUtil.elementToJaxb(e, klass);
     }
 

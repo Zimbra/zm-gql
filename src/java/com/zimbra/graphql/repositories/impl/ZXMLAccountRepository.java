@@ -14,33 +14,60 @@
  * If not, see <https://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK *****
  */
-
 package com.zimbra.graphql.repositories.impl;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.service.account.ChangePassword;
+import com.zimbra.cs.service.account.CreateSignature;
+import com.zimbra.cs.service.account.DeleteSignature;
 import com.zimbra.cs.service.account.EndSession;
 import com.zimbra.cs.service.account.GetAccountInfo;
+import com.zimbra.cs.service.account.GetInfo;
 import com.zimbra.cs.service.account.GetPrefs;
+import com.zimbra.cs.service.account.GetSignatures;
+import com.zimbra.cs.service.account.GetWhiteBlackList;
 import com.zimbra.cs.service.account.ModifyPrefs;
+import com.zimbra.cs.service.account.ModifySignature;
+import com.zimbra.cs.service.account.ModifyWhiteBlackList;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.account.message.ChangePasswordRequest;
+import com.zimbra.soap.account.message.ChangePasswordResponse;
+import com.zimbra.soap.account.message.CreateSignatureRequest;
+import com.zimbra.soap.account.message.CreateSignatureResponse;
+import com.zimbra.soap.account.message.DeleteSignatureRequest;
 import com.zimbra.soap.account.message.EndSessionRequest;
 import com.zimbra.soap.account.message.GetAccountInfoRequest;
 import com.zimbra.soap.account.message.GetAccountInfoResponse;
+import com.zimbra.soap.account.message.GetInfoRequest;
+import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.message.GetPrefsRequest;
 import com.zimbra.soap.account.message.GetPrefsResponse;
+import com.zimbra.soap.account.message.GetSignaturesRequest;
+import com.zimbra.soap.account.message.GetSignaturesResponse;
+import com.zimbra.soap.account.message.GetWhiteBlackListRequest;
+import com.zimbra.soap.account.message.GetWhiteBlackListResponse;
 import com.zimbra.soap.account.message.ModifyPrefsRequest;
+import com.zimbra.soap.account.message.ModifySignatureRequest;
+import com.zimbra.soap.account.message.ModifyWhiteBlackListRequest;
+import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
+import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
+import com.zimbra.soap.type.OpValue;
 
 /**
  * The ZXMLAccountRepository class.<br>
@@ -73,11 +100,53 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     private final ModifyPrefs modifyPrefsHandler;
 
     /**
+     * GetInfo document handler.
+     */
+    private final GetInfo infoHandler;
+
+    /**
+     * Change password document handler.
+     */
+    private final ChangePassword changePasswordHandler;
+
+    /**
+     * GetWhiteBlackList document handler.
+     */
+    private final GetWhiteBlackList getWhiteBlackListHandler;
+
+    /**
+     * ModifyWhiteBlackList document handler.
+     */
+    private final ModifyWhiteBlackList modifyWhiteBlackListHandler;
+
+    /**
+     * GetSignatures document handler.
+     */
+    private final GetSignatures getSignaturesHandler;
+
+    /**
+     * CreateSignature document handler.
+     */
+    private final CreateSignature createSignatureHandler;
+
+    /**
+     * ModifySignature document handler.
+     */
+    private final ModifySignature modifySignatureHandler;
+
+    /**
+     * DeleteSignature document handler.
+     */
+    private final DeleteSignature deleteSignatureHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLAccountRepository() {
         this(new GetAccountInfo(), new EndSession(),
-            new GetPrefs(), new ModifyPrefs());
+            new GetPrefs(), new ModifyPrefs(), new GetInfo(), new ChangePassword(),
+            new GetWhiteBlackList(), new ModifyWhiteBlackList(), new GetSignatures(),
+            new CreateSignature(), new ModifySignature(), new DeleteSignature());
     }
 
     /**
@@ -87,14 +156,64 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * @param endSessionHandler The endSession handler
      * @param prefsHandler The prefs handler
      * @param modifyPrefsHandler The pref mutation handler
+     * @param infoHandler Handler for GetInfo
+     * @param changePasswordHandler Handler for change password
+     * @param getWhiteBlackListHandler The whiteblack list handler
+     * @param modifyWhiteBlackListHandler The whiteblack list mutation handler
+     * @param getSignaturesHandler Handler for retrieving signatures
+     * @param createSignatureHandler Handler for creating signatures
+     * @param modifySignatureHandler Handler for modifying signatures
+     * @param deleteSignatureHandler Handler for deleting signatures
      */
     public ZXMLAccountRepository(GetAccountInfo accountInfoHandler, EndSession endSessionHandler,
-        GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler) {
+         GetPrefs prefsHandler, ModifyPrefs modifyPrefsHandler, GetInfo infoHandler, ChangePassword changePasswordHandler,
+         GetWhiteBlackList getWhiteBlackListHandler, ModifyWhiteBlackList modifyWhiteBlackListHandler,
+         GetSignatures getSignaturesHandler, CreateSignature createSignatureHandler,
+         ModifySignature modifySignatureHandler, DeleteSignature deleteSignatureHandler) {
         super();
         this.accountInfoHandler = accountInfoHandler;
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
         this.modifyPrefsHandler = modifyPrefsHandler;
+        this.infoHandler = infoHandler;
+        this.changePasswordHandler = changePasswordHandler;
+        this.getWhiteBlackListHandler = getWhiteBlackListHandler;
+        this.modifyWhiteBlackListHandler = modifyWhiteBlackListHandler;
+        this.getSignaturesHandler = getSignaturesHandler;
+        this.createSignatureHandler = createSignatureHandler;
+        this.modifySignatureHandler = modifySignatureHandler;
+        this.deleteSignatureHandler = deleteSignatureHandler;
+    }
+
+    /**
+     * Retrieves info.
+     *
+     * @param rctxt The request context
+     * @param sections Comma separated list of sections to return information about
+     * @param rights Comma separated list of rights to return information about
+     * @return The GetInfoResponse as per the request
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GetInfoResponse info(RequestContext rctxt, String sections, String rights) throws ServiceException{
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetInfoRequest request = new GetInfoRequest();
+        if (!StringUtils.isEmpty(sections)) {
+            request.setSections(sections);
+        }
+        if (!StringUtils.isEmpty(rights)) {
+            request.setRights(rights);
+        }
+        final Element response = XMLDocumentUtilities.executeDocument(
+                infoHandler,
+                zsc,
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
+        GetInfoResponse resp = null;
+        if (response != null) {
+            resp = XMLDocumentUtilities.fromElement(response,
+                GetInfoResponse.class);
+        }
+        return resp;
     }
 
     /**
@@ -113,7 +232,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
                 accountInfoHandler,
                 zsc,
-                XMLDocumentUtilities.toElement(request));
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
         if (response != null) {
             final GetAccountInfoResponse resp = XMLDocumentUtilities.fromElement(response,
                 GetAccountInfoResponse.class);
@@ -133,17 +253,23 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * Ends session for the currently requesting user.
      *
      * @param rctxt The request context
+     * @param sessionId The id of a specific session to end
      * @param clearCookies Denotes whether to clear cookies for the requester
      * @throws ServiceException If there are issues executing the document
      */
-    public void accountEndSession(RequestContext rctxt, Boolean clearCookies) throws ServiceException {
+    public void accountEndSession(RequestContext rctxt, String sessionId, Boolean clearCookies,
+        Boolean clearAllSoapSessions, Boolean excludeCurrentSession) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final EndSessionRequest request = new EndSessionRequest();
+        request.setSessionId(sessionId);
         request.setLogOff(clearCookies);
+        request.setClearAllSoapSessions(clearAllSoapSessions);
+        request.setExcludeCurrentSession(excludeCurrentSession);
         final Element response = XMLDocumentUtilities.executeDocument(
                 endSessionHandler,
                 zsc,
-                XMLDocumentUtilities.toElement(request));
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
         if (response == null) {
             throw ServiceException.FAILURE("EndSessionRequest failed", null);
         }
@@ -152,7 +278,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     /**
      * Get prefs for the account.
      *
-     * @param context The request context
+     * @param rctxt The request context
      * @param prefs A list of pref names to get
      * @return A list of Pref objects
      * @throws ServiceException If there are issues executing the document
@@ -164,7 +290,8 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
             prefsHandler,
             zsc,
-            XMLDocumentUtilities.toElement(request));
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
         List<Pref> responsePrefs = null;
         if (response != null) {
             final GetPrefsResponse prefsResponse = XMLDocumentUtilities.fromElement(response, GetPrefsResponse.class);
@@ -176,7 +303,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
     /**
      * Modify prefs on the account.
      *
-     * @param context The request context
+     * @param rctxt The request context
      * @param prefs A list of Pref objects to set
      * @return A list of updated Pref objects
      * @throws ServiceException If there are issues executing the document
@@ -193,12 +320,180 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         final Element response = XMLDocumentUtilities.executeDocument(
             modifyPrefsHandler,
             zsc,
-            XMLDocumentUtilities.toElement(request));
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
         List<Pref> responsePrefs = request.getPrefs();
         if (response != null && !request.getPrefs().isEmpty()) {
             responsePrefs  = this.prefs(rctxt, responsePrefs);
         }
         return responsePrefs;
+    }
+
+    /**
+     * Modifies the selected account password.
+     * @param rctxt The request context
+     * @param acctSelector The account for which password is changed
+     * @param oldPassword old Password
+     * @param newPassword new password
+     * @param virtualHost virtualHost
+     *
+     * @return Change password response
+     * @throws ServiceException If there are issues executing the document
+     */
+    public ChangePasswordResponse changePassword(RequestContext rctxt, AccountSelector acctSelector,
+        String oldPassword, String newPassword, String virtualHost) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setOldPassword(oldPassword);
+        request.setPassword(newPassword);
+        request.setAccount(acctSelector);
+        request.setVirtualHost(virtualHost);
+        final Element response = XMLDocumentUtilities.executeDocument(
+                changePasswordHandler,
+                zsc,
+                XMLDocumentUtilities.toElement(request),
+                rctxt);
+        if (response == null) {
+            throw ServiceException.FAILURE("ChangePasswordRequest failed", null);
+        }
+        final ChangePasswordResponse resp = XMLDocumentUtilities.fromElement(response,
+            ChangePasswordResponse.class);
+        return resp;
+    }
+
+    /**
+     * Retrieves white and black list entries.
+     *
+     * @param context The request context
+     * @return White and black list entries
+     * @throws ServiceException If there are issues executing the document
+     */
+    public GQLWhiteBlackListResponse whiteBlackList(RequestContext rctxt) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetWhiteBlackListRequest request = new GetWhiteBlackListRequest();
+        final Element response = XMLDocumentUtilities.executeDocument(
+            getWhiteBlackListHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        final GQLWhiteBlackListResponse gqlResponse = new GQLWhiteBlackListResponse();
+        if (response != null) {
+            final GetWhiteBlackListResponse lists = XMLDocumentUtilities
+                .fromElement(response, GetWhiteBlackListResponse.class);
+            gqlResponse.setWhiteListEntries(lists.getWhiteListEntries());
+            gqlResponse.setBlackListEntries(lists.getBlackListEntries());
+        }
+        return gqlResponse;
+    }
+
+    /**
+     * Modify white and black list entries.<br>
+     * If no operation is present in a list, it means to remove all addresses in the list.
+     *
+     * @param context The request context
+     * @param whiteListEntries Whitelist entry operations
+     * @param blackListEntries Blacklist entry operations
+     * @return True if modify was successful
+     * @throws ServiceException If there are issues executing the document
+     */
+    public Boolean whiteBlackListModify(RequestContext rctxt, List<OpValue> whiteListEntries,
+        List<OpValue> blackListEntries) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final ModifyWhiteBlackListRequest request = new ModifyWhiteBlackListRequest();
+        request.setWhiteListEntries(whiteListEntries);
+        request.setBlackListEntries(blackListEntries);
+        XMLDocumentUtilities.executeDocument(
+            modifyWhiteBlackListHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        return true;
+    }
+
+    /**
+     * Retrieve a list of signatures associated with the requester.
+     *
+     * @param context The request context
+     * @return A list of signatures
+     * @throws ServiceException If there are issues executing the document
+     */
+    public List<Signature> signatures(RequestContext rctxt) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetSignaturesRequest request = new GetSignaturesRequest();
+        final Element response = XMLDocumentUtilities.executeDocument(
+            getSignaturesHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        final GetSignaturesResponse signatureResponse = XMLDocumentUtilities.fromElement(
+            response,
+            GetSignaturesResponse.class);
+        if (signatureResponse != null) {
+            return signatureResponse.getSignatures();
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Create a signature.
+     *
+     * @param context The request context
+     * @param signature The info of the signature to create
+     * @return The name id of the created signature
+     * @throws ServiceException If there are issues executing the document
+     */
+    public NameId signatureCreate(RequestContext rctxt, Signature signature) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final CreateSignatureRequest request = new CreateSignatureRequest(signature);
+        final Element response = XMLDocumentUtilities.executeDocument(
+            createSignatureHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        final CreateSignatureResponse signatureResponse = XMLDocumentUtilities.fromElement(
+            response,
+            CreateSignatureResponse.class);
+        return signatureResponse.getSignature();
+    }
+
+    /**
+     * Modifies a signature with given input.
+     *
+     * @param context The request context
+     * @param id The id of the signature to modify
+     * @param signature The signature info to modify
+     * @return True if there are no issues modifying the signature
+     * @throws ServiceException If there are issues executing the document
+     */
+    public Boolean signatureModify(RequestContext rctxt, String id, Signature signature) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        signature.setId(id);
+        final ModifySignatureRequest request = new ModifySignatureRequest(signature);
+        XMLDocumentUtilities.executeDocument(
+            modifySignatureHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        return true;
+    }
+
+    /**
+     * Deletes a specified signature.
+     *
+     * @param context The request context
+     * @param signature The info of the signature to create
+     * @return True if there are no issues deleting the signature
+     * @throws ServiceException If there are issues executing the document
+     */
+    public Boolean signatureDelete(RequestContext rctxt, NameId identifier) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final DeleteSignatureRequest request = new DeleteSignatureRequest(identifier);
+        XMLDocumentUtilities.executeDocument(
+            deleteSignatureHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        return true;
     }
 
 }

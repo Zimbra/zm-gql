@@ -1,20 +1,50 @@
 # `zm-gql`
 
-How to Run zm-gql
+> Zimbra GraphQL Service
 
-    fetch zm-mailbox:feature/graphql branch.
-    build and deploy at least the zmsoap project
-    
-    Add the following dependencies to the service web-inf folder:
-    /opt/zimbra/jetty/webapps/service/WEB-INF/lib/
-    spqr-0.9.7.jar
-    geantyref-1.3.4.jar
-    graphql-java-9.0.jar
-    reactive-streams-1.0.2.jar
-    antlr4-runtime-4.7.1.jar
+This service provides a GraphQL interface for users to perform operations on the Zimbra platform.
 
-    fetch zm-gql:develop and ant clean deploy
-    restart mailbox (no configs needed)
-    
-    login to webclient -> copy the auth header cookie
-    use graphiql -> put the service url in as https://<hostname>/service/extension/graphql -> check the zm-gql service docs live from the api on the right side. add the cookie as a header (with key: Cookie, and value: ZM_AUTH_TOKEN=<token-here>) and do a few requests for sanity
+---
+
+## Installation
+
+**Pre-Requisites**
+
+The `zm-mailbox` project must be built and deployed to the `.zcs-deps` folder.
+
+The `zm-build` and `zm-zcs` projects should also reside in the same local parent folder as this project.
+
+
+**Deploying the extension from CLI**
+
+For testing purposes you can build and and deploy the extension to `/opt/zimbra/lib/ext/zm-gql` by running the following:
+
+```sh
+ant clean deploy
+```
+
+Afterwards, become the `zimbra` user and perform a `zmmailboxdctl restart`.
+
+---
+
+## Testing
+
+**Unit testing the extension from CLI**
+
+```sh
+ant clean test
+```
+
+---
+
+## Usage
+
+**API**
+
+Download and install a GraphQL explorer and view the docs built by introspection.
+
+The general usage flow involves performing an auth, then using the acquired auth token to perform subsequent GraphQL requests.
+
+The service url should appear as: `https://<hostname>/service/extension/graphql`.
+
+The auth token should be used in a `Cookie` header as `ZM_AUTH_TOKEN=<auth_token_value>`.
