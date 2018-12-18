@@ -16,13 +16,18 @@
  */
 package com.zimbra.graphql.repositories.impl;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.dom4j.QName;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.mail.CancelAppointment;
 import com.zimbra.cs.service.mail.CreateAppointment;
 import com.zimbra.cs.service.mail.CreateAppointmentException;
+import com.zimbra.cs.service.mail.GetFreeBusy;
 import com.zimbra.cs.service.mail.ModifyAppointment;
 import com.zimbra.cs.service.mail.SendInviteReply;
 import com.zimbra.graphql.models.RequestContext;
@@ -36,12 +41,16 @@ import com.zimbra.soap.mail.message.CreateAppointmentExceptionRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentExceptionResponse;
 import com.zimbra.soap.mail.message.CreateAppointmentRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
+import com.zimbra.soap.mail.message.GetFreeBusyRequest;
+import com.zimbra.soap.mail.message.GetFreeBusyResponse;
 import com.zimbra.soap.mail.message.ModifyAppointmentRequest;
 import com.zimbra.soap.mail.message.ModifyAppointmentResponse;
 import com.zimbra.soap.mail.message.SendInviteReplyRequest;
 import com.zimbra.soap.mail.message.SendInviteReplyResponse;
 import com.zimbra.soap.mail.type.CalTZInfo;
 import com.zimbra.soap.mail.type.DtTimeInfo;
+import com.zimbra.soap.mail.type.FreeBusyUserInfo;
+import com.zimbra.soap.mail.type.FreeBusyUserSpec;
 import com.zimbra.soap.mail.type.InstanceRecurIdInfo;
 import com.zimbra.soap.mail.type.Msg;
 
@@ -81,11 +90,17 @@ public class ZXMLCalendarRepository extends ZXMLRepository implements IRepositor
     protected final SendInviteReply inviteReplyHandler;
 
     /**
+     * The getFreeBusy document handler.
+     */
+    protected final GetFreeBusy getFreeBusyHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLCalendarRepository() {
         this(new CreateAppointment(), new CreateAppointmentException(),
-            new ModifyAppointment(), new CancelAppointment(), new SendInviteReply());
+            new ModifyAppointment(), new CancelAppointment(), new SendInviteReply(),
+            new GetFreeBusy());
     }
 
     /**
@@ -96,23 +111,26 @@ public class ZXMLCalendarRepository extends ZXMLRepository implements IRepositor
      * @param modifyAppointment The modifyAppointment handler
      * @param cancelAppointmentHandler The cancelAppointment handler
      * @param sendInviteReplyHandler The inviteReply handler
+     * @param getFreeBusyHandler The getFreeBusy handler
      */
     public ZXMLCalendarRepository(CreateAppointment createAppointmentHandler,
         CreateAppointmentException createAppointmentExceptionHandler,
         ModifyAppointment modifyAppointmentHandler, CancelAppointment cancelAppointmentHandler,
-        SendInviteReply inviteReplyHandler) {
+        SendInviteReply inviteReplyHandler, GetFreeBusy getFreeBusyHandler) {
         super();
         this.createAppointmentHandler = createAppointmentHandler;
         this.createAppointmentExceptionHandler = createAppointmentExceptionHandler;
         this.modifyAppointmentHandler = modifyAppointmentHandler;
         this.cancelAppointmentHandler = cancelAppointmentHandler;
         this.inviteReplyHandler = inviteReplyHandler;
+        this.getFreeBusyHandler = getFreeBusyHandler;
         // set response models
         this.createAppointmentHandler.setResponseQName(QName.get("CreateAppointmentResponse"));
         this.createAppointmentExceptionHandler.setResponseQName(QName.get("CreateAppointmentExceptionResponse"));
         this.modifyAppointmentHandler.setResponseQName(QName.get("ModifyAppointmentResponse"));
         this.cancelAppointmentHandler.setResponseQName(QName.get("CancelAppointmentResponse"));
         this.inviteReplyHandler.setResponseQName(QName.get("SendInviteReplyResponse"));
+        this.getFreeBusyHandler.setResponseQName(MailConstants.GET_FREE_BUSY_RESPONSE);
     }
 
     /**
@@ -316,4 +334,39 @@ public class ZXMLCalendarRepository extends ZXMLRepository implements IRepositor
         return true;
     }
 
+    /**
+     * Retrieves free/busy status.
+     *
+     * @param rctxt The request context
+     * @param startTime Range start in milliseconds
+     * @param endTime Range end in milliseconds
+     * @param ids Comma-separated list of ids
+     * @param emails Comma-separated list of emails
+     * @param excludeUid UID of appointment to exclude from free/busy search
+     * @param freeBusyUsers Specify to view free/busy for a single folders in particular accounts
+     * @return List of free/busy user information
+     * @throws ServiceException If there are issues executing the document
+     */
+    public List<FreeBusyUserInfo> freeBusy(RequestContext rctxt, Long startTime, Long endTime,
+        String ids, String emails, String excludeUid, List<FreeBusyUserSpec> freeBusyUsers)
+        throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        final GetFreeBusyRequest request = new GetFreeBusyRequest(startTime, endTime);
+        request.setId(ids);
+        request.setName(emails);
+        request.setExcludeUid(excludeUid);
+        request.setFreebusyUsers(freeBusyUsers);
+        final Element response = XMLDocumentUtilities.executeDocument(
+            getFreeBusyHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(request),
+            rctxt);
+        GetFreeBusyResponse resp = null;
+        if (response != null) {
+            resp = XMLDocumentUtilities.fromElement(response,
+                GetFreeBusyResponse.class);
+            return resp.getFreebusyUsers();
+        }
+        return Collections.emptyList();
+    }
 }

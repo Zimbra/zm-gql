@@ -32,6 +32,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.mail.CancelAppointment;
 import com.zimbra.cs.service.mail.CreateAppointment;
 import com.zimbra.cs.service.mail.CreateAppointmentException;
+import com.zimbra.cs.service.mail.GetFreeBusy;
 import com.zimbra.cs.service.mail.ModifyAppointment;
 import com.zimbra.cs.service.mail.SendInviteReply;
 import com.zimbra.graphql.models.RequestContext;
@@ -234,6 +235,37 @@ public class ZXMLCalendarRepositoryTest {
         PowerMock.replay(XMLDocumentUtilities.class);
 
         repository.appointmentCancel(rctxt,"some-id", 0, 0, 0, null, null, null);
+
+        PowerMock.verify(GQLAuthUtilities.class);
+        PowerMock.verify(XMLDocumentUtilities.class);
+    }
+
+    /**
+     * Test method for {@link ZXMLCalendarRepository#freeBusy}<br>
+     * Validates that the free busy request is executed.
+     *
+     * @throws Exception If there are issues testing
+     */
+    @Test
+    public void testFreeBusy() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "freeBusy");
+
+        // expect to create a zimbra soap context
+        GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        PowerMock.expectLastCall().andReturn(mockZsc);
+        // expect to unmarshall a request
+        XMLDocumentUtilities.toElement(anyObject());
+        PowerMock.expectLastCall().andReturn(mockRequest);
+        // expect to execute an element on the GetFreeBusy document handler
+        expect(XMLDocumentUtilities
+                .executeDocument(anyObject(GetFreeBusy.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+            .andReturn(null);
+
+        PowerMock.replay(GQLAuthUtilities.class);
+        PowerMock.replay(XMLDocumentUtilities.class);
+
+        repository.freeBusy(rctxt, 0L, 0L, null, "test1@zimbra.com", null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
