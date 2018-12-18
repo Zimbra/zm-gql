@@ -17,6 +17,7 @@
 package com.zimbra.graphql.models.inputs;
 import com.zimbra.common.gql.GqlConstants;
 
+import io.leangen.graphql.annotations.GraphQLEnumValue;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
 /**
@@ -30,7 +31,7 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  */
 @GraphQLType(name=GqlConstants.CLASS_INVITE_REPLY_VERB_INPUT, description="Verbs for send invite reply.")
 public enum GQLInviteReplyVerbInput {
-    ACCEPT,
-    DECLINE,
-    TENTATIVE
+    @GraphQLEnumValue(description="Accept reply") ACCEPT,
+    @GraphQLEnumValue(description="Decline reply") DECLINE,
+    @GraphQLEnumValue(description="Tentative reply") TENTATIVE
 }
