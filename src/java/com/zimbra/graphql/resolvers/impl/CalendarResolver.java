@@ -57,18 +57,21 @@ public class CalendarResolver {
     }
 
     @GraphQLMutation(description="Create an appointment")
-    public CreateAppointmentResponse appointmentCreate(@GraphQLArgument(name=GqlConstants.INCLUDE_ECHO, description="Denotes whether to return created appointment in the response") Boolean includeEcho,
+    public CreateAppointmentResponse appointmentCreate(
+        @GraphQLArgument(name=GqlConstants.INCLUDE_ECHO, description="Denotes whether to return created appointment in the response") Boolean includeEcho,
         @GraphQLArgument(name=GqlConstants.MAX_SIZE, description="Maximum inline length") Integer maxSize,
         @GraphQLArgument(name=GqlConstants.INCLUDE_HTML, description="Denotes whether to include html in response echo") Boolean includeHtml,
         @GraphQLArgument(name=GqlConstants.DO_NEUTER, description="Denotes whether to neuter elements of the echo (e.g. images)") Boolean doNeuter,
         @GraphQLArgument(name=GqlConstants.DO_FORCE, description="Denotes whether to force send the message") Boolean doForce,
         @GraphQLArgument(name=GqlConstants.MESSAGE, description="Message") Msg message,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
-        return calendarRepository.appointmentCreate(rctxt, includeEcho, maxSize, includeHtml, doNeuter, doForce, message);
+        return calendarRepository.appointmentCreate(rctxt, includeEcho, maxSize, includeHtml,
+            doNeuter, doForce, message);
     }
 
     @GraphQLMutation(description="Create an appointment exception")
-    public CreateAppointmentExceptionResponse appointmentExceptionCreate(@GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
+    public CreateAppointmentExceptionResponse appointmentExceptionCreate(
+        @GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
         @GraphQLArgument(name=GqlConstants.COMPONENT_NUMBER, description="Component number of default component") Integer componentNumber,
         @GraphQLArgument(name=GqlConstants.MODIFIED_SEQUENCE, description="Change sequence of fetched version. Used for conflict detection") Integer modifiedSequence,
         @GraphQLArgument(name=GqlConstants.REVISION, description="Revision") Integer revision,
@@ -79,11 +82,14 @@ public class CalendarResolver {
         @GraphQLArgument(name=GqlConstants.DO_FORCE, description="Denotes whether to force send the message") Boolean doForce,
         @GraphQLArgument(name=GqlConstants.MESSAGE, description="Message") Msg message,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
-        return calendarRepository.appointmentExceptionCreate(rctxt, id, componentNumber, modifiedSequence, revision, includeEcho, maxSize, includeHtml, doNeuter, doForce, message);
+        return calendarRepository.appointmentExceptionCreate(rctxt, id, componentNumber,
+            modifiedSequence, revision, includeEcho, maxSize, includeHtml, doNeuter, doForce,
+            message);
     }
 
     @GraphQLMutation(description="Modify an appointment")
-    public ModifyAppointmentResponse appointmentModify(@GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
+    public ModifyAppointmentResponse appointmentModify(
+        @GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
         @GraphQLArgument(name=GqlConstants.COMPONENT_NUMBER, description="Component number of default component") Integer componentNumber,
         @GraphQLArgument(name=GqlConstants.MODIFIED_SEQUENCE, description="Change sequence of fetched version. Used for conflict detection.") Integer modifiedSequence,
         @GraphQLArgument(name=GqlConstants.REVISION, description="Revision") Integer revision,
@@ -94,11 +100,13 @@ public class CalendarResolver {
         @GraphQLArgument(name=GqlConstants.DO_FORCE, description="Denotes whether to force send the message") Boolean doForce,
         @GraphQLArgument(name=GqlConstants.MESSAGE, description="Message") Msg message,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
-        return calendarRepository.appointmentModify(rctxt, id, componentNumber, modifiedSequence, revision, includeEcho, maxSize, includeHtml, doNeuter, doForce, message);
+        return calendarRepository.appointmentModify(rctxt, id, componentNumber, modifiedSequence,
+            revision, includeEcho, maxSize, includeHtml, doNeuter, doForce, message);
     }
 
     @GraphQLMutation(description="Reply to an invite")
-    public SendInviteReplyResponse inviteReply(@GraphQLNonNull @GraphQLArgument(name=GqlConstants.ID, description="ID of invite to reply to") String id,
+    public SendInviteReplyResponse inviteReply(
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.ID, description="ID of invite to reply to") String id,
         @GraphQLNonNull @GraphQLArgument(name=GqlConstants.COMPONENT_NUMBER, description="Component number of the invite") Integer componentNumber,
         @GraphQLNonNull @GraphQLArgument(name=GqlConstants.VERB, description="Invite action") GQLInviteReplyVerbInput verb,
         @GraphQLArgument(name=GqlConstants.DO_UPDATE_ORGANIZER, description="Denotes whether to update the organizer", defaultValue="true") Boolean doUpdateOrganizer,
@@ -107,11 +115,13 @@ public class CalendarResolver {
         @GraphQLArgument(name=GqlConstants.TIMEZONE, description="Definition for TZID reference by datetime in exceptionId") CalTZInfo timezone,
         @GraphQLArgument(name=GqlConstants.MESSAGE, description="Message") Msg message,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
-        return calendarRepository.inviteReply(rctxt, id, componentNumber, verb, doUpdateOrganizer, identityId, exceptionId, timezone, message);
+        return calendarRepository.inviteReply(rctxt, id, componentNumber, verb, doUpdateOrganizer,
+            identityId, exceptionId, timezone, message);
     }
 
     @GraphQLMutation(description="Cancel an appointment")
-    public Boolean appointmentCancel(@GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
+    public Boolean appointmentCancel(
+        @GraphQLArgument(name=GqlConstants.ID, description="Invite ID of default invite") String id,
         @GraphQLArgument(name=GqlConstants.COMPONENT_NUMBER, description="Component number of default component") Integer componentNumber,
         @GraphQLArgument(name=GqlConstants.MODIFIED_SEQUENCE, description="Change sequence of fetched version. Used for conflict detection.") Integer modifiedSequence,
         @GraphQLArgument(name=GqlConstants.REVISION, description="Revision") Integer revision,
@@ -119,6 +129,7 @@ public class CalendarResolver {
         @GraphQLArgument(name=GqlConstants.TIMEZONE, description="Definition for TZID reference by datetime in instance") CalTZInfo timezone,
         @GraphQLArgument(name=GqlConstants.MESSAGE, description="Message") Msg message,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
-        return calendarRepository.appointmentCancel(rctxt, id, componentNumber, modifiedSequence, revision, instance, timezone, message);
+        return calendarRepository.appointmentCancel(rctxt, id, componentNumber, modifiedSequence,
+            revision, instance, timezone, message);
     }
 }
