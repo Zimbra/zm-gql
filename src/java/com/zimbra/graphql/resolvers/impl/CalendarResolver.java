@@ -16,6 +16,8 @@
  */
 package com.zimbra.graphql.resolvers.impl;
 
+import java.util.List;
+
 import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
@@ -27,12 +29,15 @@ import com.zimbra.soap.mail.message.ModifyAppointmentResponse;
 import com.zimbra.soap.mail.message.SendInviteReplyResponse;
 import com.zimbra.soap.mail.type.CalTZInfo;
 import com.zimbra.soap.mail.type.DtTimeInfo;
+import com.zimbra.soap.mail.type.FreeBusyUserInfo;
+import com.zimbra.soap.mail.type.FreeBusyUserSpec;
 import com.zimbra.soap.mail.type.InstanceRecurIdInfo;
 import com.zimbra.soap.mail.type.Msg;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLNonNull;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.GraphQLRootContext;
 
 /**
@@ -132,4 +137,18 @@ public class CalendarResolver {
         return calendarRepository.appointmentCancel(rctxt, id, componentNumber, modifiedSequence,
             revision, instance, timezone, message);
     }
+
+    @GraphQLQuery(description="Retrieve free/busy status")
+    public List<FreeBusyUserInfo> freeBusy(
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.START_TIME, description="Range start in milliseconds") Long startTime,
+        @GraphQLNonNull @GraphQLArgument(name=GqlConstants.END_TIME, description="Range end in milliseconds") Long endTime,
+        @GraphQLArgument(name=GqlConstants.IDS, description="Comma-separated list of ids") String ids,
+        @GraphQLArgument(name=GqlConstants.EMAILS, description="Comma-separated list of emails") String emails,
+        @GraphQLArgument(name=GqlConstants.EXCLUDE_UID, description="UID of appointment to exclude from free/busy search") String excludeUid,
+        @GraphQLArgument(name=GqlConstants.FREE_BUSY_USERS, description="Specify to view free/busy for a single folders in particular accounts") List<FreeBusyUserSpec> freeBusyUsers,
+        @GraphQLRootContext RequestContext rctxt) throws ServiceException {
+        return calendarRepository.freeBusy(rctxt, startTime, endTime, ids, emails, excludeUid,
+            freeBusyUsers);
+    }
+
 }
