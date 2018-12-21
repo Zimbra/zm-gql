@@ -350,15 +350,13 @@ public class ZXMLCalendarRepository extends ZXMLRepository implements IRepositor
     public List<FreeBusyUserInfo> freeBusy(RequestContext rctxt, Long startTime, Long endTime,
         String ids, String emails, String excludeUid, List<FreeBusyUserSpec> freeBusyUsers)
         throws ServiceException {
-        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         final GetFreeBusyRequest request = new GetFreeBusyRequest(startTime, endTime);
         request.setId(ids);
         request.setName(emails);
         request.setExcludeUid(excludeUid);
         request.setFreebusyUsers(freeBusyUsers);
-        final Element response = XMLDocumentUtilities.executeDocument(
+        final Element response = XMLDocumentUtilities.executeDocumentAsGuest(
             getFreeBusyHandler,
-            zsc,
             XMLDocumentUtilities.toElement(request),
             rctxt);
         GetFreeBusyResponse resp = null;
