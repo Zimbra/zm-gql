@@ -18,9 +18,12 @@ package com.zimbra.graphql.repositories.impl;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.service.account.SearchGal;
 import com.zimbra.cs.service.mail.AutoComplete;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLGALSearchRequestInput;
+import com.zimbra.graphql.models.inputs.GQLSearchBy;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
 import com.zimbra.graphql.models.outputs.GQLAutoCompleteResponse;
 import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
@@ -29,6 +32,8 @@ import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.account.message.SearchGalRequest;
+import com.zimbra.soap.account.message.SearchGalResponse;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.SearchRequest;
@@ -56,10 +61,15 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
     protected final AutoComplete autoCompleteHandler;
 
     /**
+     * The search gal handler.
+     */
+    protected final SearchGal searchGALHandler;
+
+    /**
      * Creates an instance with default document handlers.
      */
     public ZXMLSearchRepository() {
-        this(new Search(), new AutoComplete());
+        this(new Search(), new AutoComplete(), new SearchGal());
     }
 
     /**
@@ -68,10 +78,11 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
      * @param searchHandler The search handler
      * @param autoCompleteHandler The auto-complete handler
      */
-    public ZXMLSearchRepository(Search searchHandler, AutoComplete autoCompleteHandler) {
+    public ZXMLSearchRepository(Search searchHandler, AutoComplete autoCompleteHandler, SearchGal searchGALHandler) {
         super();
         this.searchHandler = searchHandler;
         this.autoCompleteHandler = autoCompleteHandler;
+        this.searchGALHandler = searchGALHandler;
     }
 
     /**
@@ -212,4 +223,50 @@ public class ZXMLSearchRepository extends ZXMLRepository implements IRepository 
         return gqlResponse;
     }
 
+    /**
+     * Search GAL.
+     *
+     * @param rctxt The request context
+     * @param searchInput The GQLGALSearchRequestInput object
+     * @return 
+     * @throws ServiceException If there are issues executing the document
+     */
+    public SearchGalResponse galSearch(RequestContext rctxt, GQLSearchBy searchBy, String value,
+            GQLGALSearchRequestInput searchInput) throws ServiceException {
+
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        SearchGalRequest req = new SearchGalRequest();
+        if (searchBy == GQLSearchBy.REF) {
+            req.setRef(value);
+        } else {
+            req.setName(value);
+        }
+        if (searchInput != null) {
+            req.setCursor(searchInput.getCursor());
+            req.setGalAccountId(searchInput.getGalAccountId());
+            req.setLimit(searchInput.getLimit());
+            req.setLocale(searchInput.getLocale());
+            req.setNeedCanExpand(searchInput.getIncludeIsExpandable());
+            req.setNeedIsMember(searchInput.getIncludeIsMember());
+            req.setNeedIsOwner(searchInput.getIncludeIsOwner());
+            req.setNeedSMIMECerts(searchInput.getIncludeSMIMECerts());
+            req.setOffset(searchInput.getOffset());
+            req.setQuick(searchInput.getQuick());
+            req.setSearchFilter(searchInput.getSearchFilter());
+            req.setSortBy(searchInput.getSortBy());
+            req.setType(searchInput.getSearchType());
+        }
+
+        final Element response = XMLDocumentUtilities.executeDocument(
+            searchGALHandler,
+            zsc,
+            XMLDocumentUtilities.toElement(req),
+            rctxt);
+        SearchGalResponse searchGalResponse = null;
+        if (response != null) {
+            searchGalResponse = XMLDocumentUtilities.fromElement(response,
+                    SearchGalResponse.class);
+        }
+        return searchGalResponse;
+    }
 }
