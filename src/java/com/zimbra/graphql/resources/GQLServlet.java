@@ -43,6 +43,7 @@ import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
+import com.zimbra.graphql.repositories.impl.ZXMLTaskRepository;
 import com.zimbra.graphql.resolvers.impl.AccountResolver;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
 import com.zimbra.graphql.resolvers.impl.CalendarResolver;
@@ -50,6 +51,7 @@ import com.zimbra.graphql.resolvers.impl.ContactResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.resolvers.impl.MessageResolver;
 import com.zimbra.graphql.resolvers.impl.SearchResolver;
+import com.zimbra.graphql.resolvers.impl.TaskResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLConstants;
 import com.zimbra.graphql.utilities.GQLUtilities;
@@ -233,6 +235,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
         final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository(), new ZNativeAuthRepository());
         final CalendarResolver calendarResolver = new CalendarResolver(new ZXMLCalendarRepository());
+        final TaskResolver taskResolver = new TaskResolver(new ZXMLTaskRepository());
         final ContactResolver contactResolver = new ContactResolver(new ZXMLContactRepository());
         final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
         final MessageResolver messageResolver = new MessageResolver(new ZXMLMessageRepository());
@@ -246,6 +249,7 @@ public class GQLServlet extends ExtensionHttpHandler {
                 accountResolver,
                 authResolver,
                 calendarResolver,
+                taskResolver,
                 contactResolver,
                 folderResolver,
                 messageResolver,
