@@ -20,6 +20,7 @@ import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.repositories.impl.ZXMLTaskRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.message.CreateTaskExceptionResponse;
 import com.zimbra.soap.mail.message.CreateTaskResponse;
 import com.zimbra.soap.mail.message.ModifyTaskResponse;
@@ -40,7 +41,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2019
  */
-public class TaskResolver {
+public class TaskResolver implements IResolver {
 
     protected ZXMLTaskRepository taskRepository = null;
 

@@ -24,6 +24,7 @@ import com.zimbra.graphql.models.inputs.GQLAuthRequestInput;
 import com.zimbra.graphql.models.outputs.GQLSessionInfo;
 import com.zimbra.graphql.repositories.impl.ZNativeAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.account.message.AuthResponse;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -40,7 +41,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class AuthResolver {
+public class AuthResolver implements IResolver {
 
     protected ZXMLAuthRepository xmlAuthRepository = null;
     protected ZNativeAuthRepository nativeAuthRepository = null;

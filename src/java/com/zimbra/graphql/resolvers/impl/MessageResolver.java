@@ -22,6 +22,7 @@ import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.Msg;
@@ -42,7 +43,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @author Zimbra API Team
  * @package com.zimbra.graphql.resolvers.impl
  */
-public class MessageResolver {
+public class MessageResolver implements IResolver {
 
     protected ZXMLMessageRepository messageRepository = null;
 
@@ -70,7 +71,7 @@ public class MessageResolver {
         @GraphQLArgument(name = GqlConstants.SEND_UID, description = "Send UID.") String sendUid,
         @GraphQLArgument(name = GqlConstants.MESSAGE, description = "The message to send.") MsgToSend message,
         @GraphQLRootContext RequestContext context) throws ServiceException {
-        // TODO: False must be changed to Boolean isCalendarForward when isCalendarForward and invites are enabled 
+        // TODO: False must be changed to Boolean isCalendarForward when isCalendarForward and invites are enabled
         return messageRepository.messageSend(context, addSentBy, false, doSkipSave,
             doFetchSaved, sendUid, message);
     }

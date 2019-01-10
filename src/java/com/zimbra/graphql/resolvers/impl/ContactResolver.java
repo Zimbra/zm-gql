@@ -23,6 +23,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLGetContactsRequestInput;
 import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.type.ActionResult;
 import com.zimbra.soap.mail.type.ContactInfo;
 import com.zimbra.soap.mail.type.ContactSpec;
@@ -44,7 +45,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class ContactResolver {
+public class ContactResolver implements IResolver {
 
     protected ZXMLContactRepository contactRepository = null;
 
