@@ -31,6 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.mail.GetMsg;
 import com.zimbra.cs.service.mail.SendMsg;
+import com.zimbra.cs.service.mail.SendShareNotification;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
@@ -138,6 +139,36 @@ public class ZXMLMessageRepositoryTest {
         PowerMock.replay(XMLDocumentUtilities.class);
 
         repository.messageSend(rctxt, false, false, false, false, null, null);
+
+        PowerMock.verify(GQLAuthUtilities.class);
+        PowerMock.verify(XMLDocumentUtilities.class);
+    }
+
+    /**
+     * Test method for {@link ZXMLMessageRepository#shareNotificationSend}<br>
+     * Validates that the SendShareNotification request is executed.
+     *
+     * @throws Exception If there are any issues
+     */
+    @Test
+    public void testShareNotificationSend() throws Exception {
+        final ZXMLMessageRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLMessageRepository.class, "shareNotificationSend");
+
+        // expect to create a zimbra soap context
+        GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        PowerMock.expectLastCall().andReturn(mockZsc);
+        // expect to unmarshall a request
+        XMLDocumentUtilities.toElement(anyObject());
+        PowerMock.expectLastCall().andReturn(mockRequest);
+        expect(XMLDocumentUtilities
+                .executeDocument(anyObject(SendShareNotification.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+            .andReturn(null);
+
+        PowerMock.replay(GQLAuthUtilities.class);
+        PowerMock.replay(XMLDocumentUtilities.class);
+
+        repository.shareNotificationSend(rctxt, null, null, null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);

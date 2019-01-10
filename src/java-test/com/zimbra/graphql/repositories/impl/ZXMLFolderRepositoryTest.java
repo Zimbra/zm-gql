@@ -29,12 +29,16 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.service.account.GetShareInfo;
 import com.zimbra.cs.service.mail.CreateFolder;
+import com.zimbra.cs.service.mail.CreateMountpoint;
 import com.zimbra.cs.service.mail.CreateSearchFolder;
 import com.zimbra.cs.service.mail.GetFolder;
 import com.zimbra.cs.service.mail.GetSearchFolder;
 import com.zimbra.cs.service.mail.ModifySearchFolder;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLFolderSelector;
+import com.zimbra.graphql.models.inputs.GQLOwnerSelector;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -235,6 +239,63 @@ public class ZXMLFolderRepositoryTest {
         PowerMock.replay(XMLDocumentUtilities.class);
 
         repository.searchFolderModify(rctxt, null);
+
+        PowerMock.verify(GQLAuthUtilities.class);
+        PowerMock.verify(XMLDocumentUtilities.class);
+    }
+
+    /**
+     * Test method for {@link ZXMLFolderRepository#mountpointCreate}<br>
+     * Validates that the create mountpoint request is executed.
+     *
+     * @throws Exception If there are any issues
+     */
+    @Test
+    public void testMountpointCreate() throws Exception {
+        final ZXMLFolderRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "mountpointCreate");
+
+        GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        PowerMock.expectLastCall().andReturn(mockZsc);
+        XMLDocumentUtilities.toElement(anyObject());
+        PowerMock.expectLastCall().andReturn(mockRequest);
+        expect(XMLDocumentUtilities
+                .executeDocument(anyObject(CreateMountpoint.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+            .andReturn(null);
+
+        PowerMock.replay(GQLAuthUtilities.class);
+        PowerMock.replay(XMLDocumentUtilities.class);
+
+        repository.mountpointCreate(rctxt, "test",  "1",
+                GQLOwnerSelector.EMAIL, "test@tets.com", GQLFolderSelector.ID, "1",
+                null, null, null, null, null, false, false);
+
+        PowerMock.verify(GQLAuthUtilities.class);
+        PowerMock.verify(XMLDocumentUtilities.class);
+    }
+
+    /**
+     * Test method for {@link ZXMLFolderRepository#shareInfo}<br>
+     * Validates that the GetShareInfo request is executed.
+     *
+     * @throws Exception If there are any issues
+     */
+    @Test
+    public void testShareInfo() throws Exception {
+        final ZXMLFolderRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "shareInfo");
+        GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        PowerMock.expectLastCall().andReturn(mockZsc);
+        XMLDocumentUtilities.toElement(anyObject());
+        PowerMock.expectLastCall().andReturn(mockRequest);
+        expect(XMLDocumentUtilities
+                .executeDocument(anyObject(GetShareInfo.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+            .andReturn(null);
+
+        PowerMock.replay(GQLAuthUtilities.class);
+        PowerMock.replay(XMLDocumentUtilities.class);
+
+        repository.shareInfo(rctxt, false, false, null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
