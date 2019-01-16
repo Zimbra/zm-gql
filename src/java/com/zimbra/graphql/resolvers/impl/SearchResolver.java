@@ -28,6 +28,7 @@ import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
 import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
 import com.zimbra.soap.account.message.SearchGalResponse;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.type.GalSearchType;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -43,7 +44,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class SearchResolver {
+public class SearchResolver implements IResolver {
 
     protected ZXMLSearchRepository searchRepository = null;
 

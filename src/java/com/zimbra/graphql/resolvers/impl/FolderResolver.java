@@ -24,6 +24,7 @@ import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLFolderSelector;
 import com.zimbra.graphql.models.inputs.GQLOwnerSelector;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.FolderActionResult;
 import com.zimbra.soap.mail.type.FolderActionSelector;
@@ -51,7 +52,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class FolderResolver {
+public class FolderResolver implements IResolver {
 
     protected ZXMLFolderRepository folderRepository = null;
 

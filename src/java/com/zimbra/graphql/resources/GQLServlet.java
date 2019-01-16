@@ -35,23 +35,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.graphql.errors.GQLError;
-import com.zimbra.graphql.repositories.impl.ZNativeAuthRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLCalendarRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLTaskRepository;
-import com.zimbra.graphql.resolvers.impl.AccountResolver;
-import com.zimbra.graphql.resolvers.impl.AuthResolver;
-import com.zimbra.graphql.resolvers.impl.CalendarResolver;
-import com.zimbra.graphql.resolvers.impl.ContactResolver;
-import com.zimbra.graphql.resolvers.impl.FolderResolver;
-import com.zimbra.graphql.resolvers.impl.MessageResolver;
-import com.zimbra.graphql.resolvers.impl.SearchResolver;
-import com.zimbra.graphql.resolvers.impl.TaskResolver;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLConstants;
 import com.zimbra.graphql.utilities.GQLUtilities;
@@ -61,8 +44,6 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphqlErrorHelper;
 import graphql.execution.UnknownOperationException;
-import graphql.schema.GraphQLSchema;
-import io.leangen.graphql.GraphQLSchemaGenerator;
 
 /**
  * The GQLServlet class.<br>
@@ -88,7 +69,7 @@ public class GQLServlet extends ExtensionHttpHandler {
      * Constructs an instance and sets up gql object with schema.
      */
     public GQLServlet() {
-        graphql = GraphQL.newGraphQL(buildSchema())
+        graphql = GraphQL.newGraphQL(GQLSchemaBuilder.newInstance().build())
             .build();
     }
 
@@ -224,37 +205,6 @@ public class GQLServlet extends ExtensionHttpHandler {
         ZimbraLog.extensions.debug("Writing http response.");
         resp.getWriter().print(mapper.writeValueAsString(result));
         resp.getWriter().flush();
-    }
-
-    /**
-     * Wires the application schema given resolvers.
-     *
-     * @return A wired schema
-     */
-    protected GraphQLSchema buildSchema() {
-        final AccountResolver accountResolver = new AccountResolver(new ZXMLAccountRepository());
-        final AuthResolver authResolver = new AuthResolver(new ZXMLAuthRepository(), new ZNativeAuthRepository());
-        final CalendarResolver calendarResolver = new CalendarResolver(new ZXMLCalendarRepository());
-        final TaskResolver taskResolver = new TaskResolver(new ZXMLTaskRepository());
-        final ContactResolver contactResolver = new ContactResolver(new ZXMLContactRepository());
-        final FolderResolver folderResolver = new FolderResolver(new ZXMLFolderRepository());
-        final MessageResolver messageResolver = new MessageResolver(new ZXMLMessageRepository());
-        final SearchResolver searchResolver = new SearchResolver(new ZXMLSearchRepository());
-        ZimbraLog.extensions.info("Generating schema with loaded resolvers . . .");
-        return new GraphQLSchemaGenerator()
-            .withBasePackages(
-                "com.zimbra.graphql.models",
-                "com.zimbra.soap")
-            .withOperationsFromSingletons(
-                accountResolver,
-                authResolver,
-                calendarResolver,
-                taskResolver,
-                contactResolver,
-                folderResolver,
-                messageResolver,
-                searchResolver
-            ).generate();
     }
 
     /**
