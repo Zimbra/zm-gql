@@ -25,7 +25,6 @@ import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
 import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
-import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.MsgSpec;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.mail.type.MsgWithGroupInfo;
@@ -57,7 +56,7 @@ public class MessageResolver implements IResolver {
     }
 
     @GraphQLQuery(description="Retrieve a message by given properties.")
-    public Msg message(
+    public MsgWithGroupInfo message(
         @GraphQLArgument(name=GqlConstants.GQL_MESSAGE_SPECIFICATIONS) MsgSpec messageSpecifications,
         @GraphQLRootContext RequestContext context) throws ServiceException {
        return messageRepository.message(context, messageSpecifications);

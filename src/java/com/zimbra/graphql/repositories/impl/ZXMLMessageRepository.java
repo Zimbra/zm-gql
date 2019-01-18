@@ -36,7 +36,6 @@ import com.zimbra.soap.mail.message.SendMsgRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
-import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.MsgSpec;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.mail.type.MsgWithGroupInfo;
@@ -96,7 +95,7 @@ public class ZXMLMessageRepository extends ZXMLItemRepository implements IReposi
      * @return Fetch results
      * @throws ServiceException If there are issues executing the document
      */
-    public Msg message(RequestContext rctxt, MsgSpec messageSpecifications)
+    public MsgWithGroupInfo message(RequestContext rctxt, MsgSpec messageSpecifications)
         throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         // map the request params
@@ -107,10 +106,10 @@ public class ZXMLMessageRepository extends ZXMLItemRepository implements IReposi
             zsc,
             XMLDocumentUtilities.toElement(req),
             rctxt);
-        Msg message = null;
+        MsgWithGroupInfo message = null;
         if (response != null) {
             message = XMLDocumentUtilities
-                .fromElement(response.getElement(MailConstants.E_MSG), Msg.class);
+                .fromElement(response.getElement(MailConstants.E_MSG), MsgWithGroupInfo.class);
         }
         return message;
     }
