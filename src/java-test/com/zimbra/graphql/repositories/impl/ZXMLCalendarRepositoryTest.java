@@ -82,7 +82,8 @@ public class ZXMLCalendarRepositoryTest {
         rctxt = EasyMock.createMock(RequestContext.class);
 
         PowerMock.mockStaticPartial(GQLAuthUtilities.class, "getZimbraSoapContext");
-        PowerMock.mockStaticPartial(XMLDocumentUtilities.class, "executeDocument", "fromElement", "toElement");
+        PowerMock.mockStaticPartial(XMLDocumentUtilities.class,
+            "executeDocument", "executeDocumentAsGuest", "fromElement", "toElement");
     }
 
     /**
@@ -251,15 +252,12 @@ public class ZXMLCalendarRepositoryTest {
         final ZXMLCalendarRepository repository = PowerMock
             .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "freeBusy");
 
-        // expect to create a zimbra soap context
-        GQLAuthUtilities.getZimbraSoapContext(rctxt);
-        PowerMock.expectLastCall().andReturn(mockZsc);
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
         // expect to execute an element on the GetFreeBusy document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(GetFreeBusy.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocumentAsGuest(anyObject(GetFreeBusy.class), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
