@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.service.account.ChangePassword;
 import com.zimbra.cs.service.account.CreateSignature;
@@ -41,6 +42,7 @@ import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
+import com.zimbra.graphql.utilities.HandlerManager;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.ChangePasswordRequest;
@@ -98,11 +100,6 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
      * Modify perfs document handler.
      */
     private final ModifyPrefs modifyPrefsHandler;
-
-    /**
-     * GetInfo document handler.
-     */
-    private final GetInfo infoHandler;
 
     /**
      * Change password document handler.
@@ -175,7 +172,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         this.endSessionHandler = endSessionHandler;
         this.prefsHandler = prefsHandler;
         this.modifyPrefsHandler = modifyPrefsHandler;
-        this.infoHandler = infoHandler;
+        HandlerManager.registerHandler(AccountConstants.GET_INFO_REQUEST, infoHandler);
         this.changePasswordHandler = changePasswordHandler;
         this.getWhiteBlackListHandler = getWhiteBlackListHandler;
         this.modifyWhiteBlackListHandler = modifyWhiteBlackListHandler;
@@ -204,7 +201,7 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             request.setRights(rights);
         }
         final Element response = XMLDocumentUtilities.executeDocument(
-                infoHandler,
+                HandlerManager.getHandler(AccountConstants.GET_INFO_REQUEST),
                 zsc,
                 XMLDocumentUtilities.toElement(request),
                 rctxt);

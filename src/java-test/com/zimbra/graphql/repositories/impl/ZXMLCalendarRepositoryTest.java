@@ -29,28 +29,25 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.zimbra.common.soap.Element;
-import com.zimbra.cs.service.account.GetShareInfo;
-import com.zimbra.cs.service.mail.CreateFolder;
-import com.zimbra.cs.service.mail.CreateMountpoint;
-import com.zimbra.cs.service.mail.CreateSearchFolder;
-import com.zimbra.cs.service.mail.GetFolder;
-import com.zimbra.cs.service.mail.GetSearchFolder;
-import com.zimbra.cs.service.mail.ModifySearchFolder;
+import com.zimbra.cs.service.mail.CancelAppointment;
+import com.zimbra.cs.service.mail.CreateAppointment;
+import com.zimbra.cs.service.mail.CreateAppointmentException;
+import com.zimbra.cs.service.mail.GetFreeBusy;
+import com.zimbra.cs.service.mail.ModifyAppointment;
+import com.zimbra.cs.service.mail.SendInviteReply;
 import com.zimbra.graphql.models.RequestContext;
-import com.zimbra.graphql.models.inputs.GQLFolderSelector;
-import com.zimbra.graphql.models.inputs.GQLOwnerSelector;
+import com.zimbra.graphql.models.inputs.GQLInviteReplyVerbInput;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.mail.type.Folder.View;
 
 
 /**
- * Test class for {@link ZXMLFolderRepository}.
+ * Test class for {@link ZXMLCalendarRepository}.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GQLAuthUtilities.class, XMLDocumentUtilities.class, ZimbraSoapContext.class})
-public class ZXMLFolderRepositoryTest {
+public class ZXMLCalendarRepositoryTest {
 
     /**
      * Mock soap context for testing.
@@ -88,17 +85,16 @@ public class ZXMLFolderRepositoryTest {
         PowerMock.mockStaticPartial(XMLDocumentUtilities.class, "executeDocument", "fromElement", "toElement");
     }
 
-
     /**
-     * Test method for {@link ZXMLFolderRepository#folder}<br>
-     * Validates that the folder request is executed.
+     * Test method for {@link ZXMLCalendarRepository#appointmentCreate}<br>
+     * Validates that the create appointment request is executed.
      *
      * @throws Exception If there are issues testing
      */
     @Test
-    public void testFolder() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "folder");
+    public void testAppointmentCreate() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "appointmentCreate");
 
         // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -106,30 +102,30 @@ public class ZXMLFolderRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the GetFolder document handler
+        // expect to execute an element on the CreateAppointment document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(GetFolder.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(CreateAppointment.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.folder(rctxt, false, false, View.MESSAGE, null, false, null);
+        repository.appointmentCreate(rctxt, false, 0, false, false, false, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
     /**
-     * Test method for {@link ZXMLFolderRepository#createFolder}<br>
-     * Validates that the create folder request is executed.
+     * Test method for {@link ZXMLCalendarRepository#appointmentExceptionCreate}<br>
+     * Validates that the create appointment exception request is executed.
      *
      * @throws Exception If there are issues testing
      */
     @Test
-    public void testFolderCreate() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "createFolder");
+    public void testAppointmentExceptionCreate() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "appointmentExceptionCreate");
 
         // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -137,30 +133,30 @@ public class ZXMLFolderRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the CreateFolder document handler
+        // expect to execute an element on the CreateAppointmentException document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(CreateFolder.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(CreateAppointmentException.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.createFolder(rctxt, null);
+        repository.appointmentExceptionCreate(rctxt, "some-id", 0, 0, 0, false, 0, false, false, false, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
     /**
-     * Test method for {@link ZXMLFolderRepository#searchFolderGet}<br>
-     * Validates that the get search folder request is executed.
+     * Test method for {@link ZXMLCalendarRepository#appointmentModify}<br>
+     * Validates that the modify appointment request is executed.
      *
      * @throws Exception If there are issues testing
      */
     @Test
-    public void testSearchFolderGet() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "searchFolderGet");
+    public void testAppointmentModify() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "appointmentModify");
 
         // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -168,30 +164,30 @@ public class ZXMLFolderRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the GetSearchFolder document handler
+        // expect to execute an element on the ModifyAppointment document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(GetSearchFolder.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(ModifyAppointment.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.searchFolderGet(rctxt);
+        repository.appointmentModify(rctxt, "some-id", 0, 0, 0, false, 0, false, false, false, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
     /**
-     * Test method for {@link ZXMLFolderRepository#searchFolderCreate}<br>
-     * Validates that the create search folder request is executed.
+     * Test method for {@link ZXMLCalendarRepository#inviteReply}<br>
+     * Validates that the invite reply request is executed.
      *
      * @throws Exception If there are issues testing
      */
     @Test
-    public void testSearchFolderCreate() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "searchFolderCreate");
+    public void testInviteReply() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "inviteReply");
 
         // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -199,30 +195,30 @@ public class ZXMLFolderRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the CreateSearchFolder document handler
+        // expect to execute an element on the SendInviteReply document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(CreateSearchFolder.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(SendInviteReply.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.searchFolderCreate(rctxt, null);
+        repository.inviteReply(rctxt, "some-id", 0, GQLInviteReplyVerbInput.ACCEPT, false, "ident", null, null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
     /**
-     * Test method for {@link ZXMLFolderRepository#searchFolderModify}<br>
-     * Validates that the modify search folder request is executed.
+     * Test method for {@link ZXMLCalendarRepository#appointmentCancel}<br>
+     * Validates that the cancel appointment request is executed.
      *
      * @throws Exception If there are issues testing
      */
     @Test
-    public void testSearchFolderModify() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "searchFolderModify");
+    public void testAppointmentCancel() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "appointmentCancel");
 
         // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
@@ -230,72 +226,46 @@ public class ZXMLFolderRepositoryTest {
         // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
-        // expect to execute an element on the CreateSearchFolder document handler
+        // expect to execute an element on the CancelAppointment document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(ModifySearchFolder.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(CancelAppointment.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.searchFolderModify(rctxt, null);
+        repository.appointmentCancel(rctxt,"some-id", 0, 0, 0, null, null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);
     }
 
     /**
-     * Test method for {@link ZXMLFolderRepository#mountpointCreate}<br>
-     * Validates that the create mountpoint request is executed.
+     * Test method for {@link ZXMLCalendarRepository#freeBusy}<br>
+     * Validates that the free busy request is executed.
      *
-     * @throws Exception If there are any issues
+     * @throws Exception If there are issues testing
      */
     @Test
-    public void testMountpointCreate() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "mountpointCreate");
+    public void testFreeBusy() throws Exception {
+        final ZXMLCalendarRepository repository = PowerMock
+            .createPartialMockForAllMethodsExcept(ZXMLCalendarRepository.class, "freeBusy");
 
+        // expect to create a zimbra soap context
         GQLAuthUtilities.getZimbraSoapContext(rctxt);
         PowerMock.expectLastCall().andReturn(mockZsc);
+        // expect to unmarshall a request
         XMLDocumentUtilities.toElement(anyObject());
         PowerMock.expectLastCall().andReturn(mockRequest);
+        // expect to execute an element on the GetFreeBusy document handler
         expect(XMLDocumentUtilities
-                .executeDocument(anyObject(CreateMountpoint.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
+                .executeDocument(anyObject(GetFreeBusy.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
             .andReturn(null);
 
         PowerMock.replay(GQLAuthUtilities.class);
         PowerMock.replay(XMLDocumentUtilities.class);
 
-        repository.mountpointCreate(rctxt, "test",  "1",
-                GQLOwnerSelector.EMAIL, "test@tets.com", GQLFolderSelector.ID, "1",
-                null, null, null, null, null, false, false);
-
-        PowerMock.verify(GQLAuthUtilities.class);
-        PowerMock.verify(XMLDocumentUtilities.class);
-    }
-
-    /**
-     * Test method for {@link ZXMLFolderRepository#shareInfo}<br>
-     * Validates that the GetShareInfo request is executed.
-     *
-     * @throws Exception If there are any issues
-     */
-    @Test
-    public void testShareInfo() throws Exception {
-        final ZXMLFolderRepository repository = PowerMock
-            .createPartialMockForAllMethodsExcept(ZXMLFolderRepository.class, "shareInfo");
-        GQLAuthUtilities.getZimbraSoapContext(rctxt);
-        PowerMock.expectLastCall().andReturn(mockZsc);
-        XMLDocumentUtilities.toElement(anyObject());
-        PowerMock.expectLastCall().andReturn(mockRequest);
-        expect(XMLDocumentUtilities
-                .executeDocument(anyObject(GetShareInfo.class), eq(mockZsc), eq(mockRequest), eq(rctxt)))
-            .andReturn(null);
-
-        PowerMock.replay(GQLAuthUtilities.class);
-        PowerMock.replay(XMLDocumentUtilities.class);
-
-        repository.shareInfo(rctxt, false, false, null, null);
+        repository.freeBusy(rctxt, 0L, 0L, null, "test1@zimbra.com", null, null);
 
         PowerMock.verify(GQLAuthUtilities.class);
         PowerMock.verify(XMLDocumentUtilities.class);

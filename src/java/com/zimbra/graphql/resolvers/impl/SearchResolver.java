@@ -20,11 +20,15 @@ package com.zimbra.graphql.resolvers.impl;
 import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLGALSearchRequestInput;
+import com.zimbra.graphql.models.inputs.GQLSearchBy;
 import com.zimbra.graphql.models.inputs.GQLSearchRequestInput;
 import com.zimbra.graphql.models.outputs.GQLAutoCompleteResponse;
 import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
 import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
+import com.zimbra.soap.account.message.SearchGalResponse;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.type.GalSearchType;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
@@ -40,7 +44,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class SearchResolver {
+public class SearchResolver implements IResolver {
 
     protected ZXMLSearchRepository searchRepository = null;
 
@@ -76,6 +80,15 @@ public class SearchResolver {
         @GraphQLArgument(name=GqlConstants.INCLUDE_GAL, description="Denotes whether to search the global address list") Boolean includeGal,
         @GraphQLRootContext RequestContext rctxt) throws ServiceException {
         return searchRepository.autoComplete(rctxt, name, type, includeIsExpandable, folders, includeGal);
+    }
+
+    @GraphQLQuery(description = "Search GAL based on input parameters.")
+    public SearchGalResponse galSearch(
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.SEARCH_BY, description="Search GAL by REF or Query") GQLSearchBy searchBy,
+        @GraphQLNonNull @GraphQLArgument(name = GqlConstants.VALUE, description="Value of query or ref") String value,
+        @GraphQLArgument(name=GqlConstants.SEARCH_PARAMS, description="Input parameters for gal search") GQLGALSearchRequestInput searchInput,
+        @GraphQLRootContext RequestContext context) throws ServiceException {
+        return searchRepository.galSearch(context, searchBy, value, searchInput);
     }
 
 }

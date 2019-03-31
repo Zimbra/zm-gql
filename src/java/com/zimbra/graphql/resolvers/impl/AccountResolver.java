@@ -25,6 +25,7 @@ import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.NameId;
@@ -47,7 +48,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class AccountResolver {
+public class AccountResolver implements IResolver {
 
     protected ZXMLAccountRepository accountRepository = null;
 
@@ -149,4 +150,5 @@ public class AccountResolver {
         @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.signatureDelete(context, identifier);
     }
+
 }
