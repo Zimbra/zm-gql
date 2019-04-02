@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -203,6 +205,7 @@ public class GQLServlet extends ExtensionHttpHandler {
         throws IOException {
         // print result and flush
         ZimbraLog.extensions.debug("Writing http response.");
+        resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         resp.getWriter().print(mapper.writeValueAsString(result));
         resp.getWriter().flush();
     }
