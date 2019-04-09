@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.account.GetShareInfo;
@@ -37,6 +36,7 @@ import com.zimbra.graphql.models.inputs.GQLFolderSelector;
 import com.zimbra.graphql.models.inputs.GQLOwnerSelector;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
+import com.zimbra.graphql.utilities.GQLUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.GetShareInfoRequest;
@@ -313,7 +313,7 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
 
     /**
      * Create mountpoint with given properties
-     * 
+     *
      * @param rctxt
      *            The request context
      * @param name
@@ -355,7 +355,7 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
             String defaultView, String flags, Byte color, String rgb, String url, Boolean fetchIfExists,
             Boolean reminderEnabled) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
-        NewMountpointSpec spec = new NewMountpointSpec(name);
+        final NewMountpointSpec spec = new NewMountpointSpec(name);
         spec.setFolderId(folderId);
         if (ownerSelector == GQLOwnerSelector.ID) {
             spec.setOwnerId(owner);
@@ -386,7 +386,8 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
     }
 
     /**
-     * Get information about folders shared with the authenticated user
+     * Get information about folders shared with the authenticated user.
+     *
      * @param rctxt The request context
      * @param internal Flags that have been proxied to this server because the specified "owner account" is homed here. Do not proxy in this case. (Used internally by ZCS)
      * @param includeSelf Flag whether own shares should be included:
@@ -409,9 +410,9 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
                 XMLDocumentUtilities.toElement(req), rctxt);
         List<ShareInfo> shares = null;
         if (response != null) {
-            GetShareInfoResponse resp = XMLDocumentUtilities.fromElement(response, GetShareInfoResponse.class);
+            final GetShareInfoResponse resp = XMLDocumentUtilities.fromElement(response, GetShareInfoResponse.class);
             shares = resp.getShares();
         }
-        return shares;
+        return GQLUtilities.emptyListIfNull(shares);
     }
 }

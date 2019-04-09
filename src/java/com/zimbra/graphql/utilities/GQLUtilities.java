@@ -19,6 +19,8 @@ package com.zimbra.graphql.utilities;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
@@ -79,6 +81,19 @@ public class GQLUtilities {
             input.close();
         }
         return buffer.toByteArray();
+    }
+
+    /**
+     * Returns an empty list if the specified list is null.
+     *
+     * @param list The list to check
+     * @return A non-null list
+     */
+    public static <E> List<E> emptyListIfNull(List<E> list) {
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return list;
     }
 
 }
