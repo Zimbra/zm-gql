@@ -36,7 +36,6 @@ import com.zimbra.graphql.models.inputs.GQLFolderSelector;
 import com.zimbra.graphql.models.inputs.GQLOwnerSelector;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
-import com.zimbra.graphql.utilities.GQLUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.GetShareInfoRequest;
@@ -413,6 +412,6 @@ public class ZXMLFolderRepository extends ZXMLItemRepository implements IReposit
             final GetShareInfoResponse resp = XMLDocumentUtilities.fromElement(response, GetShareInfoResponse.class);
             shares = resp.getShares();
         }
-        return GQLUtilities.emptyListIfNull(shares);
+        return shares;
     }
 }
