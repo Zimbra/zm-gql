@@ -23,6 +23,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLInviteReplyVerbInput;
 import com.zimbra.graphql.repositories.impl.ZXMLCalendarRepository;
+import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.soap.mail.message.CreateAppointmentExceptionResponse;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.ModifyAppointmentResponse;
@@ -48,7 +49,7 @@ import io.leangen.graphql.annotations.GraphQLRootContext;
  * @package com.zimbra.graphql.resolvers.impl
  * @copyright Copyright © 2018
  */
-public class CalendarResolver {
+public class CalendarResolver implements IResolver {
 
     protected ZXMLCalendarRepository calendarRepository = null;
 

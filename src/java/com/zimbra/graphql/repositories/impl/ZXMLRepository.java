@@ -26,7 +26,7 @@ package com.zimbra.graphql.repositories.impl;
  */
 public abstract class ZXMLRepository extends ZRepository {
 
-    public  ZXMLRepository() {
+    public ZXMLRepository() {
         super();
     }
 

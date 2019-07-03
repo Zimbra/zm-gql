@@ -23,6 +23,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.graphql.repositories.impl.ZNativeAuthRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
+import com.zimbra.graphql.repositories.impl.ZXMLCalendarRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
 import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
@@ -31,6 +32,7 @@ import com.zimbra.graphql.repositories.impl.ZXMLTaskRepository;
 import com.zimbra.graphql.resolvers.IResolver;
 import com.zimbra.graphql.resolvers.impl.AccountResolver;
 import com.zimbra.graphql.resolvers.impl.AuthResolver;
+import com.zimbra.graphql.resolvers.impl.CalendarResolver;
 import com.zimbra.graphql.resolvers.impl.ContactResolver;
 import com.zimbra.graphql.resolvers.impl.FolderResolver;
 import com.zimbra.graphql.resolvers.impl.MessageResolver;
@@ -63,6 +65,7 @@ public class GQLSchemaBuilder {
     protected GQLSchemaBuilder loadResolvers() {
         resolvers.add(new AccountResolver(new ZXMLAccountRepository()));
         resolvers.add(new AuthResolver(new ZXMLAuthRepository(), new ZNativeAuthRepository()));
+        resolvers.add(new CalendarResolver(new ZXMLCalendarRepository()));
         resolvers.add(new ContactResolver(new ZXMLContactRepository()));
         resolvers.add(new FolderResolver(new ZXMLFolderRepository()));
         resolvers.add(new MessageResolver(new ZXMLMessageRepository()));
