@@ -18,12 +18,16 @@ package com.zimbra.graphql.repositories.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.Metadata;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.account.ChangePassword;
 import com.zimbra.cs.service.account.CreateSignature;
 import com.zimbra.cs.service.account.DeleteSignature;
@@ -39,11 +43,13 @@ import com.zimbra.cs.service.account.ModifyWhiteBlackList;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLMailboxMetadata;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.HandlerManager;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
+import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.ChangePasswordRequest;
 import com.zimbra.soap.account.message.ChangePasswordResponse;
@@ -493,4 +499,21 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         return true;
     }
 
+    @SuppressWarnings("unchecked")
+	public GQLMailboxMetadata mailboxMetaData(RequestContext rctxt, String section) throws ServiceException {
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        Mailbox mbox = DocumentHandler.getRequestedMailbox(zsc);
+        OperationContext octxt = DocumentHandler.getOperationContext(zsc, (Map<String, Object>)null);
+
+        Metadata metadata = mbox.getConfig(octxt, section);
+
+        GQLMailboxMetadata gmm = new GQLMailboxMetadata();
+        gmm.setSection(section);
+        if (metadata != null ) {
+            Map<String, Object> metaMap = (Map<String, Object>) metadata.asMap();
+            gmm.setMetadata(metaMap);
+        }
+
+        return gmm;
+    }
 }

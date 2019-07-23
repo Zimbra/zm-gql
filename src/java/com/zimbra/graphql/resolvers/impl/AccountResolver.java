@@ -23,6 +23,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLMailboxMetadata;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.resolvers.IResolver;
@@ -31,8 +32,10 @@ import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.account.type.Signature;
+import com.zimbra.soap.mail.type.MailCustomMetadata;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
+import com.zimbra.soap.type.SectionAttr;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -151,4 +154,11 @@ public class AccountResolver implements IResolver {
         return accountRepository.signatureDelete(context, identifier);
     }
 
+    @GraphQLQuery(description="Get mailbox metadata")
+    public GQLMailboxMetadata mailboxMetaData(
+            @GraphQLArgument(name=GqlConstants.SECTION, description="Section for which metadata is required")
+            @GraphQLNonNull String section,
+            @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.mailboxMetaData(context, section);
+    }
 }
