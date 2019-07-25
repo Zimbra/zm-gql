@@ -21,9 +21,12 @@ import java.util.List;
 import com.zimbra.common.gql.GqlConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLDiscoverRightsInput;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLDiscoverRightsInfo;
 import com.zimbra.graphql.models.outputs.GQLMailboxMetadata;
+import com.zimbra.graphql.models.outputs.GQLMailboxMetadataKeyValue;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
 import com.zimbra.graphql.resolvers.IResolver;
@@ -32,10 +35,8 @@ import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.account.type.Pref;
 import com.zimbra.soap.account.type.Signature;
-import com.zimbra.soap.mail.type.MailCustomMetadata;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
-import com.zimbra.soap.type.SectionAttr;
 
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -157,8 +158,26 @@ public class AccountResolver implements IResolver {
     @GraphQLQuery(description="Get mailbox metadata")
     public GQLMailboxMetadata mailboxMetaData(
             @GraphQLArgument(name=GqlConstants.SECTION, description="Section for which metadata is required")
-            @GraphQLNonNull String section,
+                @GraphQLNonNull String section,
             @GraphQLRootContext RequestContext context) throws ServiceException {
         return accountRepository.mailboxMetaData(context, section);
+    }
+
+    @GraphQLQuery(description="Get value for key in mailbox metadata")
+    public GQLMailboxMetadataKeyValue mailboxMetaDataForKey(
+            @GraphQLArgument(name=GqlConstants.SECTION, description="Section for which metadata is required")
+                @GraphQLNonNull String section,
+            @GraphQLArgument(name=GqlConstants.KEY, description="Key for which metadata is required")
+                @GraphQLNonNull String key,
+            @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.mailboxMetaDataForKey(context, section, key);
+    }
+
+    @GraphQLQuery(description="Get rights for authenticated user")
+    public GQLDiscoverRightsInfo discoverRights(
+            @GraphQLArgument(name=GqlConstants.INPUT, description="Input for discoverRights")
+                @GraphQLNonNull GQLDiscoverRightsInput input,
+            @GraphQLRootContext RequestContext context) throws ServiceException {
+        return accountRepository.discoverRights(context, input);
     }
 }

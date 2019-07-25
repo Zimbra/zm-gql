@@ -40,10 +40,14 @@ import com.zimbra.cs.service.account.GetWhiteBlackList;
 import com.zimbra.cs.service.account.ModifyPrefs;
 import com.zimbra.cs.service.account.ModifySignature;
 import com.zimbra.cs.service.account.ModifyWhiteBlackList;
+import com.zimbra.cs.service.common.SoapGqlCommonService;
 import com.zimbra.graphql.models.RequestContext;
+import com.zimbra.graphql.models.inputs.GQLDiscoverRightsInput;
 import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
+import com.zimbra.graphql.models.outputs.GQLDiscoverRightsInfo;
 import com.zimbra.graphql.models.outputs.GQLMailboxMetadata;
+import com.zimbra.graphql.models.outputs.GQLMailboxMetadataKeyValue;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
@@ -76,6 +80,8 @@ import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.OpValue;
+
+import io.leangen.graphql.annotations.GraphQLNonNull;
 
 /**
  * The ZXMLAccountRepository class.<br>
@@ -499,13 +505,16 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-	public GQLMailboxMetadata mailboxMetaData(RequestContext rctxt, String section) throws ServiceException {
+    private Metadata getMetadata(RequestContext rctxt, String section) throws ServiceException {
         final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
         Mailbox mbox = DocumentHandler.getRequestedMailbox(zsc);
         OperationContext octxt = DocumentHandler.getOperationContext(zsc, (Map<String, Object>)null);
+        return mbox.getConfig(octxt, section);
+    }
 
-        Metadata metadata = mbox.getConfig(octxt, section);
+    @SuppressWarnings("unchecked")
+    public GQLMailboxMetadata mailboxMetaData(RequestContext rctxt, String section) throws ServiceException {
+        Metadata metadata = getMetadata(rctxt, section);
 
         GQLMailboxMetadata gmm = new GQLMailboxMetadata();
         gmm.setSection(section);
@@ -513,7 +522,28 @@ public class ZXMLAccountRepository extends ZXMLRepository implements IRepository
             Map<String, Object> metaMap = (Map<String, Object>) metadata.asMap();
             gmm.setMetadata(metaMap);
         }
-
         return gmm;
+    }
+
+    @SuppressWarnings("unchecked")
+    public GQLMailboxMetadataKeyValue mailboxMetaDataForKey(RequestContext rctxt, String section, String key) throws ServiceException {
+        Metadata metadata = getMetadata(rctxt, section);
+
+        GQLMailboxMetadataKeyValue gmmkv = new GQLMailboxMetadataKeyValue();
+        gmmkv.setSection(section);
+        if (metadata != null ) {
+            Map<String, Object> metaMap = (Map<String, Object>) metadata.asMap();
+            gmmkv.setKey(key);
+            gmmkv.setValue(metaMap.get(key));
+        }
+        return gmmkv;
+    }
+
+    public GQLDiscoverRightsInfo discoverRights(RequestContext rctxt, @GraphQLNonNull GQLDiscoverRightsInput input) throws ServiceException {
+        GQLDiscoverRightsInfo dri = new GQLDiscoverRightsInfo();
+        final ZimbraSoapContext zsc = GQLAuthUtilities.getZimbraSoapContext(rctxt);
+        SoapGqlCommonService sgcs = new SoapGqlCommonService(zsc);
+        sgcs.discoverRights(input.getRights(), true);
+        return dri;
     }
 }

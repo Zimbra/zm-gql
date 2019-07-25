@@ -16,7 +16,6 @@
  */
 package com.zimbra.graphql.models.outputs;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +30,12 @@ import io.leangen.graphql.annotations.types.GraphQLType;
  * @package com.zimbra.graphql.models.outputs
  * @copyright Copyright © 2019
  */
-@GraphQLType(name=GqlConstants.CLASS_GQL_MAILBOX_METADATA, description="Contains mailbox metadata")
-public class GQLMailboxMetadata {
+@GraphQLType(name=GqlConstants.CLASS_GQL_MAILBOX_METADATA_KEY_VALUE, description="Key and Value available in metadata")
+public class GQLMailboxMetadataKeyValue {
 
     private String section;
-    private Map<String, Object> metadata;
+    private String key;
+    private Object value;
 
     /**
      * @return the section
@@ -51,47 +51,45 @@ public class GQLMailboxMetadata {
     public void setSection(String section) {
         this.section = section;
     }
-
     /**
-     * @return the metadata
+     * @return the key
      */
-    @GraphQLQuery(name=GqlConstants.METADATA, description="Metadata for mailbox")
-    public Map<String, String> getMetadata() {
-        Map<String, String> result = new HashMap<String, String>();
-        metadata.forEach((key, value) -> {
-            String val = null;
-            if (value instanceof Map) {
-                val = Joiner.on(",").withKeyValueSeparator("=").join((Map<?, ?>) value);
-            } else if (value instanceof List) {
-                val = String.join(",", (List) value);
-            } else {
-                val = value.toString();
-            }
-            result.put(key, val);
-        });
-        return result;
+    @GraphQLQuery(name=GqlConstants.GET_KEY, description="Key available in metadata for mailbox")
+    public String getKey() {
+        return key;
     }
-
     /**
-     * @param metadata the metadata to set
+     * @param key the key to set
      */
-    public void setMetadata(Map<String, Object> metadata) {
-        this.metadata = metadata;
+    public void setKey(String key) {
+        this.key = key;
     }
-
-    @GraphQLQuery(name=GqlConstants.SIZE, description="Size of metadata map")
-    public int size() {
-        if (metadata == null) {
-            return 0;
-        }
-        return metadata.size();
+    /**
+     * @return the value
+     */
+    public Object getValue() {
+        return value;
     }
-
-    @GraphQLQuery(name=GqlConstants.IS_EMPTY, description="Whether metadata map is empty or not")
-    public boolean isEmpty() {
-        if (metadata == null) {
-            return true;
+    /**
+     * @param value the value to set
+     */
+    public void setValue(Object value) {
+        this.value = value;
+    }
+    /**
+     * @return the value
+     */
+    @SuppressWarnings("rawtypes")
+    @GraphQLQuery(name=GqlConstants.GET_VALUE, description="Value for given key available in metadata for mailbox")
+    public String getStringValue() {
+        String val = null;
+        if (value instanceof Map) {
+            val = Joiner.on(",").withKeyValueSeparator("=").join((Map<?, ?>) value);
+        } else if (value instanceof List) {
+            val = String.join(",", (List) value);
+        } else {
+            val = value.toString();
         }
-        return metadata.isEmpty();
+        return val;
     }
 }
