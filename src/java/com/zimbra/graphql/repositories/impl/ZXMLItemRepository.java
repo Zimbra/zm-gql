@@ -22,6 +22,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.mail.ItemAction;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZXMLRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;

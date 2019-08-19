@@ -4,3 +4,4 @@ build/
 lib/
 .settings
 eclipse-ivysettings.xml
+/bin/

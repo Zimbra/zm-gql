@@ -26,6 +26,7 @@ import com.zimbra.cs.session.SoapSession;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.outputs.GQLSessionInfo;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.soap.ZimbraSoapContext;
 

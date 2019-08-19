@@ -29,6 +29,7 @@ import com.zimbra.graphql.models.outputs.GQLAutoCompleteResponse;
 import com.zimbra.graphql.models.outputs.GQLConversationSearchResponse;
 import com.zimbra.graphql.models.outputs.GQLMessageSearchResponse;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZXMLRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;

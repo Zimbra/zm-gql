@@ -10,6 +10,7 @@
   <property name="build.dir" location="build"/>
   <property name="classes.dir" location="${build.dir}/classes"/>
   <property name="extension.deploy.dir" location="${zimbra.home.dir}/lib/ext/${ext.name}"/>
+  <property name="gqlcommon.jar.file" value="zmgqlcommon.jar" />
 
   <target name="build-init">
     <mkdir dir="${build.classes.dir}"/>
@@ -20,6 +21,19 @@
 
   <!-- builds the server extension jar -->
   <target name="jar" depends="compile,zimbra-jar" description="Creates the jar file" />
+  <target name="gqlcommon-jar" depends="compile"
+       description="Creates the zmgqlcommon.jar file which is used by other gql extensions">
+     <antcall target="zimbra-jar">
+       <param name="implementation.title" value="Zimbra GQL common jar"/>
+       <param name="jar.file" value="${gqlcommon.jar.file}"/>
+       <param name="includes" value="**/graphql/repositories/IRepository*,**/graphql/repositories/ZRepository*, **/graphql/repositories/ZXMLRepository*, **/graphql/models/outputs/** "/>
+     </antcall>
+   </target>
+  <target name="dist-gqlcommon-jar" depends="gqlcommon-jar" description="Copy gqlcommon.jar to dist dir">
+    <mkdir dir="${dist.lib.dir}/ext-common"/>
+    <copy file="${build.dir}/${gqlcommon.jar.file}" tofile="${dist.lib.dir}/ext-common/${gqlcommon.jar.file}"
+            verbose="true"/>
+  </target>
 
   <!-- deploy to the server extension directory -->
   <target name="deploy" depends="jar">

@@ -33,6 +33,7 @@ import com.zimbra.cs.service.mail.SendInviteReply;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLInviteReplyVerbInput;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZXMLRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.ZimbraSoapContext;

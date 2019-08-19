@@ -14,7 +14,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  * ***** END LICENSE BLOCK *****
  */
-package com.zimbra.graphql.repositories.impl;
+package com.zimbra.graphql.repositories;
 
 /**
  * The ZXMLRepository class.<br>

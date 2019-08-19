@@ -41,6 +41,7 @@ import com.zimbra.graphql.models.inputs.GQLPrefInput;
 import com.zimbra.graphql.models.outputs.AccountInfo;
 import com.zimbra.graphql.models.outputs.GQLWhiteBlackListResponse;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZXMLRepository;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.HandlerManager;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;

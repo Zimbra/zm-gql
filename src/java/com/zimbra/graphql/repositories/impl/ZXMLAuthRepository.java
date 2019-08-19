@@ -22,6 +22,7 @@ import com.zimbra.cs.service.account.Auth;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.graphql.models.inputs.GQLAuthRequestInput;
 import com.zimbra.graphql.repositories.IRepository;
+import com.zimbra.graphql.repositories.ZXMLRepository;
 import com.zimbra.graphql.utilities.XMLDocumentUtilities;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.account.message.AuthResponse;
