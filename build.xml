@@ -26,7 +26,8 @@
      <antcall target="zimbra-jar">
        <param name="implementation.title" value="Zimbra GQL common jar"/>
        <param name="jar.file" value="${gqlcommon.jar.file}"/>
-       <param name="includes" value="**/graphql/repositories/IRepository*,**/graphql/repositories/ZRepository*, **/graphql/repositories/ZXMLRepository*, **/graphql/models/outputs/** "/>
+       <param name="includes" value="**/graphql/repositories/IRepository*,**/graphql/repositories/ZRepository*,
+         **/graphql/repositories/ZXMLRepository*, **/graphql/repositories/impl/ZNativeAuthRepository*, **/graphql/models/outputs/** "/>
      </antcall>
    </target>
   <target name="dist-gqlcommon-jar" depends="gqlcommon-jar" description="Copy gqlcommon.jar to dist dir">
