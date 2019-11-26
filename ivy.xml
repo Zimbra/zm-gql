@@ -40,8 +40,8 @@
       <dependency org="org.json" name="json" rev="20090211" />
       <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="9.3.5.v20151012"/>
       <!-- jackson jars -->
-      <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.2"/>
-      <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.2"/>
-      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.2"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.1"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.1"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.1"/>
     </dependencies>
 </ivy-module>
