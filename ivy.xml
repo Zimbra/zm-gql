@@ -16,7 +16,7 @@
       <dependency org="commons-httpclient" name="commons-httpclient" rev="3.1" />
       <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5.2" />
       <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.5" />
-      <dependency org="com.google.guava" name="guava" rev="23.0" />
+      <dependency org="com.google.guava" name="guava" rev="${com.google.guava.version}" />
       <!-- Local Requirements -->
       <dependency org="zimbra" name="zm-common" rev="latest.integration" />
       <dependency org="zimbra" name="zm-client" rev="latest.integration" />
@@ -36,12 +36,12 @@
       <dependency org="org.objenesis" name="objenesis" rev="1.2"/>
       <dependency org="asm" name="asm" rev="3.3.1" />
       <dependency org="log4j" name="log4j" rev="1.2.16" />
-      <dependency org="dom4j" name="dom4j" rev="1.5.2" />
+      <dependency org="org.dom4j" name="dom4j" rev="${dom4j.version}" />
       <dependency org="org.json" name="json" rev="20090211" />
       <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="9.3.5.v20151012"/>
       <!-- jackson jars -->
-      <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.2"/>
-      <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.2"/>
-      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.2"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.1"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.1"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.1"/>
     </dependencies>
 </ivy-module>
