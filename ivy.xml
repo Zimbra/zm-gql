@@ -6,7 +6,7 @@
       <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" />
       <dependency org="javax.ws.rs" name="javax.ws.rs-api" rev="2.0.1" />
       <!-- GraphQL Requirements -->
-      <dependency org="com.graphql-java" name="graphql-java" rev="9.3" />
+      <dependency org="com.graphql-java" name="graphql-java" rev="9.0" />
       <dependency org="io.leangen.graphql" name="spqr" rev="0.11.2"/>
       <!-- Common Requirements -->
       <dependency org="commons-collections" name="commons-collections" rev="3.2.2" />
