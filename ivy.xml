@@ -43,6 +43,6 @@
       <!-- jackson jars -->
       <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.1"/>
       <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.1"/>
-      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.1"/>
+      <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.13.3"/>
     </dependencies>
 </ivy-module>
