@@ -17,10 +17,12 @@
 package com.zimbra.graphql.resources;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import com.zimbra.common.util.Constants;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.servlet.util.AuthUtil;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -36,6 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
+import com.zimbra.cs.servlet.util.CsrfUtil;
+
 import com.zimbra.graphql.errors.GQLError;
 import com.zimbra.graphql.utilities.GQLAuthUtilities;
 import com.zimbra.graphql.utilities.GQLConstants;
@@ -84,23 +93,25 @@ public class GQLServlet extends ExtensionHttpHandler {
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
         ZimbraLog.extensions.debug("Handling GET request.");
-        // seek query param (string)
-        final String query = req.getParameter("query");
-        // seek operationName param (string)
-        final String operationName = req.getParameter("operationName");
-        // seek variables param (map {string -> object})
-        final Map<String, Object> variables = new HashMap<String, Object>();
-        final String rawVariables = req.getParameter("variables");
-        try {
-            if (!StringUtils.isEmpty(rawVariables)
-                && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
-                variables.putAll(deserializeVariables(rawVariables));
+        if (doCsrfCheck(req, resp)) {
+            // seek query param (string)
+            final String query = req.getParameter("query");
+            // seek operationName param (string)
+            final String operationName = req.getParameter("operationName");
+            // seek variables param (map {string -> object})
+            final Map<String, Object> variables = new HashMap<String, Object>();
+            final String rawVariables = req.getParameter("variables");
+            try {
+                if (!StringUtils.isEmpty(rawVariables)
+                        && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
+                    variables.putAll(deserializeVariables(rawVariables));
+                }
+                final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
+                sendResponse(resp, result);
+            } catch (final ServiceException | UnknownOperationException e) {
+                sendError(resp, e);
+                return;
             }
-            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
-            sendResponse(resp, result);
-        } catch (final ServiceException | UnknownOperationException e) {
-          sendError(resp, e);
-          return;
         }
     }
 
@@ -108,43 +119,121 @@ public class GQLServlet extends ExtensionHttpHandler {
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
         ZimbraLog.extensions.debug("Handling POST request.");
-        String query = null;
-        String operationName = null;
-        Map<String, Object> variables = new HashMap<String, Object>();
-        try {
-            // read the body into json
-            ZimbraLog.extensions.debug("Reading http body.");
-            final JsonNode jsonBody = readBytes(GQLUtilities.decodeStream(req.getInputStream(), 0));
-            if (jsonBody != null && !jsonBody.isNull()) {
-                // seek query param (string)
-                if (jsonBody.has("query")) {
-                    final JsonNode rawQueryNode = jsonBody.get("query");
-                    if (rawQueryNode != null && !rawQueryNode.isNull()) {
-                        query = rawQueryNode.asText();
+        if (doCsrfCheck(req, resp)) {
+            String query = null;
+            String operationName = null;
+            Map<String, Object> variables = new HashMap<String, Object>();
+            try {
+                // read the body into json
+                ZimbraLog.extensions.debug("Reading http body.");
+                final JsonNode jsonBody = readBytes(GQLUtilities.decodeStream(req.getInputStream(), 0));
+                if (jsonBody != null && !jsonBody.isNull()) {
+                    // seek query param (string)
+                    if (jsonBody.has("query")) {
+                        final JsonNode rawQueryNode = jsonBody.get("query");
+                        if (rawQueryNode != null && !rawQueryNode.isNull()) {
+                            query = rawQueryNode.asText();
+                        }
+                    }
+                    // seek operationName param (string)
+                    if (jsonBody.has("operationName")) {
+                        final JsonNode rawOpNameNode = jsonBody.get("operationName");
+                        if (rawOpNameNode != null && !rawOpNameNode.isNull()) {
+                            operationName = rawOpNameNode.asText();
+                        }
+                    }
+                    // seek variables param (map {string -> object})
+                    if (jsonBody.has("variables")) {
+                        final JsonNode rawVariablesNode = jsonBody.get("variables");
+                        if (rawVariablesNode != null && !rawVariablesNode.isNull()) {
+                            variables = deserializeVariables(rawVariablesNode.toString());
+                        }
                     }
                 }
-                // seek operationName param (string)
-                if (jsonBody.has("operationName")) {
-                    final JsonNode rawOpNameNode = jsonBody.get("operationName");
-                    if (rawOpNameNode != null && !rawOpNameNode.isNull()) {
-                        operationName = rawOpNameNode.asText();
-                    }
-                }
-                // seek variables param (map {string -> object})
-                if (jsonBody.has("variables")) {
-                    final JsonNode rawVariablesNode = jsonBody.get("variables");
-                    if (rawVariablesNode != null && !rawVariablesNode.isNull()) {
-                        variables = deserializeVariables(rawVariablesNode.toString());
-                    }
-                }
+                final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName,
+                        variables);
+                sendResponse(resp, result);
+            } catch (final IOException | ServiceException | UnknownOperationException e) {
+                sendError(resp, e);
+                return;
             }
-            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName,
-                variables);
-            sendResponse(resp, result);
-        } catch (final IOException | ServiceException | UnknownOperationException e) {
-            sendError(resp, e);
-            return;
         }
+    }
+
+    /**
+     * CSRF implementation
+     */
+    private boolean doCsrfCheck(HttpServletRequest req, HttpServletResponse resp) {
+        boolean csrfCheckEnabled = Boolean.FALSE;
+        boolean csrfRefererCheckEnabled = Boolean.FALSE;
+        Provisioning prov = Provisioning.getInstance();
+        try {
+            csrfCheckEnabled = prov.getConfig().isCsrfTokenCheckEnabled();
+            csrfRefererCheckEnabled = prov.getConfig().isCsrfRefererCheckEnabled();
+        } catch (ServiceException e) {
+            return false;
+        }
+
+        if(csrfCheckEnabled) {
+            final AuthToken authToken;
+            try {
+                authToken = AuthUtil.getAuthTokenFromHttpReq(req, resp, false, true);
+            } catch (IOException e) {
+                return false;
+            }
+            if (authToken == null) {
+                ZimbraLog.extensions.debug("No valid auth token");
+                return false;
+            }
+
+            String csrfToken = req.getHeader(Constants.CSRF_TOKEN);
+            if (!StringUtil.isNullOrEmpty(csrfToken)) {
+                ZimbraLog.extensions.debug("No CSRF token received.");
+                return false;
+            }
+
+            //check for valid CSRF token
+            if (!CsrfUtil.isValidCsrfToken(csrfToken, authToken)) {
+                ZimbraLog.extensions.debug("CSRF check FAILED.");
+                return false;
+            }
+        }
+
+        if(csrfRefererCheckEnabled) {
+            //do a CSRF referrer check
+            String[] allowedRefHosts = null;
+            try {
+                allowedRefHosts = prov.getConfig().getCsrfAllowedRefererHosts();
+            } catch (Exception e) {
+                ZimbraLog.extensions.debug("getCsrfAllowedRefererHosts failed.");
+                return false;
+            }
+
+            if (isValidCsrfReferrer(req, allowedRefHosts)) {
+                ZimbraLog.extensions.debug("Valid CSRF referer");
+                return true;
+            } else {
+                ZimbraLog.extensions.debug("CSRF referrer FAIL");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidCsrfReferrer(final HttpServletRequest req, final String[] allowedRefHost) {
+        List<String> allowedRefHostList = Arrays.asList(allowedRefHost);
+        String referrer = req.getHeader("Referer");
+        String refHost = null;
+
+        URL refURL = null;
+        try {
+            refURL = new URL(referrer);
+        } catch (Exception e) {
+            return false;
+        }
+        refHost = refURL.getHost().toLowerCase();
+
+        return allowedRefHost != null && allowedRefHostList.contains(refHost);
     }
 
     /**
