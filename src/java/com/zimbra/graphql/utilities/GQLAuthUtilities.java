@@ -31,8 +31,10 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
+import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
@@ -42,6 +44,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.account.ZimbraJWToken;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.servlet.util.CsrfUtil;
+import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.graphql.models.RequestContext;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.SoapEngine;
@@ -200,7 +204,7 @@ public class GQLAuthUtilities {
         final Map<String, String> headers = new HashMap<String, String>(1);
         headers.put("Authorization", req.getHeader("Authorization"));
         final AuthToken token = getAuthToken(cookies, headers);
-        if (isValidToken(token)) {
+        if (isValidToken(token) && isValidCsrf(token, req)) {
             return new ZimbraSoapContext(token, token.getAccountId(), SoapProtocol.Soap12,
                 SoapProtocol.Soap12);
         }
@@ -209,4 +213,30 @@ public class GQLAuthUtilities {
         throw ServiceException.PERM_DENIED(L10nUtil.getMessage(MsgKey.errMustAuthenticate));
     }
 
+    /**
+     * CSRF implementation
+     */
+    private static boolean isValidCsrf(AuthToken authToken, HttpServletRequest req) {
+        boolean doCsrfCheck = false;
+        if (req.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK) != null) {
+            doCsrfCheck =  (Boolean) req.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK);
+        } else if (authToken != null  && authToken.isCsrfTokenEnabled()) {
+            doCsrfCheck = true;
+        }
+
+        if(doCsrfCheck) {
+            String csrfToken = req.getHeader(Constants.CSRF_TOKEN);
+            if (StringUtil.isNullOrEmpty(csrfToken)) {
+                ZimbraLog.extensions.debug("No CSRF token received.");
+                return false;
+            }
+
+            //check for valid CSRF token
+            if (!CsrfUtil.isValidCsrfToken(csrfToken, authToken)) {
+                ZimbraLog.extensions.debug("CSRF check FAILED.");
+                return false;
+            }
+        }
+        return true;
+    }
 }
