@@ -83,25 +83,7 @@ public class GQLServlet extends ExtensionHttpHandler {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
-        ZimbraLog.extensions.debug("Handling GET request.");
-        // seek query param (string)
-        final String query = req.getParameter("query");
-        // seek operationName param (string)
-        final String operationName = req.getParameter("operationName");
-        // seek variables param (map {string -> object})
-        final Map<String, Object> variables = new HashMap<String, Object>();
-        final String rawVariables = req.getParameter("variables");
-        try {
-            if (!StringUtils.isEmpty(rawVariables)
-                && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
-                variables.putAll(deserializeVariables(rawVariables));
-            }
-            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
-            sendResponse(resp, result);
-        } catch (final ServiceException | UnknownOperationException e) {
-          sendError(resp, e);
-          return;
-        }
+            throw new ServletException("HTTP GET requests are not supported");
     }
 
     @Override
