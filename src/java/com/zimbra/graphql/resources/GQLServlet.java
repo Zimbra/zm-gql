@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import com.zimbra.common.localconfig.KnownKey;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -56,7 +57,12 @@ import graphql.execution.UnknownOperationException;
  * @copyright Copyright © 2018
  */
 public class GQLServlet extends ExtensionHttpHandler {
+    public static final KnownKey zimbra_gql_enabled;
 
+    static {
+        zimbra_gql_enabled = new KnownKey("zimbra_gql_enable_dangerous_deprecated_get_method_will_be_removed");
+        zimbra_gql_enabled.setDefault("false");
+    }
     /**
      * Object mapper.
      */
@@ -83,24 +89,29 @@ public class GQLServlet extends ExtensionHttpHandler {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
-        ZimbraLog.extensions.debug("Handling GET request.");
-        // seek query param (string)
-        final String query = req.getParameter("query");
-        // seek operationName param (string)
-        final String operationName = req.getParameter("operationName");
-        // seek variables param (map {string -> object})
-        final Map<String, Object> variables = new HashMap<String, Object>();
-        final String rawVariables = req.getParameter("variables");
-        try {
-            if (!StringUtils.isEmpty(rawVariables)
-                && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
-                variables.putAll(deserializeVariables(rawVariables));
+        if ("true".equals(zimbra_gql_enabled.value())) {
+            ZimbraLog.extensions.debug("Handling GET request.");
+            // seek query param (string)
+            final String query = req.getParameter("query");
+            // seek operationName param (string)
+            final String operationName = req.getParameter("operationName");
+            // seek variables param (map {string -> object})
+            final Map<String, Object> variables = new HashMap<String, Object>();
+            final String rawVariables = req.getParameter("variables");
+            try {
+                if (!StringUtils.isEmpty(rawVariables)
+                        && !StringUtils.equalsIgnoreCase(rawVariables, "null")) {
+                    variables.putAll(deserializeVariables(rawVariables));
+                }
+                final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
+                sendResponse(resp, result);
+            } catch (final ServiceException | UnknownOperationException e) {
+                sendError(resp, e);
+                return;
             }
-            final Map<String, Object> result = doGraphQLRequest(req, resp, query, operationName, variables);
-            sendResponse(resp, result);
-        } catch (final ServiceException | UnknownOperationException e) {
-          sendError(resp, e);
-          return;
+        }
+        else {
+            throw new ServletException("HTTP GET requests are disabled on GraphQL endpoint, to re-enable contact Zimbra Support.");
         }
     }
 
