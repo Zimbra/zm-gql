@@ -29,6 +29,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.zimbra.common.localconfig.KnownKey;
+import com.zimbra.common.localconfig.LC;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,6 +49,7 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphqlErrorHelper;
 import graphql.execution.UnknownOperationException;
+import org.apache.http.client.methods.HttpPost;
 
 /**
  * The GQLServlet class.<br>
@@ -57,12 +60,8 @@ import graphql.execution.UnknownOperationException;
  * @copyright Copyright © 2018
  */
 public class GQLServlet extends ExtensionHttpHandler {
-    public static final KnownKey zimbra_gql_enabled;
+    public final KnownKey zimbra_gql_enabled;
 
-    static {
-        zimbra_gql_enabled = new KnownKey("zimbra_gql_enable_dangerous_deprecated_get_method_will_be_removed");
-        zimbra_gql_enabled.setDefault("false");
-    }
     /**
      * Object mapper.
      */
@@ -72,13 +71,17 @@ public class GQLServlet extends ExtensionHttpHandler {
      * GraphQL instance.
      */
     protected final GraphQL graphql;
+    private String is_zimbra_gql_enabled;
 
     /**
      * Constructs an instance and sets up gql object with schema.
      */
     public GQLServlet() {
         graphql = GraphQL.newGraphQL(GQLSchemaBuilder.newInstance().build())
-            .build();
+                .build();
+        zimbra_gql_enabled = new KnownKey("zimbra_gql_enable_dangerous_deprecated_get_method");
+        zimbra_gql_enabled.setDefault("false");
+        is_zimbra_gql_enabled = StringUtils.defaultIfEmpty(LC.get("zimbra_gql_enable_dangerous_deprecated_get_method"), "false");
     }
 
     @Override
@@ -89,7 +92,7 @@ public class GQLServlet extends ExtensionHttpHandler {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
-        if ("true".equals(zimbra_gql_enabled.value())) {
+        if ("true".equals(is_zimbra_gql_enabled)) {
             ZimbraLog.extensions.debug("Handling GET request.");
             // seek query param (string)
             final String query = req.getParameter("query");
@@ -111,7 +114,8 @@ public class GQLServlet extends ExtensionHttpHandler {
             }
         }
         else {
-            throw new ServletException("HTTP GET requests are disabled on GraphQL endpoint, to re-enable contact Zimbra Support.");
+            resp.setHeader(org.apache.http.HttpHeaders.ALLOW, HttpPost.METHOD_NAME);
+            resp.sendError(HttpStatus.SC_METHOD_NOT_ALLOWED, "HTTP GET requests are disabled on GraphQL endpoint, to re-enable contact Zimbra Support.");
         }
     }
 
