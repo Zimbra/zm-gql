@@ -20,27 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.graphql.repositories.impl.ZNativeAuthRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLAccountRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLAuthRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLCalendarRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLContactRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLFolderRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLMessageRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLSearchRepository;
-import com.zimbra.graphql.repositories.impl.ZXMLTaskRepository;
+import com.zimbra.graphql.repositories.impl.*;
 import com.zimbra.graphql.resolvers.IResolver;
-import com.zimbra.graphql.resolvers.impl.AccountResolver;
-import com.zimbra.graphql.resolvers.impl.AuthResolver;
-import com.zimbra.graphql.resolvers.impl.CalendarResolver;
-import com.zimbra.graphql.resolvers.impl.ContactResolver;
-import com.zimbra.graphql.resolvers.impl.FolderResolver;
-import com.zimbra.graphql.resolvers.impl.MessageResolver;
-import com.zimbra.graphql.resolvers.impl.SearchResolver;
-import com.zimbra.graphql.resolvers.impl.TaskResolver;
+import com.zimbra.graphql.resolvers.impl.*;
 
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
+import io.leangen.graphql.metadata.strategy.query.DefaultOperationBuilder;
 
 /**
   * GQLSchemaBuilder class.<br>
@@ -87,8 +73,9 @@ public class GQLSchemaBuilder {
                 "com.zimbra.graphql.models",
                 "com.zimbra.soap")
             .withOperationsFromSingletons(
-                resolvers.toArray()
-            ).generate();
+                    resolvers.toArray()
+            ).withOperationBuilder(new DefaultOperationBuilder(DefaultOperationBuilder.TypeInference.UNLIMITED))
+                .generate();
     }
 
     /**
