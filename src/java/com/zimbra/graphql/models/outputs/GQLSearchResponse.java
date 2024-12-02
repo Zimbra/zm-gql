@@ -26,6 +26,7 @@ import com.zimbra.soap.type.BaseQueryInfo;
 import com.zimbra.soap.type.SearchHit;
 import com.zimbra.soap.type.ZmBoolean;
 
+import io.leangen.graphql.annotations.GraphQLIgnore;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.annotations.types.GraphQLType;
 
@@ -46,6 +47,7 @@ public class GQLSearchResponse {
 	protected ZmBoolean queryMore;
 	protected Long totalSize;
     protected List<SearchHit> searchHits = Lists.newArrayList();
+    @GraphQLIgnore
     protected List<BaseQueryInfo> queryInfos = Lists.newArrayList();
 
     public void setSortBy(String sortBy) {
